@@ -1,1 +1,0 @@
-{"version":1,"defects":{"App\\Service\\BookCategoryServiceTest::testGetBookCategory":8,"App\\Controller\\BookCategoryControllerTest::testCategories":7},"times":{"App\\Service\\BookCategoryServiceTest::testGetBookCategory":0.022,"App\\Controller\\BookCategoryControllerTest::testCategories":0.298}}
