@@ -11,7 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<BookCategory>
  */
-class BookRepository extends ServiceEntityRepository
+class BookCategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

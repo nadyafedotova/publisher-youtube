@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240429133816 extends AbstractMigration
+final class Version20240430073641 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -19,14 +19,14 @@ final class Version20240429133816 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('CREATE SEQUENCE book_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE book (id INT NOT NULL, title VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE SEQUENCE book_category_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
+        $this->addSql('CREATE TABLE book_category (id INT NOT NULL, title VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
     }
 
     public function down(Schema $schema): void
     {
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('DROP SEQUENCE book_id_seq CASCADE');
-        $this->addSql('DROP TABLE book');
+        $this->addSql('DROP SEQUENCE book_category_id_seq CASCADE');
+        $this->addSql('DROP TABLE book_category');
     }
 }
