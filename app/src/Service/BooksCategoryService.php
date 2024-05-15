@@ -9,7 +9,7 @@ use App\Model\BookCategoryListItem;
 use App\Model\BookCategoryListResponse;
 use App\Repository\BookCategoryRepository;
 
-readonly class BookCategoryService
+readonly class BooksCategoryService
 {
     public function __construct(
         private BookCategoryRepository $bookCategoryRepository

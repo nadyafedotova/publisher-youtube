@@ -6,10 +6,12 @@ namespace App\Repository;
 
 use App\Entity\BookCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<BookCategory>
+ * @method find(mixed $id, LockMode|int|null $lockMode = null, int|null $lockVersion = null)
  */
 class BookCategoryRepository extends ServiceEntityRepository
 {

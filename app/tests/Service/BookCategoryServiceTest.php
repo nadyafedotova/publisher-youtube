@@ -6,7 +6,7 @@ use App\Entity\BookCategory;
 use App\Model\BookCategoryListItem;
 use App\Model\BookCategoryListResponse;
 use App\Repository\BookCategoryRepository;
-use App\Service\BookCategoryService;
+use App\Service\BooksCategoryService;
 use Doctrine\Common\Collections\Order;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
@@ -28,7 +28,7 @@ class BookCategoryServiceTest extends TestCase
             ->with([], ['title' => 'ASC'])
             ->willReturn([$bookCategory]);
 
-        $service = new BookCategoryService($repository);
+        $service = new BooksCategoryService($repository);
 
         $expectedResponse = new BookCategoryListResponse([new BookCategoryListItem(7, 'Test', 'test')]);
 
