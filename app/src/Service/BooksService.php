@@ -11,13 +11,12 @@ use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
 
-class BooksService
+readonly class BooksService
 {
     public function __construct(
         private BookRepository $bookRepository,
-        private readonly BookCategoryRepository $bookCategoryRepository,
-    )
-    {
+        private BookCategoryRepository $bookCategoryRepository,
+    ) {
     }
 
     final public function getBooksByCategory(int $categoryId): BookListResponse
@@ -37,7 +36,6 @@ class BooksService
     private function map(Book $book): BookListItem
     {
         return (new BookListItem())
-            ->setId($book->getId())
             ->setTitle($book->getTitle())
             ->setSlug($book->getSlug())
             ->setImage($book->getImage())

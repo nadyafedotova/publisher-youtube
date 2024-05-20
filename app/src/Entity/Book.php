@@ -53,13 +53,6 @@ class Book
         return $this->id;
     }
 
-    final public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
     final public function getTitle(): ?string
     {
         return $this->title;

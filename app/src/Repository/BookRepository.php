@@ -25,9 +25,9 @@ class BookRepository extends ServiceEntityRepository
      */
     public function findBooksByCategoryId(int $id): array
     {
-         $queryBuilder = $this->getEntityManager()->createQuery('SELECT b FROM App\Entity\Book b WHERE :categoryId MEMBER OF b.categories');
-         $queryBuilder->setParameter('categoryId', $id);
+        $queryBuilder = $this->getEntityManager()->createQuery('SELECT b FROM App\Entity\Book b WHERE :categoryId MEMBER OF b.categories');
+        $queryBuilder->setParameter('categoryId', $id);
 
-         return $queryBuilder->getResult();
+        return $queryBuilder->getResult();
     }
 }

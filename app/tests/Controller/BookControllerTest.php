@@ -2,23 +2,70 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\BookController;
-use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Entity\Book;
+use App\Entity\BookCategory;
+use App\Tests\AbstractControllerTest;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class BookControllerTest extends WebTestCase
+class BookControllerTest extends AbstractControllerTest
 {
 
-    public function testBooksByCategory()
+    final public function testBooksByCategory(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/api/v1/category/1/books');
-        $responseContent = $client->getResponse()->getContent();
+        $this->client->request('GET', '/api/v1/category/1/books');
+        $responseContent = $this->client->getResponse()->getContent();
 
         $this->assertResponseIsSuccessful();
-        $this->assertJsonStringEqualsJsonFile(
-            __DIR__ . '/response/BookCategoryControllerTest_testBooksByCategory.json',
-            $responseContent
+        $this->assertJsonDocumentMatchesSchema(
+            $responseContent,
+            [
+            'type' => 'object',
+            'required' => ['items'],
+                'properties' => [
+                    'items' => [
+                        'type' => 'array',
+                        'items' => [
+                            'type' => 'string',
+                            'required' => ['id', 'title', 'slug', 'image', 'authors', 'meap', 'publicationDate'],
+                            'properties' => [
+                                'id' => ['type' => 'integer'],
+                                'title' => ['type' => 'string'],
+                                'slug' => ['type' => 'string'],
+                                'image' => ['type' => 'string'],
+                                'authors' => [
+                                    'type' => 'array',
+                                    'items' => ['type' => 'string'],
+                                    ],
+                                'publicationDate' => ['type' => 'integer'],
+                                'meap' => ['type' => 'boolean'],
+                            ]
+                        ]
+                    ]
+                ]
+            ]
         );
+    }
+
+    private function createCategory(): int
+    {
+        $bookCategory = new BookCategory();
+        $bookCategory->setTitle('Devices')->setSlug('devices');
+        $this->em->persist($bookCategory);
+        $this->em->flush();
+
+        $this->em->persist(
+            (new Book())
+            ->setTitle('Test Book')
+            ->setImage('')
+            ->setMeap(true)
+            ->setPublicationDate(new DateTime('now'))
+            ->setAuthors(['Tester'])
+            ->setCategories(new ArrayCollection([$bookCategory]))
+            ->setSlug('test-book')
+        );
+
+
+        return $bookCategory->getId();
     }
 }

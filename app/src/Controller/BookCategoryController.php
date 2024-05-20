@@ -16,8 +16,7 @@ class BookCategoryController extends AbstractController
 {
     public function __construct(
         private readonly BooksCategoryService $bookCategoryService
-    )
-    {
+    ) {
     }
 
     #[OA\Response(

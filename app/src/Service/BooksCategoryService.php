@@ -13,18 +13,19 @@ readonly class BooksCategoryService
 {
     public function __construct(
         private BookCategoryRepository $bookCategoryRepository
-    )
-    {
+    ) {
     }
 
     final public function getCategories(): BookCategoryListResponse
     {
-        $categories = $this->bookCategoryRepository->findBy([], ['title' => 'ASC']);
+        $categories = $this->bookCategoryRepository->findAllSortedByTitle();
         $items = array_map(
             fn (BookCategory $category) => new BookCategoryListItem(
-                $category->getId(), $category->getTitle(), $category->getSlug()
-        ),
-        $categories
+                $category->getId(),
+                $category->getTitle(),
+                $category->getSlug()
+            ),
+            $categories
         );
 
         return new BookCategoryListResponse($items);

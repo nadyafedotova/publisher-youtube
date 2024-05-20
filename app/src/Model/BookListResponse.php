@@ -11,8 +11,7 @@ readonly class BookListResponse
      */
     public function __construct(
         private array $bookCategoryList
-    )
-    {
+    ) {
     }
 
     /**

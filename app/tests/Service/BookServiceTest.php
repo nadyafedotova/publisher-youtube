@@ -10,12 +10,13 @@ use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
 use App\Service\BooksService;
+use App\Tests\AbstractTestCase;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
+use ReflectionException;
 
-class BookServiceTest extends TestCase
+class BookServiceTest extends AbstractTestCase
 {
     /**
      * @throws Exception
@@ -36,7 +37,7 @@ class BookServiceTest extends TestCase
     }
 
     /**
-     * @throws Exception
+     * @throws Exception|ReflectionException
      */
     final public function testGetBooksByCategory(): void
     {
@@ -58,10 +59,12 @@ class BookServiceTest extends TestCase
         $this->assertEquals($expected, $service->getBooksByCategory(130));
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function createBookEntity(): Book
     {
-        return (new Book())
-            ->setId(123)
+        $book = (new Book())
             ->setTitle('Test Book')
             ->setSlug('test-book')
             ->setMeap(false)
@@ -69,13 +72,16 @@ class BookServiceTest extends TestCase
             ->setImage('')
             ->setCategories(new ArrayCollection())
             ->setPublicationDate(new DateTime('2020-10-10'));
+
+        $this->setEntityId($book, 123);
+
+        return $book;
     }
 
     private function createBookItemModel(): BookListItem
     {
         $publicationDate = (new DateTime('2020-10-10'))->getTimestamp();
         return (new BookListItem())
-            ->setId(123)
             ->setTitle('Test Book')
             ->setSlug('test-book')
             ->setMeap(false)
