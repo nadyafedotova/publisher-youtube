@@ -23,7 +23,7 @@ readonly class BooksService
     {
         $category = $this->bookCategoryRepository->find($categoryId);
 
-        if (null === $category) {
+        if (!$this->bookCategoryRepository->existsById($categoryId)) {
             throw new BookCategoryNotFoundException();
         }
 

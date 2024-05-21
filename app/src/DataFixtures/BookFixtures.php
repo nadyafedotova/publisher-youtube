@@ -20,7 +20,6 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
         $devicesCategory = $this->getReference(BookCategoryFixtures::DEVICES_CATEGORY);
 
         $book = (new Book())
-            ->setId(1)
             ->setTitle('RxJava for Android Developers')
             ->setPublicationDate(new DateTime('2019-04-01'))
             ->setMeap(false)
