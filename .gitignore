@@ -6,3 +6,4 @@ data/
 log/
 .DS_Store
 package.xml
+.php-cs-fixer.cache

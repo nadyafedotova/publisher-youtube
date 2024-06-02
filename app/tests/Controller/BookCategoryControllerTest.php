@@ -3,6 +3,7 @@
 namespace App\Tests\Controller;
 
 use App\Entity\BookCategory;
+use App\Kernel;
 use App\Tests\AbstractControllerTest;
 
 class BookCategoryControllerTest extends AbstractControllerTest
@@ -21,17 +22,17 @@ class BookCategoryControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
         $this->assertJsonDocumentMatchesSchema($responseContent, [
             'type' => 'object',
-            'required' => ['items'],
+            'required' => ['bookCategoryList'],
             'properties' => [
-                'items' => [
+                'bookCategoryList' => [
                     'type' => 'array',
-                    'items' => [
+                    'bookCategoryList' => [
                         'type' => 'object',
                         'required' => ['id', 'title', 'slug'],
                         'properties' => [
+                            'id' => ['type' => 'integer'],
                             'title' => ['type' => 'string'],
                             'slug' => ['type' => 'string'],
-                            'id' => ['type' => 'integer'],
                         ],
                     ],
                 ],

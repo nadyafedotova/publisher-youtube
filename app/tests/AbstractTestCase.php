@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
 
-class AbstractTestCase extends TestCase
+abstract class AbstractTestCase extends TestCase
 {
     /**
      * @throws ReflectionException

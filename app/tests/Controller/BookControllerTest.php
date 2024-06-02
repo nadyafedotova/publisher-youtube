@@ -13,7 +13,7 @@ class BookControllerTest extends AbstractControllerTest
 
     final public function testBooksByCategory(): void
     {
-        $this->client->request('GET', '/api/v1/category/1/books');
+        $this->client->request('GET', '/api/v1/category/31/books');
         $responseContent = $this->client->getResponse()->getContent();
 
         $this->assertResponseIsSuccessful();
@@ -21,11 +21,11 @@ class BookControllerTest extends AbstractControllerTest
             $responseContent,
             [
             'type' => 'object',
-            'required' => ['items'],
+            'required' => ['bookCategoryList'],
                 'properties' => [
-                    'items' => [
+                    'bookCategoryList' => [
                         'type' => 'array',
-                        'items' => [
+                        'bookCategoryList' => [
                             'type' => 'string',
                             'required' => ['id', 'title', 'slug', 'image', 'authors', 'meap', 'publicationDate'],
                             'properties' => [

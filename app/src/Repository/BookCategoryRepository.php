@@ -21,7 +21,7 @@ class BookCategoryRepository extends ServiceEntityRepository
     /**
      * @return BookCategory[]
      */
-    final public function findAllSortedByTitle(): array
+    public function findAllSortedByTitle(): array
     {
         return $this->findBy([], ['title' => 'ASC']);
     }

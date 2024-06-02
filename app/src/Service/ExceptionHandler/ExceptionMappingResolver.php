@@ -12,7 +12,7 @@ class ExceptionMappingResolver
     /**
      * @var ExceptionMapping[]
      */
-    private array $mapping;
+    private array $mapping = [];
 
     public function __construct(array $mappings)
     {
@@ -29,7 +29,7 @@ class ExceptionMappingResolver
         }
     }
 
-    final public function resolve(string $throwableClass): ?ExceptionMapping
+    public function resolve(string $throwableClass): ?ExceptionMapping
     {
         $foundMapping = null;
 
