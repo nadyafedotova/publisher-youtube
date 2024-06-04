@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use OpenApi\Attributes as OA;
+
 readonly class ErrorResponse
 {
     public function __construct(
@@ -17,6 +19,7 @@ readonly class ErrorResponse
         return $this->message;
     }
 
+    #[OA\Property(type: "object")]
     final public function getDetails(): mixed
     {
         return $this->details;
