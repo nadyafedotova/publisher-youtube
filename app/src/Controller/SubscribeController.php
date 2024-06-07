@@ -26,7 +26,7 @@ class SubscribeController extends AbstractController
     )]
     #[OA\RequestBody(content: new Model(type: SubscriberRequest::class))]
     #[Route(path: '/api/v1/subscribe', methods: ['POST'])]
-    final public function action(#[RequestBody] SubscriberRequest $subscriberRequest): Response
+    final public function subscribe(#[RequestBody] SubscriberRequest $subscriberRequest): Response
     {
         $this->subscriberService->subscribe($subscriberRequest);
 

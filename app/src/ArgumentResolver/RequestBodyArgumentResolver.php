@@ -14,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Throwable;
 
-class RequestBodyArgumentResolver implements ValueResolverInterface
+readonly class RequestBodyArgumentResolver implements ValueResolverInterface
 {
     public function __construct(
         private SerializerInterface $serializer,
@@ -24,8 +24,8 @@ class RequestBodyArgumentResolver implements ValueResolverInterface
 
     final public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-
         $argumentType = $argument->getType();
+
         if (
             !$argumentType
             || !is_subclass_of($argumentType, RequestBody::class, true)
@@ -38,21 +38,26 @@ class RequestBodyArgumentResolver implements ValueResolverInterface
             return [];
         }
 
+        yield $this->checkRequestBodyConvertException($request, $argument);
+        ;
+    }
+
+    final public function checkRequestBodyConvertException(Request $request, ArgumentMetadata $argument): iterable
+    {
         try {
             $model = $this->serializer->deserialize(
                 $request->getContent(),
                 $argument->getType(),
-                'json'
+                'json',
             );
         } catch (Throwable $e) {
             throw new RequestBodyConvertException($e);
         }
-
         $errors = $this->validator->validate($model);
         if (count($errors) > 0) {
             throw new ValidationException($errors);
         }
 
-        yield $model;
+        return $model;
     }
 }

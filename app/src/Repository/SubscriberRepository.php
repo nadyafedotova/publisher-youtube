@@ -15,7 +15,7 @@ class SubscriberRepository extends ServiceEntityRepository
         parent::__construct($registry, Subscriber::class);
     }
 
-    final public function existsByEmail(string $email): bool
+    public function existsByEmail(string $email): bool
     {
         return null !== $this->findOneBy(['email' => $email]);
     }
