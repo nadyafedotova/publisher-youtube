@@ -27,5 +27,7 @@ abstract class AbstractControllerTest extends WebTestCase
 
         $this->em->close();
         $this->em = null;
+
+        restore_exception_handler();
     }
 }

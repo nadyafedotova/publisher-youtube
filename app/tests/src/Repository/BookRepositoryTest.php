@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\src\Repository;
 
-use _PHPStan_49641e245\Nette\Utils\DateTime;
 use App\Entity\Book;
 use App\Entity\BookCategory;
 use App\Repository\BookRepository;
 use App\Tests\AbstractRepositoryTest;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class BookRepositoryTest extends AbstractRepositoryTest

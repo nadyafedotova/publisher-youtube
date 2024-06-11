@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\src\Service;
 
 use App\Entity\Subscriber;
 use App\Exception\SubscriberAlreadyExistsException;

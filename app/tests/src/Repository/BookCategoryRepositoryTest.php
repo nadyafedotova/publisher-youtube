@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\src\Repository;
 
 use App\Entity\BookCategory;
 use App\Repository\BookCategoryRepository;

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\src\Service;
 
 use App\Entity\Book;
-use App\Entity\BookCategory;
 use App\Exception\BookCategoryNotFoundException;
 use App\Model\BookListItem;
 use App\Model\BookListResponse;

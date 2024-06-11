@@ -24,40 +24,25 @@ readonly class RequestBodyArgumentResolver implements ValueResolverInterface
 
     final public function resolve(Request $request, ArgumentMetadata $argument): iterable
     {
-        $argumentType = $argument->getType();
-
-        if (
-            !$argumentType
-            || !is_subclass_of($argumentType, RequestBody::class, true)
-        ) {
+        if (!$argument->getAttributesOfType(RequestBody::class, ArgumentMetadata::IS_INSTANCEOF)) {
             return [];
         }
 
-        $value = $request->attributes->get($argument->getName());
-        if (!is_string($value)) {
-            return [];
-        }
-
-        yield $this->checkRequestBodyConvertException($request, $argument);
-        ;
-    }
-
-    final public function checkRequestBodyConvertException(Request $request, ArgumentMetadata $argument): iterable
-    {
         try {
             $model = $this->serializer->deserialize(
                 $request->getContent(),
                 $argument->getType(),
-                'json',
+                'json'
             );
-        } catch (Throwable $e) {
-            throw new RequestBodyConvertException($e);
+        } catch (\Throwable $throwable) {
+            throw new RequestBodyConvertException($throwable);
         }
+
         $errors = $this->validator->validate($model);
         if (count($errors) > 0) {
             throw new ValidationException($errors);
         }
 
-        return $model;
+        return [$model];
     }
 }

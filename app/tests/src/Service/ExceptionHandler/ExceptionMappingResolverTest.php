@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service\ExceptionHandler;
+namespace App\Tests\src\Service\ExceptionHandler;
 
 use App\Service\ExceptionHandler\ExceptionMappingResolver;
 use App\Tests\AbstractTestCase;

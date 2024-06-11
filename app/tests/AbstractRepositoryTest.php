@@ -27,5 +27,7 @@ abstract class AbstractRepositoryTest extends KernelTestCase
 
         $this->entityManager->close();
         $this->entityManager = null;
+
+        restore_exception_handler();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Listener;
+namespace App\Tests\src\Listener;
 
 use App\Exception\ValidationException;
 use App\Listener\ValidationExceptionListener;

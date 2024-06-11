@@ -24,7 +24,7 @@ class SubscribeController extends AbstractController
         response: 200,
         description: 'Subscribe email to newsletter mailing list',
     )]
-    #[OA\RequestBody(content: new Model(type: SubscriberRequest::class))]
+    #[OA\RequestBody(attachables: [new Model(type: SubscriberRequest::class)])]
     #[Route(path: '/api/v1/subscribe', methods: ['POST'])]
     final public function subscribe(#[RequestBody] SubscriberRequest $subscriberRequest): Response
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\src\Controller;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
@@ -10,10 +10,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class BookControllerTest extends AbstractControllerTest
 {
-
     final public function testBooksByCategory(): void
     {
-        $this->client->request('GET', '/api/v1/category/31/books');
+        $categoryId = $this->createCategory();
+
+        $this->client->request('GET', '/api/v1/category/' . $categoryId . '/books');
         $responseContent = $this->client->getResponse()->getContent();
 
         $this->assertResponseIsSuccessful();
@@ -25,7 +26,7 @@ class BookControllerTest extends AbstractControllerTest
                 'properties' => [
                     'bookCategoryList' => [
                         'type' => 'array',
-                        'bookCategoryList' => [
+                        'items' => [
                             'type' => 'string',
                             'required' => ['id', 'title', 'slug', 'image', 'authors', 'meap', 'publicationDate'],
                             'properties' => [
@@ -64,7 +65,6 @@ class BookControllerTest extends AbstractControllerTest
             ->setCategories(new ArrayCollection([$bookCategory]))
             ->setSlug('test-book')
         );
-
 
         return $bookCategory->getId();
     }

@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\src\Controller;
 
 use App\Entity\BookCategory;
-use App\Kernel;
 use App\Tests\AbstractControllerTest;
 
 class BookCategoryControllerTest extends AbstractControllerTest
 {
-
     final public function testCategories(): void
     {
         $bookCategory = new BookCategory();
@@ -26,7 +24,7 @@ class BookCategoryControllerTest extends AbstractControllerTest
             'properties' => [
                 'bookCategoryList' => [
                     'type' => 'array',
-                    'bookCategoryList' => [
+                    'items' => [
                         'type' => 'object',
                         'required' => ['id', 'title', 'slug'],
                         'properties' => [
