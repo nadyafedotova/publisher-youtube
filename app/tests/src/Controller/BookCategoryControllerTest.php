@@ -10,7 +10,8 @@ class BookCategoryControllerTest extends AbstractControllerTest
     final public function testCategories(): void
     {
         $bookCategory = new BookCategory();
-        $bookCategory->setTitle('Devices1')->setSlug('devices1');
+        $bookCategory->setTitle('Devices1');
+        $bookCategory->setSlug('devices1');
         $this->em->persist($bookCategory);
         $this->em->flush();
 

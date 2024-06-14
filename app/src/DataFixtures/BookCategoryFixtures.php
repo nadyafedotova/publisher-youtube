@@ -16,17 +16,18 @@ class BookCategoryFixtures extends Fixture
 
     final public function load(ObjectManager $manager): void
     {
-        $books = new BookCategory();
-        $books->setTitle('Devices')->setSlug('devices');
-        $devices = $books;
-        $books->setTitle('Android')->setSlug('android');
-        $android = $books;
-        $categories = [
-            self::DEVICES_CATEGORY => $devices,
-            self::ANDROID_CATEGORY => $android,
+        $categoriesData = [
+            self::DEVICES_CATEGORY => ['title' => 'Devices', 'slug' => 'devices'],
+            self::ANDROID_CATEGORY => ['title' => 'Android', 'slug' => 'android'],
         ];
 
-        foreach ($categories as $category) {
+        $categories = [];
+
+        foreach ($categoriesData as $code => $data) {
+            $category = new BookCategory();
+            $category->setTitle($data['title']);
+            $category->setSlug($data['slug']);
+            $categories[$code] = $category;
             $manager->persist($category);
         }
 
@@ -35,5 +36,6 @@ class BookCategoryFixtures extends Fixture
         foreach ($categories as $code => $category) {
             $this->addReference($code, $category);
         }
+
     }
 }

@@ -8,9 +8,10 @@ use App\Model\BookListItem;
 use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
+use App\Repository\ReviewRepository;
 use App\Service\BooksService;
 use App\Tests\AbstractTestCase;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\Exception;
 use ReflectionException;
@@ -22,6 +23,7 @@ class BookServiceTest extends AbstractTestCase
      */
     final public function testGetBooksByCategoryNotFound(): void
     {
+        $reviewRepository = $this->createMock(ReviewRepository::class);
         $bookRepository = $this->createMock(BookRepository::class);
         $bookCategoryRepository = $this->createMock(BookCategoryRepository::class);
 
@@ -32,7 +34,7 @@ class BookServiceTest extends AbstractTestCase
 
         $this->expectException(BookCategoryNotFoundException::class);
 
-        (new BooksService($bookRepository, $bookCategoryRepository))->getBooksByCategory(130);
+        (new BooksService($bookRepository, $bookCategoryRepository, $reviewRepository))->getBooksByCategory(130);
     }
 
     /**
@@ -40,6 +42,7 @@ class BookServiceTest extends AbstractTestCase
      */
     final public function testGetBooksByCategory(): void
     {
+        $reviewRepository = $this->createMock(ReviewRepository::class);
         $bookRepository = $this->createMock(BookRepository::class);
         $bookRepository->expects($this->once())
             ->method('findBooksByCategoryId')
@@ -52,7 +55,7 @@ class BookServiceTest extends AbstractTestCase
             ->with(130)
             ->willReturn(true);
 
-        $service = new BooksService($bookRepository, $bookCategoryRepository);
+        $service = new BooksService($bookRepository, $bookCategoryRepository, $reviewRepository);
         $expected = new BookListResponse([$this->createBookItemModel()]);
 
         $this->assertEquals($expected, $service->getBooksByCategory(130));
@@ -63,15 +66,16 @@ class BookServiceTest extends AbstractTestCase
      */
     private function createBookEntity(): Book
     {
-        $book = (new Book())
-            ->setTitle('Test Book')
-            ->setSlug('test-book')
-            ->setMeap(false)
-            ->setAuthors(['Tester'])
-            ->setImage('')
-            ->setCategories(new ArrayCollection())
-            ->setPublicationDate(new DateTime('2020-10-10'));
-
+        $book = new Book();
+        $book->setTitle('Test Book');
+        $book->setSlug('test-book');
+        $book->setMeap(false);
+        $book->setIsbn('123321');
+        $book->setDescription('RxJava for Android Developers');
+        $book->setAuthors(['Tester']);
+        $book->setImage('');
+        $book->setCategories(new ArrayCollection());
+        $book->setPublicationDate(new DateTimeImmutable('2020-10-10'));
         $this->setEntityId($book, 123);
 
         return $book;
@@ -79,13 +83,15 @@ class BookServiceTest extends AbstractTestCase
 
     private function createBookItemModel(): BookListItem
     {
-        $publicationDate = (new DateTime('2020-10-10'))->getTimestamp();
-        return (new BookListItem())
-            ->setTitle('Test Book')
-            ->setSlug('test-book')
-            ->setMeap(false)
-            ->setAuthors(['Tester'])
-            ->setImage('')
-            ->setPublicationDate($publicationDate);
+        $publicationDate = (new DateTimeImmutable('2020-10-10'))->getTimestamp();
+        $bookListItem = new BookListItem();
+        $bookListItem->setTitle('Test Book');
+        $bookListItem->setSlug('test-book');
+        $bookListItem->setMeap(false);
+        $bookListItem->setAuthors(['Tester']);
+        $bookListItem->setImage('');
+        $bookListItem->setPublicationDate($publicationDate);
+
+        return $bookListItem;
     }
 }

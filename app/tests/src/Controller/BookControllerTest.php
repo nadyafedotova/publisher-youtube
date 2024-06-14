@@ -5,7 +5,7 @@ namespace App\Tests\src\Controller;
 use App\Entity\Book;
 use App\Entity\BookCategory;
 use App\Tests\AbstractControllerTest;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class BookControllerTest extends AbstractControllerTest
@@ -21,8 +21,8 @@ class BookControllerTest extends AbstractControllerTest
         $this->assertJsonDocumentMatchesSchema(
             $responseContent,
             [
-            'type' => 'object',
-            'required' => ['bookCategoryList'],
+                'type' => 'object',
+                'required' => ['bookCategoryList'],
                 'properties' => [
                     'bookCategoryList' => [
                         'type' => 'array',
@@ -37,34 +37,36 @@ class BookControllerTest extends AbstractControllerTest
                                 'authors' => [
                                     'type' => 'array',
                                     'items' => ['type' => 'string'],
-                                    ],
+                                ],
                                 'publicationDate' => ['type' => 'integer'],
                                 'meap' => ['type' => 'boolean'],
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         );
     }
 
     private function createCategory(): int
     {
         $bookCategory = new BookCategory();
-        $bookCategory->setTitle('Devices')->setSlug('devices');
+        $bookCategory->setTitle('Devices');
+        $bookCategory->setSlug('devices');
         $this->em->persist($bookCategory);
         $this->em->flush();
 
-        $this->em->persist(
-            (new Book())
-            ->setTitle('Test Book')
-            ->setImage('')
-            ->setMeap(true)
-            ->setPublicationDate(new DateTime('now'))
-            ->setAuthors(['Tester'])
-            ->setCategories(new ArrayCollection([$bookCategory]))
-            ->setSlug('test-book')
-        );
+        $book = new Book();
+        $book->setTitle('Test Book');
+        $book->setImage('');
+        $book->setMeap(true);
+        $book->setIsbn('123321');
+        $book->setDescription('RxJava for Android Developers');
+        $book->setPublicationDate(new DateTimeImmutable('now'));
+        $book->setAuthors(['Tester']);
+        $book->setCategories(new ArrayCollection([$bookCategory]));
+        $book->setSlug('test-book');
+        $this->em->persist($book);
 
         return $bookCategory->getId();
     }

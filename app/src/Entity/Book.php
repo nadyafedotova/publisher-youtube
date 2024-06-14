@@ -30,7 +30,13 @@ class Book
     #[ORM\Column(type: 'simple_array')]
     private array $authors;
 
-    #[ORM\Column(type: 'date')]
+    #[ORM\Column(type: 'string', length: 13)]
+    private string $isbn;
+
+    #[ORM\Column(type: 'text')]
+    private string $description;
+
+    #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeInterface $publicationDate;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
@@ -43,9 +49,22 @@ class Book
     #[ORM\JoinTable(name: 'book_to_book_category')]
     private Collection $categories;
 
+    /**
+     * @var Collection<BookToBookFormat>
+     */
+    #[ORM\OneToMany(targetEntity: BookToBookFormat::class, mappedBy: 'book')]
+    private Collection $formats;
+
+    /**
+     * @var Collection<Review>
+     */
+    #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'book')]
+    private Collection $reviews;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->reviews = new ArrayCollection();
     }
 
     final public function getId(): ?int
@@ -58,11 +77,9 @@ class Book
         return $this->title;
     }
 
-    final public function setTitle(string $title): self
+    final public function setTitle(string $title): void
     {
         $this->title = $title;
-
-        return $this;
     }
 
     final public function getSlug(): string
@@ -70,11 +87,9 @@ class Book
         return $this->slug;
     }
 
-    final public function setSlug(string $slug): self
+    final public function setSlug(string $slug): void
     {
         $this->slug = $slug;
-
-        return $this;
     }
 
     final public function getImage(): string
@@ -82,11 +97,9 @@ class Book
         return $this->image;
     }
 
-    final public function setImage(string $image): self
+    final public function setImage(string $image): void
     {
         $this->image = $image;
-
-        return $this;
     }
 
     final public function getAuthors(): array
@@ -96,13 +109,10 @@ class Book
 
     /**
      * @param string[] $authors
-     * @return $this
      */
-    final public function setAuthors(array $authors): self
+    final public function setAuthors(array $authors): void
     {
         $this->authors = $authors;
-
-        return $this;
     }
 
     final public function getPublicationDate(): DateTimeInterface
@@ -110,11 +120,9 @@ class Book
         return $this->publicationDate;
     }
 
-    final public function setPublicationDate(DateTimeInterface $publicationDate): self
+    final public function setPublicationDate(DateTimeInterface $publicationDate): void
     {
         $this->publicationDate = $publicationDate;
-
-        return $this;
     }
 
     final public function isMeap(): bool
@@ -122,11 +130,9 @@ class Book
         return $this->meap;
     }
 
-    final public function setMeap(bool $meap): self
+    final public function setMeap(bool $meap): void
     {
         $this->meap = $meap;
-
-        return $this;
     }
 
     /**
@@ -139,12 +145,49 @@ class Book
 
     /**
      * @param Collection<BookCategory> $categories
-     * @return $this
      */
-    final public function setCategories(Collection $categories): self
+    final public function setCategories(Collection $categories): void
     {
         $this->categories = $categories;
+    }
 
-        return $this;
+    final public function getIsbn(): string
+    {
+        return $this->isbn;
+    }
+
+    final public function setIsbn(string $isbn): void
+    {
+        $this->isbn = $isbn;
+    }
+
+    final public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    final public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    final public function getFormats(): Collection
+    {
+        return $this->formats;
+    }
+
+    final public function setFormats(Collection $formats): void
+    {
+        $this->formats = $formats;
+    }
+
+    final public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    final public function setReviews(Collection $reviews): void
+    {
+        $this->reviews = $reviews;
     }
 }

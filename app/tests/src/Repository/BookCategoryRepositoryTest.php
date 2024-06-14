@@ -20,13 +20,16 @@ class BookCategoryRepositoryTest extends AbstractRepositoryTest
     final public function testFindAllSortedByTitle(): void
     {
         $devices = new BookCategory();
-        $devices->setTitle('Devices')->setSlug('devices');
+        $devices->setTitle('Devices');
+        $devices->setSlug('devices');
 
         $android = new BookCategory();
-        $android->setTitle('Android')->setSlug('android');
+        $android->setTitle('Android');
+        $android->setSlug('android');
 
         $computer = new BookCategory();
-        $computer->setTitle('Computer')->setSlug('computer');
+        $computer->setTitle('Computer');
+        $computer->setSlug('computer');
 
         foreach ([$devices, $android, $computer] as $category) {
             $this->entityManager->persist($category);

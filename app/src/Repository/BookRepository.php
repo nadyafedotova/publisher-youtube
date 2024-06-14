@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
+use App\Exception\BookNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,7 +17,7 @@ class BookRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, BookCategory::class);
+        parent::__construct($registry, Book::class);
     }
 
     /**
@@ -29,5 +30,16 @@ class BookRepository extends ServiceEntityRepository
         $queryBuilder->setParameter('categoryId', $id);
 
         return $queryBuilder->getResult();
+    }
+
+    public function getById(int $id): Book
+    {
+        $book = $this->find($id);
+
+        if (null === $book) {
+            throw new BookNotFoundException();
+        }
+
+        return $book;
     }
 }

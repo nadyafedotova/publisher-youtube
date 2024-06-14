@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Model\BookCategoryListResponse;
+use App\Model\BookDetails;
 use App\Model\ErrorResponse;
 use App\Service\BooksService;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -39,5 +40,25 @@ class BookController extends AbstractController
     final public function booksByCategory(int $id): Response
     {
         return $this->json($this->bookService->getBooksByCategory($id));
+    }
+
+    /**
+     * @throws HttpException
+     */
+    #[OA\Response(
+        response: 200,
+        description: 'Returned book detail information',
+        content: new Model(type: BookDetails::class)
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Book not found',
+        content: new Model(type: ErrorResponse::class)
+    )
+    ]
+    #[Route(path: '/api/v1/book/{id}', methods: ['GET'])]
+    final public function booksById(int $id): Response
+    {
+        return $this->json($this->bookService->getBookById($id));
     }
 }
