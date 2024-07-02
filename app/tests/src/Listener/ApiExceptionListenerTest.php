@@ -31,6 +31,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->resolver = $this->createMock(ExceptionMappingResolver::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->serializer = $this->createMock(SerializerInterface::class);
@@ -105,7 +106,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
     }
-    //
+
     final public function test500IsLoggable(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_GATEWAY_TIMEOUT);

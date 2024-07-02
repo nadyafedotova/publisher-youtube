@@ -28,6 +28,11 @@ class BookListItem
         return $this->id;
     }
 
+    final public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
     final public function getTitle(): string
     {
         return $this->title;

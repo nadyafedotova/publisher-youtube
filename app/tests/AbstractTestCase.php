@@ -2,7 +2,6 @@
 
 namespace App\Tests;
 
-use PHPUnit\Event\Code\Throwable;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;

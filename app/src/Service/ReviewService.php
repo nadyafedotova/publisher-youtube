@@ -17,6 +17,7 @@ class ReviewService
 
     public function __construct(
         private readonly ReviewRepository $reviewRepository,
+        private readonly RatingService $ratingService
     ) {
     }
 
@@ -28,19 +29,19 @@ class ReviewService
         $offset = max($page - 1, 0) * self::PAGE_LIMIT;
         $paginator = $this->reviewRepository->getPageByBookId($id, $offset, self::PAGE_LIMIT);
         $total = count($paginator);
+        $items = [];
 
-        $rating = 0;
-        if ($total > 0) {
-            $rating = $this->reviewRepository->getBookTotalRatingSum($id) / $total;
+        foreach ($paginator as $item) {
+            $items[] = $this->map($item);
         }
 
         $reviewPage = new ReviewPage();
-        $reviewPage->setRating($rating);
+        $reviewPage->setRating($this->ratingService->calcReviewRatingForBook($id, $total));
         $reviewPage->setTotal($total);
         $reviewPage->setPage($page);
         $reviewPage->setPerPage(self::PAGE_LIMIT);
         $reviewPage->setPages((int)ceil($total / self::PAGE_LIMIT));
-        $reviewPage->setItems(array_map([$this, 'map'], $paginator->getIterator()->getArrayCopy()));
+        $reviewPage->setItems($items);
 
         return $reviewPage;
     }

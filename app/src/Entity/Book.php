@@ -65,6 +65,7 @@ class Book
     {
         $this->categories = new ArrayCollection();
         $this->reviews = new ArrayCollection();
+        $this->formats = new ArrayCollection();
     }
 
     final public function getId(): ?int

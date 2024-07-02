@@ -4,15 +4,15 @@ namespace App\Tests\src\Controller;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
+use App\Entity\BookToBookFormat;
+use App\Entity\BookFormat;
 use App\Tests\AbstractControllerTest;
-use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class BookControllerTest extends AbstractControllerTest
 {
     final public function testBooksByCategory(): void
     {
-        $categoryId = $this->createCategory();
+        $categoryId = $this->createCategory()->getId();
 
         $this->client->request('GET', '/api/v1/category/' . $categoryId . '/books');
         $responseContent = $this->client->getResponse()->getContent();
@@ -33,7 +33,7 @@ class BookControllerTest extends AbstractControllerTest
                                 'id' => ['type' => 'integer'],
                                 'title' => ['type' => 'string'],
                                 'slug' => ['type' => 'string'],
-                                'image' => ['type' => 'string'],
+                                'image' => ['type' => 'string', 'format' => 'uri'],
                                 'authors' => [
                                     'type' => 'array',
                                     'items' => ['type' => 'string'],
@@ -48,26 +48,84 @@ class BookControllerTest extends AbstractControllerTest
         );
     }
 
-    private function createCategory(): int
+    public function testBookId(): void
+    {
+        $bookId = $this->createBookCategory()->getId();
+
+        $this->client->request('GET', '/api/v1/book/' . $bookId);
+        $responseContent = json_decode($this->client->getResponse()->getContent(), true);
+
+        $this->assertResponseIsSuccessful();
+        $this->assertJsonDocumentMatchesSchema($responseContent, [
+            'type' => 'object',
+            'required' => [
+                'id', 'title', 'slug', 'image', 'authors', 'publicationDate', 'rating', 'reviews',
+                'categories', 'formats',
+            ],
+            'properties' => [
+                'title' => ['type' => 'string'],
+                'slug' => ['type' => 'string'],
+                'id' => ['type' => 'integer'],
+                'publicationDate' => ['type' => 'integer'],
+                'image' => ['type' => 'string'],
+                'meap' => ['type' => 'boolean'],
+                'authors' => [
+                    'type' => 'array',
+                    'items' => ['type' => 'string'],
+                ],
+                'rating' => ['type' => 'number'],
+                'reviews' => ['type' => 'integer'],
+                'categories' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'required' => ['id', 'title', 'slug'],
+                        'properties' => [
+                            'title' => ['type' => 'string'],
+                            'slug' => ['type' => 'string'],
+                            'id' => ['type' => 'integer'],
+                        ],
+                    ],
+                ],
+                'formats' => ['type' => 'array'],
+            ],
+        ]);
+    }
+
+
+    private function createCategory(): BookCategory
     {
         $bookCategory = new BookCategory();
         $bookCategory->setTitle('Devices');
         $bookCategory->setSlug('devices');
+
         $this->em->persist($bookCategory);
         $this->em->flush();
 
-        $book = new Book();
-        $book->setTitle('Test Book');
-        $book->setImage('');
-        $book->setMeap(true);
-        $book->setIsbn('123321');
-        $book->setDescription('RxJava for Android Developers');
-        $book->setPublicationDate(new DateTimeImmutable('now'));
-        $book->setAuthors(['Tester']);
-        $book->setCategories(new ArrayCollection([$bookCategory]));
-        $book->setSlug('test-book');
-        $this->em->persist($book);
+        return $bookCategory;
+    }
 
-        return $bookCategory->getId();
+    private function createBookCategory(): Book
+    {
+        $bookCategory = $this->createCategory();
+        $book = $this->createBook($bookCategory);
+
+        $format = new BookFormat();
+        $format->setTitle('format');
+        $format->setDescription('Description format');
+        $format->setComment(null);
+
+        $this->em->persist($format);
+
+        $bookToBookFormat = new BookToBookFormat();
+        $bookToBookFormat->setPrice(123.55);
+        $bookToBookFormat->setDiscountPercent(5);
+        $bookToBookFormat->setBook($book);
+        $bookToBookFormat->setFormat($format);
+
+        $this->em->persist($bookToBookFormat);
+        $this->em->flush();
+
+        return $book;
     }
 }
