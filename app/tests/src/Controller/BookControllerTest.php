@@ -48,7 +48,7 @@ class BookControllerTest extends AbstractControllerTest
         );
     }
 
-    public function testBookId(): void
+    public function testBookById(): void
     {
         $bookId = $this->createBookCategory()->getId();
 
@@ -69,6 +69,7 @@ class BookControllerTest extends AbstractControllerTest
                 'publicationDate' => ['type' => 'integer'],
                 'image' => ['type' => 'string'],
                 'meap' => ['type' => 'boolean'],
+
                 'authors' => [
                     'type' => 'array',
                     'items' => ['type' => 'string'],
