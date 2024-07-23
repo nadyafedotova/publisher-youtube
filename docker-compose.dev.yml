@@ -80,6 +80,18 @@ services:
       app:
         ipv4_address: ${POSTGRES_TEST_IP}
 
+  hoverfly:
+    container_name: hoverfly
+    image: spectolabs/hoverfly:v1.10.2
+    command:
+      - "-webserver"
+      - "-response-body-files-path=/hoverfly_app/responses"
+      - "-import=/hoverfly_app/simulations/recommend.simulation.json"
+    volumes:
+      - "$PWD/hoverfly:/hoverfly_app:ro"
+    ports:
+      - "8500:8500"
+
 networks:
   app:
     driver: bridge

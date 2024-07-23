@@ -17,7 +17,13 @@ use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
 use App\Repository\ReviewRepository;
+use App\Service\Recommendation\Exception\AccessDeniedException;
+use App\Service\Recommendation\Exception\RequestException;
+use App\Service\Recommendation\Model\RecommendationItem;
+use App\Service\Recommendation\RecommendationService;
 use Doctrine\Common\Collections\Collection;
+use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class BooksService
 {
@@ -26,6 +32,8 @@ readonly class BooksService
         private BookCategoryRepository $bookCategoryRepository,
         private ReviewRepository       $reviewRepository,
         private RatingService          $ratingService,
+        private RecommendationService  $recommendationService,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -45,6 +53,7 @@ readonly class BooksService
     {
         $book = $this->bookRepository->getById($id);
         $reviews = $this->reviewRepository->countByBookId($id);
+        $recommendations = [];
 
         $categories = $book->getCategories()
             ->map(
@@ -52,16 +61,45 @@ readonly class BooksService
                     $bookCategory->getId(),
                     $bookCategory->getTitle(),
                     $bookCategory->getSlug(),
-                ),
+                )
             );
+
+        try {
+            $recommendations = $this->getRecommendations($id);
+        } catch (Exception $ex) {
+            $this->logger->error('error while fetching recommendations', [
+                'exception' => $ex->getMessage(),
+                'bookId' => $id,
+            ]);
+        }
 
         $bookMapper = BookMapper::map($book, new BookDetails());
         $bookMapper->setRating($this->ratingService->calcReviewRatingForBook($id, $reviews));
         $bookMapper->setReviews($reviews);
+        $bookMapper->setRecommendations($recommendations);
         $bookMapper->setFormats($this->mapFormats($book->getFormats()));
         $bookMapper->setCategories($categories->toArray());
 
         return $bookMapper;
+    }
+
+    /**
+     * @throws RequestException
+     * @throws AccessDeniedException
+     */
+    private function getRecommendations(int $bookId): array
+    {
+        $this->recommendationService->getRecommendationsByBookId($bookId)->getRecommendations();
+        $ids = array_map(
+            fn (RecommendationItem $item) => $item->getId(),
+            $this->recommendationService->getRecommendationsByBookId($bookId)->getRecommendations()
+
+        );
+
+        return array_map(
+            [BookMapper::class, 'mapRecommended'],
+            $this->bookRepository->findBooksByIds($ids)
+        );
     }
 
     /**
