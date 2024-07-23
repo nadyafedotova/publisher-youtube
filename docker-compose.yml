@@ -80,15 +80,18 @@ services:
 
   hoverfly:
     container_name: hoverfly
-    image: spectolabs/hoverfly:v1.10.2
+    image: spectolabs/hoverfly:${HOVERFLY_VERSION}
     command:
-      - "-webserver"
-      - "-response-body-files-path=/hoverfly_app/responses"
-      - "-import=/hoverfly_app/simulations/recommend.simulation.json"
+      - -webserver
+      - -response-body-files-path=/hoverfly_app/responses
+      - -import=/hoverfly_app/simulations/recommend.simulation.json
     volumes:
-      - "$PWD/hoverfly:/hoverfly_app:ro"
+      - ./app/hoverfly:/hoverfly_app:ro
     ports:
-      - "8500:8500"
+      - ${HOVERFLY_PORT}:8500
+    networks:
+      app:
+        ipv4_address: ${HOVERFLY_IP}
 
 networks:
   app:

@@ -35,9 +35,11 @@ class ReviewService
             $items[] = $this->map($item);
         }
 
+        $rating = $this->ratingService->calcReviewRatingForBook($id);
+
         $reviewPage = new ReviewPage();
-        $reviewPage->setRating($this->ratingService->calcReviewRatingForBook($id, $total));
-        $reviewPage->setTotal($total);
+        $reviewPage->setRating($rating->getRating());
+        $reviewPage->setTotal($rating->getTotal());
         $reviewPage->setPage($page);
         $reviewPage->setPerPage(self::PAGE_LIMIT);
         $reviewPage->setPages((int)ceil($total / self::PAGE_LIMIT));

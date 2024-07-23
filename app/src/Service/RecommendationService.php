@@ -1,0 +1,57 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Service;
+
+use App\Entity\Book;
+use App\Model\RecommendedBook;
+use App\Model\RecommendedBookListResponse;
+use App\Repository\BookRepository;
+use App\Service\Recommendation\Exception\AccessDeniedException;
+use App\Service\Recommendation\Exception\RequestException;
+use App\Service\Recommendation\Model\RecommendationItem;
+use App\Service\Recommendation\RecommendationApiService;
+
+class RecommendationService
+{
+    private const int MAX_DESCRIPTION_LENGTH = 150;
+    public function __construct(
+        private readonly BookRepository  $bookRepository,
+        private readonly RecommendationApiService $recommendationApiService,
+    ) {
+    }
+
+    /**
+     * @throws RequestException
+     * @throws AccessDeniedException
+     */
+    public function getRecommendationsByBookId(int $id): RecommendedBookListResponse
+    {
+        $ids = array_map(
+            fn (RecommendationItem $item) => $item->getId(),
+            $this->recommendationApiService->getRecommendationsByBookId($id)->getRecommendations()
+        );
+
+        return new RecommendedBookListResponse(
+            array_map([$this, 'map'], $this->bookRepository->findBooksByIds($ids))
+        );
+    }
+
+    private function map(Book $book): RecommendedBook
+    {
+        $description = $book->getDescription();
+        $description = strlen($description) > self::MAX_DESCRIPTION_LENGTH
+            ? substr($description, 0, self::MAX_DESCRIPTION_LENGTH - 3) . "..."
+            : $description;
+
+        $recommendedBook = new RecommendedBook();
+        $recommendedBook->setId($book->getId());
+        $recommendedBook->setImage($book->getImage());
+        $recommendedBook->setSlug($book->getSlug());
+        $recommendedBook->setTitle($book->getTitle());
+        $recommendedBook->setShortDescription($description);
+
+        return $recommendedBook;
+    }
+}

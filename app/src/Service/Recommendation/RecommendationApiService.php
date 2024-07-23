@@ -13,7 +13,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-readonly class RecommendationService
+readonly class RecommendationApiService
 {
     public function __construct(
         private HttpClientInterface $recommendationClient,
@@ -36,6 +36,7 @@ readonly class RecommendationService
                 'json'
             );
         } catch (Throwable $ex) {
+            dd($ex);
             if ($ex instanceof TransportExceptionInterface && Response::HTTP_FORBIDDEN === $ex->getCode()) {
                 throw new AccessDeniedException($ex);
             }
