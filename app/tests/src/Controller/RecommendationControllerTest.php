@@ -6,7 +6,7 @@ use App\Tests\AbstractControllerTest;
 use App\Tests\EntityTest;
 use ReflectionException;
 
-class ReviewControllerTest extends AbstractControllerTest
+class RecommendationControllerTest extends AbstractControllerTest
 {
     private EntityTest $entityTest;
 
@@ -26,7 +26,7 @@ class ReviewControllerTest extends AbstractControllerTest
         $this->entityTest->createReview($book);
         $this->em->flush();
 
-        $this->client->request('GET', '/api/v1/book/' .$book->getId().'/review');
+        $this->client->request('GET', '/api/v1/book/' .$book->getId().'/recommendations');
         $responseContent = $this->client->getResponse()->getContent();
 
         $this->assertResponseIsSuccessful();
@@ -36,22 +36,17 @@ class ReviewControllerTest extends AbstractControllerTest
                 'type' => 'object',
                 'required' => ['items', 'rating', 'page', 'pages', 'perPage', 'total'],
                 'properties' => [
-                    'rating' => ['type' => 'number'],
-                    'page' => ['type' => 'integer'],
-                    'pages' => ['type' => 'integer'],
-                    'perPage' => ['type' => 'integer'],
-                    'total' => ['type' => 'integer'],
                     'items' => [
                         'type' => 'array',
                         'items' => [
                             'type' => 'object',
-                            'required' => ['id', 'content', 'author', 'rating', 'createdAt'],
+                            'required' => ['id', 'title', 'slug', 'image', 'shortDescription'],
                             'properties' => [
                                 'id' => ['type' => 'integer'],
-                                'content' => ['type' => 'string'],
-                                'author' => ['type' => 'string'],
-                                'rating' => ['type' => 'integer'],
-                                'createdAt' => ['type' => 'integer'],
+                                'title' => ['type' => 'string'],
+                                'slug' => ['type' => 'string'],
+                                'image' => ['type' => 'string'],
+                                'shortDescription' => ['type' => 'string'],
                             ],
                         ],
                     ],

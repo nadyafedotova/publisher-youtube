@@ -4,12 +4,21 @@ namespace App\Tests\src\Controller;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
-use App\Entity\BookToBookFormat;
-use App\Entity\BookFormat;
 use App\Tests\AbstractControllerTest;
+use App\Tests\EntityTest;
+use ReflectionException;
 
 class BookControllerTest extends AbstractControllerTest
 {
+    private EntityTest $entityTest;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->entityTest = new EntityTest();
+    }
+
     final public function testBooksByCategory(): void
     {
         $categoryId = $this->createCategory()->getId();
@@ -48,7 +57,10 @@ class BookControllerTest extends AbstractControllerTest
         );
     }
 
-    public function testBookById(): void
+    /**
+     * @throws ReflectionException
+     */
+    final public function testBookById(): void
     {
         $bookId = $this->createBookCategory()->getId();
 
@@ -96,34 +108,25 @@ class BookControllerTest extends AbstractControllerTest
 
     private function createCategory(): BookCategory
     {
-        $bookCategory = new BookCategory();
-        $bookCategory->setTitle('Devices');
-        $bookCategory->setSlug('devices');
-
+        $bookCategory = $this->entityTest->createBookCategory();
         $this->em->persist($bookCategory);
         $this->em->flush();
 
         return $bookCategory;
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function createBookCategory(): Book
     {
         $bookCategory = $this->createCategory();
-        $book = $this->createBook($bookCategory);
-
-        $format = new BookFormat();
-        $format->setTitle('format');
-        $format->setDescription('Description format');
-        $format->setComment(null);
-
+        $book = $this->entityTest->createBook('', $bookCategory);
+        $format = $this->entityTest->createBookFormat();
+        $this->em->persist($book);
         $this->em->persist($format);
 
-        $bookToBookFormat = new BookToBookFormat();
-        $bookToBookFormat->setPrice(123.55);
-        $bookToBookFormat->setDiscountPercent(5);
-        $bookToBookFormat->setBook($book);
-        $bookToBookFormat->setFormat($format);
-
+        $bookToBookFormat = $this->entityTest->createBookToBookFormat($format, $book);
         $this->em->persist($bookToBookFormat);
         $this->em->flush();
 

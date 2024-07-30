@@ -53,7 +53,6 @@ class ReviewService
         $reviewModel = new ReviewModel();
         $reviewModel->setId($review->getId());
         $reviewModel->setRating($review->getRating());
-        $reviewModel->setCreatedAt($review->getCreatedAt());
         $reviewModel->setAuthor($review->getAuthor());
         $reviewModel->setContent($review->getContent());
 

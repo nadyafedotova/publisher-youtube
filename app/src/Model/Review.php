@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Entity\Book;
-use App\Repository\ReviewRepository;
 use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
 
 class Review
 {

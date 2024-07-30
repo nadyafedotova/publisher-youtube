@@ -7,17 +7,17 @@ namespace App\Service\Recommendation;
 use App\Service\Recommendation\Exception\AccessDeniedException;
 use App\Service\Recommendation\Exception\RequestException;
 use App\Service\Recommendation\Model\RecommendationResponse;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-readonly class RecommendationApiService
+class RecommendationApiService
 {
     public function __construct(
-        private HttpClientInterface $recommendationClient,
-        private SerializerInterface $serializer,
+        private readonly HttpClientInterface $recommendationClient,
+        private readonly SerializerInterface $serializer,
     ) {
     }
 
@@ -36,8 +36,8 @@ readonly class RecommendationApiService
                 'json'
             );
         } catch (Throwable $ex) {
-            dd($ex);
-            if ($ex instanceof TransportExceptionInterface && Response::HTTP_FORBIDDEN === $ex->getCode()) {
+            //error
+            if ($ex instanceof ClientException && Response::HTTP_FORBIDDEN === $ex->getCode()) {
                 throw new AccessDeniedException($ex);
             }
 

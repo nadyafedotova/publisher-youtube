@@ -2,17 +2,14 @@
 
 namespace App\Tests\src\Controller;
 
-use App\Entity\BookCategory;
 use App\Tests\AbstractControllerTest;
+use App\Tests\EntityTest;
 
 class BookCategoryControllerTest extends AbstractControllerTest
 {
     final public function testCategories(): void
     {
-        $bookCategory = new BookCategory();
-        $bookCategory->setTitle('Devices1');
-        $bookCategory->setSlug('devices1');
-        $this->em->persist($bookCategory);
+        $this->em->persist((new EntityTest())->createBookCategory());
         $this->em->flush();
 
         $this->client->request('GET', '/api/v1/book/categories');

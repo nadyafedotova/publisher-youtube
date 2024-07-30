@@ -2,10 +2,6 @@
 
 namespace App\Tests;
 
-use App\Entity\Book;
-use App\Entity\BookCategory;
-use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Helmich\JsonAssert\JsonAssertions;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -35,24 +31,5 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->em = null;
 
         restore_exception_handler();
-    }
-
-    protected function createBook(?BookCategory $bookCategory = null): Book
-    {
-        $book = new Book();
-        $book->setTitle('Test Book');
-        $book->setImage('');
-        $book->setMeap(true);
-        $book->setIsbn('123321');
-        $book->setDescription('RxJava for Android Developers');
-        $book->setPublicationDate(new DateTimeImmutable('now'));
-        $book->setAuthors(['Tester']);
-        $book->setCategories($bookCategory ? new ArrayCollection([$bookCategory]) : new ArrayCollection());
-        $book->setSlug('test-book');
-
-        $this->em->persist($book);
-        $this->em->flush();
-
-        return $book;
     }
 }

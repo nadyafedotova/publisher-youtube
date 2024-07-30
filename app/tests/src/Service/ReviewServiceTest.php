@@ -2,34 +2,33 @@
 
 namespace App\Tests\src\Service;
 
-use App\Entity\Review;
-use App\Model\Review as ReviewModel;
-use App\Model\ReviewPage;
+use App\Model\Rating;
 use App\Repository\ReviewRepository;
 use App\Service\RatingService;
 use App\Service\ReviewService;
 use App\Tests\AbstractTestCase;
+use App\Tests\EntityTest;
 use ArrayIterator;
-use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 
 class ReviewServiceTest extends AbstractTestCase
 {
     private ReviewRepository $reviewRepository;
-
     private RatingService $ratingService;
-    private const int BOOK_ID = 1;
+    private EntityTest $entityTest;
 
+    private const int BOOK_ID = 1;
     private const int PER_PAGE = 5;
 
     /**
      * @throws Exception
      */
-    protected function setUp(): void
+    final protected function setUp(): void
     {
         parent::setUp();
 
+        $this->entityTest = new EntityTest();
         $this->reviewRepository = $this->createMock(ReviewRepository::class);
         $this->ratingService = $this->createMock(RatingService::class);
     }
@@ -47,12 +46,12 @@ class ReviewServiceTest extends AbstractTestCase
      * @throws \Exception
      */
     #[DataProvider('dataProvider')]
-    public function testGetReviewPageByBookIdInvalidPage(int $page, int $offset): void
+    final public function testGetReviewPageByBookIdInvalidPage(int $page, int $offset): void
     {
         $this->ratingService->expects($this->once())
             ->method('calcReviewRatingForBook')
-            ->with(self::BOOK_ID, 0)
-            ->willReturn(0.0);
+            ->with(self::BOOK_ID)
+            ->willReturn(new Rating(0, 0.0));
 
         $this->reviewRepository->expects($this->once())
             ->method('getPageByBookId')
@@ -60,55 +59,33 @@ class ReviewServiceTest extends AbstractTestCase
             ->willReturn(new ArrayIterator());
 
         $service = new ReviewService($this->reviewRepository, $this->ratingService);
-        $expected = new ReviewPage();
-        $expected->setTotal(0);
-        $expected->setRating(0);
-        $expected->setPage($page);
-        $expected->setPages(0);
-        $expected->setPerPage(self::PER_PAGE);
-        $expected->setItems([]);
-        $this->assertEquals($expected, $service->getReviewPageByBookId(self::BOOK_ID, $page));
+
+        $this->assertEquals($this->entityTest->createReviewPage(0, 0, $page, 0, []), $service->getReviewPageByBookId(self::BOOK_ID, $page));
     }
 
     /**
      * @throws \Exception
      */
-    public function testGetReviewPageByBookId(): void
+    final public function testGetReviewPageByBookId(): void
     {
         $this->ratingService->expects($this->once())
             ->method('calcReviewRatingForBook')
-            ->with(self::BOOK_ID, 1)
-            ->willReturn(4.0);
+            ->with(self::BOOK_ID)
+            ->willReturn(new Rating(1, 4.0));
 
-        $review = new Review();
+        $review = $this->entityTest->createReview($this->entityTest->createBook());
         $review->setAuthor('tester');
         $review->setContent('test');
-        $review->setCreatedAt(new DateTimeImmutable(2024-06-27));
         $review->setRating(4);
-
-        $this->setEntityId($review, 1);
 
         $this->reviewRepository->expects($this->once())
             ->method('getPageByBookId')
             ->with(self::BOOK_ID, 0, self::PER_PAGE)
             ->willReturn(new ArrayIterator([$review]));
 
-        $reviewModel = new ReviewModel();
-        $reviewModel->setId(1);
-        $reviewModel->setRating(4);
-        $reviewModel->setCreatedAt(new DateTimeImmutable(2024-06-27));
-        $reviewModel->setContent('test');
-        $reviewModel->setAuthor('tester');
-
         $service = new ReviewService($this->reviewRepository, $this->ratingService);
-        $expected = new ReviewPage();
-        $expected->setTotal(1);
-        $expected->setRating(4);
-        $expected->setPage(1);
-        $expected->setPages(1);
-        $expected->setPerPage(self::PER_PAGE);
-        $expected->setItems([$reviewModel]);
+        $reviewPage = $this->entityTest->createReviewPage(1, 4, 1, 1, array($this->entityTest->createReviewModel()));
 
-        $this->assertEquals($expected, $service->getReviewPageByBookId(self::BOOK_ID, 1));
+        $this->assertEquals($reviewPage, $service->getReviewPageByBookId(self::BOOK_ID, 1));
     }
 }

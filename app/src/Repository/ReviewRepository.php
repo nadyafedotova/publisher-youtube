@@ -19,7 +19,7 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-    final public function countByBookId(int $bookId): int
+    public function countByBookId(int $bookId): int
     {
         return $this->count(['book' => $bookId]);
     }
