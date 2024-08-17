@@ -1,5 +1,4 @@
 services:
-
   nginx:
     container_name: ${PROJECT_NAME}_nginx
     image: nginx
@@ -60,23 +59,6 @@ services:
     networks:
       app:
         ipv4_address: ${POSTGRES_IP}
-
-  postgres-test:
-    container_name: ${PROJECT_NAME}_postgres_test
-    image: postgres:${POSTGRES_VERSION}
-    restart: always
-    environment:
-      POSTGRES_DB: ${POSTGRES_DATABASE}_test
-      POSTGRES_USER: ${POSTGRES_ROOT_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - ./data/db/postgresql_test:/var/lib/postgresql/data
-      - ./log/postgres_test:/var/log/postgres
-    ports:
-      - ${POSTGRES_PORT2}:5432
-    networks:
-      app:
-        ipv4_address: ${POSTGRES_IP2}
 
   hoverfly:
     container_name: hoverfly

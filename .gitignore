@@ -1,7 +1,5 @@
 .idea/
 .env
-/app/var/
-/app/vendor/
 data/
 log/
 .DS_Store

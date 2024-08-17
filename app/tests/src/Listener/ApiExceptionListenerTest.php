@@ -157,7 +157,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
     final public function testShowTraceWhenDebug(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_NOT_FOUND);
-        $responseMessage = Response::$statusTexts[$mapping->getCode()];
+        $responseMessage = 'error message';
         $responseBody = json_encode(['errors' => $responseMessage, 'trace' => 'something']);
 
         $this->resolver->expects($this->once())
@@ -179,7 +179,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
             )
             ->willReturn($responseBody);
 
-        $event = $this->createEvent(new InvalidArgumentException('error message'));
+        $event = $this->createEvent(new InvalidArgumentException($responseMessage));
         $this->runListener($event, true);
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
