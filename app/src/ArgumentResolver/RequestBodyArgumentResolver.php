@@ -34,7 +34,7 @@ readonly class RequestBodyArgumentResolver implements ValueResolverInterface
                 $argument->getType(),
                 'json'
             );
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             throw new RequestBodyConvertException($throwable);
         }
 

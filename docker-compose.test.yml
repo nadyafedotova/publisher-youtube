@@ -11,7 +11,7 @@ services:
       - ./data/db/postgresql_test:/var/lib/postgresql/data
       - ./log/postgres_test:/var/log/postgres
     ports:
-      - ${POSTGRES_TEST_PORT}:5432
+      - ${POSTGRES_TEST_PORT}:5433
     networks:
       app:
         ipv4_address: 172.28.1.3

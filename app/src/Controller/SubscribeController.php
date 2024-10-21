@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Attribute\RequestBody;
+use App\Model\ErrorResponse;
 use App\Model\SubscriberRequest;
 use App\Service\SubscriberService;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -23,6 +24,11 @@ class SubscribeController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'Subscribe email to newsletter mailing list',
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Validation failed',
+        attachables: [new Model(type: ErrorResponse::class)]
     )]
     #[OA\RequestBody(attachables: [new Model(type: SubscriberRequest::class)])]
     #[Route(path: '/api/v1/subscribe', methods: ['POST'])]

@@ -7,7 +7,8 @@ parameters:
     exceptions:
         Symfony\Component\HttpKernel\Exception\NotFoundHttpException: { code: 404 }
         App\Exception\BookCategoryNotFoundException: { code: 404, hidden: false }
-        App\Exception\SubscriberAlreadyExistsException: { code: 409, hidden: false }
+        App\Exception\SubscriberAlreadyExistsException: { code: 400, hidden: false }
+        App\Exception\UserAlreadyExistsException: { code: 409, hidden: false }
         App\Exception\RequestBodyConvertException: { code: 400, hidden: false }
         App\Exception\BookNotFoundException: { code: 400, hidden: false }
 
@@ -41,3 +42,7 @@ services:
     App\Listener\ValidationExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, priority: 15 }
+
+    App\Listener\JWTCreatedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created }
