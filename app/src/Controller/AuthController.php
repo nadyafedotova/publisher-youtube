@@ -25,7 +25,16 @@ class AuthController extends AbstractController
     #[OA\Response(
         response: 200,
         description: 'Sing up a user',
-        content: new Model(type: IdResponse::class)
+        content: new OA\JsonContent(properties: [
+            new OA\Property(
+                property: 'token',
+                type: "string",
+            ),
+            new OA\Property(
+                property: 'refresh_token',
+                type: "string",
+            ),
+        ])
     )]
     #[OA\Response(
         response: 409,
@@ -41,6 +50,6 @@ class AuthController extends AbstractController
     #[Route(path: '/api/v1/auth/singUp', methods: ['POST'])]
     final public function singUp(#[RequestBody] SingUpRequest $singUpRequest): Response
     {
-        return $this->json($this->singUpService->singUp($singUpRequest));
+        return $this->singUpService->singUp($singUpRequest);
     }
 }

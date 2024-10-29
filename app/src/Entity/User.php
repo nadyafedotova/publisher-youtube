@@ -27,6 +27,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
+    #[ORM\Column(type: 'simple_array')]
+    private array $roles = [];
+
     final public function getId(): ?int
     {
         return $this->id;
@@ -71,12 +74,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->password = $password;
     }
+
     /**
      * @inheritDoc
      */
     final public function getRoles(): array
     {
-        return [];
+        return $this->roles;
+    }
+
+    final public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
     }
 
     final public function getPassword(): ?string
