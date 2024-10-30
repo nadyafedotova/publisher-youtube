@@ -28,9 +28,11 @@ class BookListItem
         return $this->id;
     }
 
-    final public function setId(int $id): void
+    final public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     final public function getTitle(): string
@@ -38,9 +40,11 @@ class BookListItem
         return $this->title;
     }
 
-    final public function setTitle(string $title): void
+    final public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
     final public function getSlug(): string
@@ -48,9 +52,11 @@ class BookListItem
         return $this->slug;
     }
 
-    final public function setSlug(string $slug): void
+    final public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
     }
 
     final public function getImage(): string
@@ -58,9 +64,11 @@ class BookListItem
         return $this->image;
     }
 
-    final public function setImage(string $image): void
+    final public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
     }
 
     /**
@@ -73,11 +81,13 @@ class BookListItem
 
     /**
      * @param string[] $authors
-     * @return void
+     * @return self
      */
-    final public function setAuthors(array $authors): void
+    final public function setAuthors(array $authors): self
     {
         $this->authors = $authors;
+
+        return $this;
     }
 
     final public function isMeap(): bool
@@ -85,9 +95,11 @@ class BookListItem
         return $this->meap;
     }
 
-    final public function setMeap(bool $meap): void
+    final public function setMeap(bool $meap): self
     {
         $this->meap = $meap;
+
+        return $this;
     }
 
     final public function getPublicationDate(): int
@@ -95,8 +107,10 @@ class BookListItem
         return $this->publicationDate;
     }
 
-    final public function setPublicationDate(int $publicationDate): void
+    final public function setPublicationDate(int $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
+
+        return $this;
     }
 }

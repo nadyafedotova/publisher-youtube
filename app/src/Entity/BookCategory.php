@@ -31,9 +31,11 @@ class BookCategory
         return $this->title;
     }
 
-    final public function setTitle(string $title): void
+    final public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
     final public function getSlug(): string
@@ -41,8 +43,10 @@ class BookCategory
         return $this->slug;
     }
 
-    final public function setSlug(string $slug): void
+    final public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
     }
 }

@@ -35,9 +35,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    final public function setId(int $id): void
+    final public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     final public function getFirstName(): string
@@ -45,9 +47,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->firstName;
     }
 
-    final public function setFirstName(string $firstName): void
+    final public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
+
+        return $this;
     }
 
     final public function getLastName(): string
@@ -55,9 +59,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->lastName;
     }
 
-    final public function setLastName(string $lastName): void
+    final public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
     }
 
     final public function getEmail(): string
@@ -65,14 +71,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->email;
     }
 
-    final public function setEmail(string $email): void
+    final public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
     }
 
-    final public function setPassword(string $password): void
+    final public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -83,9 +93,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->roles;
     }
 
-    final public function setRoles(array $roles): void
+    final public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
     }
 
     final public function getPassword(): ?string

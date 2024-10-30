@@ -28,13 +28,15 @@ class EntityTest
     /**
      * @throws ReflectionException
      */
-    final protected function setEntityId(object $entity, int $value, string $idField = 'id'): void
+    final protected function setEntityId(object $entity, int $value, string $idField = 'id'): object
     {
         $class = new ReflectionClass($entity);
         $property = $class->getProperty($idField);
         $property->setAccessible(true);
         $property->setValue($entity, $value);
         $property->setAccessible(false);
+
+        return $entity;
     }
 
     /**
@@ -47,17 +49,16 @@ class EntityTest
         string $description = 'RxJava for Android Developers',
         bool $mapper = false
     ): Book {
-        $book = new Book();
-        $book->setTitle($title);
-        $book->setImage('');
-        $book->setMeap(true);
-        $book->setIsbn('123321');
-        $book->setDescription($description);
-        $book->setPublicationDate((new DateTimeImmutable())->setTimestamp(1602288000));
-        $book->setAuthors(['Tester']);
-        $book->setSlug('test-book');
+        $book = (new Book())
+            ->setTitle($title)
+            ->setImage('') //http://localhost/' . $title . 'png
+            ->setMeap(true)
+            ->setIsbn('123321')
+            ->setDescription($description)
+            ->setPublicationDate((new DateTimeImmutable())->setTimestamp(1602288000))
+            ->setAuthors(['Tester'])
+            ->setSlug('test-book');
         $this->setEntityId($book, 1);
-        $book->setImage(''); //http://localhost/' . $title . 'png
 
         if (!$mapper) {
             $book->setFormats($format ? new ArrayCollection([$format]) : new ArrayCollection());
@@ -72,32 +73,30 @@ class EntityTest
      */
     final public function createBookCategory(): BookCategory
     {
-        $bookCategory = new BookCategory();
+        $bookCategory = (new BookCategory())
+            ->setTitle('Test')
+            ->setSlug('test');
         $this->setEntityId($bookCategory, 1);
-        $bookCategory->setTitle('Test');
-        $bookCategory->setSlug('test');
 
         return $bookCategory;
     }
 
     final public function createBookDetails(BookFormatModel|array $format, string $title = 'Test Book', bool $mapper = false): BookDetails
     {
-        $bookDetails = new BookDetails();
-        $bookDetails->setId(1);
-        $bookDetails->setTitle($title);
-        $bookDetails->setSlug('test-book');
-        $bookDetails->setImage('');
-        $bookDetails->setAuthors(['Tester']);
-        $bookDetails->setMeap(true);
-        $bookDetails->setPublicationDate(1602288000);
+        $bookDetails = (new BookDetails())
+            ->setId(1)
+            ->setTitle($title)
+            ->setSlug('test-book')
+            ->setImage('')
+            ->setAuthors(['Tester'])
+            ->setMeap(true)
+            ->setPublicationDate(1602288000);
 
         if (!$mapper) {
-            $bookDetails->setCategories([
-                new BookCategoryModel(1, 'Test', 'test'),
-            ]);
-            $bookDetails->setFormats([$format]);
-            $bookDetails->setRating(5.5);
-            $bookDetails->setReviews(10);
+            $bookDetails ->setCategories([new BookCategoryModel(1, 'Test', 'test')])
+                ->setFormats([$format])
+                ->setRating(5.5)
+                ->setReviews(10);
         }
 
         return $bookDetails;
@@ -108,10 +107,10 @@ class EntityTest
      */
     final public function createBookFormat(): BookFormat
     {
-        $format = new BookFormat();
-        $format->setTitle('format');
-        $format->setDescription('Description format');
-        $format->setComment(null);
+        $format = (new BookFormat())
+            ->setTitle('format')
+            ->setDescription('Description format')
+            ->setComment(null);
         $this->setEntityId($format, 1);
 
         return $format;
@@ -122,12 +121,12 @@ class EntityTest
      */
     final public function createBookFormatModel(): BookFormatModel
     {
-        $format = new BookFormatModel();
-        $format->setTitle('format');
-        $format->setDescription('Description format');
-        $format->setComment(null);
-        $format->setPrice(123.55);
-        $format->setDiscountPercent(5);
+        $format = (new BookFormatModel())
+            ->setTitle('format')
+            ->setDescription('Description format')
+            ->setComment(null)
+            ->setPrice(123.55)
+            ->setDiscountPercent(5);
         $this->setEntityId($format, 1);
 
         return $format;
@@ -135,13 +134,11 @@ class EntityTest
 
     final public function createBookToBookFormat(BookFormat $format, Book $book): BookToBookFormat
     {
-        $bookToBookFormat = new BookToBookFormat();
-        $bookToBookFormat->setPrice(123.55);
-        $bookToBookFormat->setDiscountPercent(5);
-        $bookToBookFormat->setBook($book);
-        $bookToBookFormat->setFormat($format);
-
-        return $bookToBookFormat;
+        return (new BookToBookFormat())
+            ->setPrice(123.55)
+            ->setDiscountPercent(5)
+            ->setBook($book)
+            ->setFormat($format);
     }
 
     /**
@@ -149,14 +146,13 @@ class EntityTest
      */
     final public function createBookItemModel(): BookListItem
     {
-        $publicationDate = (new DateTimeImmutable('2020-10-10'))->getTimestamp();
-        $bookListItem = new BookListItem();
-        $bookListItem->setTitle('Test Book');
-        $bookListItem->setSlug('test-book');
-        $bookListItem->setMeap(true);
-        $bookListItem->setAuthors(['Tester']);
-        $bookListItem->setImage('');
-        $bookListItem->setPublicationDate($publicationDate);
+        $bookListItem = (new BookListItem())
+            ->setTitle('Test Book')
+            ->setSlug('test-book')
+            ->setMeap(true)
+            ->setAuthors(['Tester'])
+            ->setImage('')
+            ->setPublicationDate((new DateTimeImmutable('2020-10-10'))->getTimestamp());
         $this->setEntityId($bookListItem, 1);
 
         return $bookListItem;
@@ -167,11 +163,11 @@ class EntityTest
      */
     final public function createReview(Book $book): Review
     {
-        $review = new Review();
-        $review->setAuthor('tester');
-        $review->setContent('test content');
-        $review->setRating(5);
-        $review->setBook($book);
+        $review = (new Review())
+            ->setAuthor('tester')
+            ->setContent('test content')
+            ->setRating(5)
+            ->setBook($book);
         $this->setEntityId($review, 1);
 
         return $review;
@@ -179,13 +175,11 @@ class EntityTest
 
     final public function createReviewModel(): ReviewModel
     {
-        $reviewModel = new ReviewModel();
-        $reviewModel->setId(1);
-        $reviewModel->setRating(4);
-        $reviewModel->setContent('test');
-        $reviewModel->setAuthor('tester');
-
-        return $reviewModel;
+        return (new ReviewModel())
+            ->setId(1)
+            ->setRating(4)
+            ->setContent('test')
+            ->setAuthor('tester');
     }
 
     final public function createReviewPage(
@@ -195,26 +189,22 @@ class EntityTest
         int $pages,
         ReviewModel|array|null $reviewModel
     ): ReviewPage {
-        $reviewPage = new ReviewPage();
-        $reviewPage->setTotal($total);
-        $reviewPage->setRating($rating);
-        $reviewPage->setPage($page);
-        $reviewPage->setPages($pages);
-        $reviewPage->setPerPage(self::PER_PAGE);
-        $reviewPage->setItems($reviewModel);
-
-        return $reviewPage;
+        return (new ReviewPage())
+            ->setTotal($total)
+            ->setRating($rating)
+            ->setPage($page)
+            ->setPages($pages)
+            ->setPerPage(self::PER_PAGE)
+            ->setItems($reviewModel);
     }
 
     final public function createRecommendedBook(string $expectedDescription, string $title = 'Test Recommended Book'): RecommendedBook
     {
-        $recommendedBook = new RecommendedBook();
-        $recommendedBook->setId(1);
-        $recommendedBook->setTitle($title);
-        $recommendedBook->setSlug('test-book');
-        $recommendedBook->setImage('');
-        $recommendedBook->setShortDescription($expectedDescription);
-
-        return $recommendedBook;
+        return (new RecommendedBook())
+            ->setId(1)
+            ->setTitle($title)
+            ->setSlug('test-book')
+            ->setImage('')
+            ->setShortDescription($expectedDescription);
     }
 }

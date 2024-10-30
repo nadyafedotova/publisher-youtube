@@ -17,9 +17,11 @@ class RecommendedBook
         return $this->id;
     }
 
-    final public function setId(int $id): void
+    final public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     final public function getTitle(): string
@@ -27,9 +29,11 @@ class RecommendedBook
         return $this->title;
     }
 
-    final public function setTitle(string $title): void
+    final public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
     final public function getSlug(): string
@@ -37,9 +41,11 @@ class RecommendedBook
         return $this->slug;
     }
 
-    final public function setSlug(string $slug): void
+    final public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
     }
 
     final public function getImage(): string
@@ -47,9 +53,11 @@ class RecommendedBook
         return $this->image;
     }
 
-    final public function setImage(string $image): void
+    final public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
     }
 
     final public function getShortDescription(): string
@@ -57,8 +65,10 @@ class RecommendedBook
         return $this->shortDescription;
     }
 
-    final public function setShortDescription(string $shortDescription): void
+    final public function setShortDescription(string $shortDescription): self
     {
         $this->shortDescription = $shortDescription;
+
+        return $this;
     }
 }

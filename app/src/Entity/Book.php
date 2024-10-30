@@ -78,9 +78,11 @@ class Book
         return $this->title;
     }
 
-    final public function setTitle(string $title): void
+    final public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
     }
 
     final public function getSlug(): string
@@ -88,9 +90,11 @@ class Book
         return $this->slug;
     }
 
-    final public function setSlug(string $slug): void
+    final public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
     }
 
     final public function getImage(): string
@@ -98,9 +102,11 @@ class Book
         return $this->image;
     }
 
-    final public function setImage(string $image): void
+    final public function setImage(string $image): self
     {
         $this->image = $image;
+
+        return $this;
     }
 
     final public function getAuthors(): array
@@ -111,9 +117,11 @@ class Book
     /**
      * @param string[] $authors
      */
-    final public function setAuthors(array $authors): void
+    final public function setAuthors(array $authors): self
     {
         $this->authors = $authors;
+
+        return $this;
     }
 
     final public function getPublicationDate(): DateTimeInterface
@@ -121,9 +129,11 @@ class Book
         return $this->publicationDate;
     }
 
-    final public function setPublicationDate(DateTimeInterface $publicationDate): void
+    final public function setPublicationDate(DateTimeInterface $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
+
+        return $this;
     }
 
     final public function isMeap(): bool
@@ -131,9 +141,11 @@ class Book
         return $this->meap;
     }
 
-    final public function setMeap(bool $meap): void
+    final public function setMeap(bool $meap): self
     {
         $this->meap = $meap;
+
+        return $this;
     }
 
     /**
@@ -147,9 +159,11 @@ class Book
     /**
      * @param Collection<BookCategory> $categories
      */
-    final public function setCategories(Collection $categories): void
+    final public function setCategories(Collection $categories): self
     {
         $this->categories = $categories;
+
+        return $this;
     }
 
     final public function getIsbn(): string
@@ -157,9 +171,11 @@ class Book
         return $this->isbn;
     }
 
-    final public function setIsbn(string $isbn): void
+    final public function setIsbn(string $isbn): self
     {
         $this->isbn = $isbn;
+
+        return $this;
     }
 
     final public function getDescription(): string
@@ -167,9 +183,11 @@ class Book
         return $this->description;
     }
 
-    final public function setDescription(string $description): void
+    final public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
     }
 
     final public function getFormats(): Collection
@@ -177,9 +195,11 @@ class Book
         return $this->formats;
     }
 
-    final public function setFormats(Collection $formats): void
+    final public function setFormats(Collection $formats): self
     {
         $this->formats = $formats;
+
+        return $this;
     }
 
     final public function getReviews(): Collection
@@ -187,8 +207,10 @@ class Book
         return $this->reviews;
     }
 
-    final public function setReviews(Collection $reviews): void
+    final public function setReviews(Collection $reviews): self
     {
         $this->reviews = $reviews;
+
+        return $this;
     }
 }

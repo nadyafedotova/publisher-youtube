@@ -33,9 +33,11 @@ class Review
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'reviews')]
     private Book $book;
 
-    final public function setCreatedAtValue(): void
+    final public function setCreatedAtValue(): self
     {
         $this->createdAt = new DateTimeImmutable();
+
+        return $this;
     }
 
     final public function getId(): ?int
@@ -43,9 +45,11 @@ class Review
         return $this->id;
     }
 
-    final public function setId(?int $id): void
+    final public function setId(?int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     final public function getRating(): int
@@ -53,9 +57,11 @@ class Review
         return $this->rating;
     }
 
-    final public function setRating(int $rating): void
+    final public function setRating(int $rating): self
     {
         $this->rating = $rating;
+
+        return $this;
     }
 
     final public function getContent(): string
@@ -63,9 +69,11 @@ class Review
         return $this->content;
     }
 
-    final public function setContent(string $content): void
+    final public function setContent(string $content): self
     {
         $this->content = $content;
+
+        return $this;
     }
 
     final public function getAuthor(): string
@@ -73,9 +81,11 @@ class Review
         return $this->author;
     }
 
-    final public function setAuthor(string $author): void
+    final public function setAuthor(string $author): self
     {
         $this->author = $author;
+
+        return $this;
     }
 
     final public function getCreatedAt(): DateTimeImmutable
@@ -83,9 +93,11 @@ class Review
         return $this->createdAt;
     }
 
-    final public function setCreatedAt(DateTimeImmutable $createdAt): void
+    final public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
     }
 
     final public function getBook(): Book
@@ -93,8 +105,10 @@ class Review
         return $this->book;
     }
 
-    final public function setBook(Book $book): void
+    final public function setBook(Book $book): self
     {
         $this->book = $book;
+
+        return $this;
     }
 }

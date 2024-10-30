@@ -32,9 +32,11 @@ class SingUpRequest
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): void
+    public function setFirstName(string $firstName): self
     {
         $this->firstName = $firstName;
+
+        return $this;
     }
 
     public function getLastName(): string
@@ -42,9 +44,11 @@ class SingUpRequest
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): void
+    public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
     }
 
     public function getEmail(): string
@@ -52,9 +56,11 @@ class SingUpRequest
         return $this->email;
     }
 
-    public function setEmail(string $email): void
+    public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
     }
 
     public function getPassword(): string
@@ -62,9 +68,11 @@ class SingUpRequest
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
     }
 
     public function getConfirmPassword(): string
@@ -72,8 +80,10 @@ class SingUpRequest
         return $this->confirmPassword;
     }
 
-    public function setConfirmPassword(string $confirmPassword): void
+    public function setConfirmPassword(string $confirmPassword): self
     {
         $this->confirmPassword = $confirmPassword;
+
+        return $this;
     }
 }
