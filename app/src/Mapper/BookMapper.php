@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Mapper;
 
 use App\Entity\Book;
+use App\Model\Author\BookListItem;
 use App\Model\BookDetails;
-use App\Model\BookListItem;
 
 class BookMapper
 {

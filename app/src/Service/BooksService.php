@@ -6,14 +6,14 @@ namespace App\Service;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
-use App\Mapper\BookMapper;
-use App\Model\BookCategory as BookCategoryModel;
 use App\Entity\BookToBookFormat;
 use App\Exception\BookCategoryNotFoundException;
+use App\Mapper\BookMapper;
+use App\Model\Author\BookListItem;
+use App\Model\Author\BookListResponse;
+use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
 use App\Model\BookFormat;
-use App\Model\BookListItem;
-use App\Model\BookListResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
 use Doctrine\Common\Collections\Collection;
@@ -35,13 +35,13 @@ readonly class BooksService
 
         return new BookListResponse(array_map(
             fn (Book $book) => BookMapper::map($book, new BookListItem()),
-            $this->bookRepository->findBooksByCategoryId($categoryId),
+            $this->bookRepository->findPublishedBooksByCategoryId($categoryId),
         ));
     }
 
     public function getBookById(int $id): BookDetails
     {
-        $book = $this->bookRepository->getById($id);
+        $book = $this->bookRepository->getPublishedById($id);
 
         $categories = $book->getCategories()
             ->map(

@@ -3,7 +3,7 @@
 namespace App\Tests\src\Service;
 
 use App\Exception\BookCategoryNotFoundException;
-use App\Model\BookListResponse;
+use App\Model\Author\BookListResponse;
 use App\Model\Rating;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
@@ -55,7 +55,7 @@ class BookServiceTest extends AbstractTestCase
         $format = $this->entityTest->createBookFormat();
         $bookToBookFormat = $this->entityTest->createBookToBookFormat($format, $this->entityTest->createBook(''));
         $this->bookRepository->expects($this->once())
-            ->method('getById')
+            ->method('getPublishedById')
             ->with(123)
             ->willReturn($this->entityTest->createBook('', $this->entityTest->createBookCategory(), $bookToBookFormat));
 
@@ -75,7 +75,7 @@ class BookServiceTest extends AbstractTestCase
     final public function testGetBooksByCategory(): void
     {
         $this->bookRepository->expects($this->once())
-            ->method('findBooksByCategoryId')
+            ->method('findPublishedBooksByCategoryId')
             ->with(130)
             ->willReturn([$this->entityTest->createBook()]);
 

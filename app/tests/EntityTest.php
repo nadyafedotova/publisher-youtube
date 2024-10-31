@@ -6,13 +6,13 @@ namespace App\Tests;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
-use App\Model\BookCategory as BookCategoryModel;
 use App\Entity\BookFormat;
-use App\Model\BookFormat as BookFormatModel;
 use App\Entity\BookToBookFormat;
 use App\Entity\Review;
+use App\Model\Author\BookListItem;
+use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
-use App\Model\BookListItem;
+use App\Model\BookFormat as BookFormatModel;
 use App\Model\RecommendedBook;
 use App\Model\Review as ReviewModel;
 use App\Model\ReviewPage;

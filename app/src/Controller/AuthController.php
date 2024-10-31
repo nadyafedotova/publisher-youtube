@@ -6,7 +6,6 @@ namespace App\Controller;
 
 use App\Attribute\RequestBody;
 use App\Model\ErrorResponse;
-use App\Model\IdResponse;
 use App\Model\SingUpRequest;
 use App\Service\SingUpService;
 use Nelmio\ApiDocBundle\Annotation\Model;

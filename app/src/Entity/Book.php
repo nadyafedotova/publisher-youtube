@@ -9,6 +9,7 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
 class Book
@@ -22,25 +23,29 @@ class Book
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    private string $slug;
+    private mixed $slug;
 
-    #[ORM\Column(length: 255)]
-    private string $image;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image;
 
-    #[ORM\Column(type: 'simple_array')]
-    private array $authors;
+    #[ORM\Column(type: 'simple_array', nullable: true)]
+    private ?array $authors;
 
-    #[ORM\Column(type: 'string', length: 13)]
-    private string $isbn;
+    #[ORM\Column(type: 'string', length: 13, nullable: true)]
+    private ?string $isbn;
 
-    #[ORM\Column(type: 'text')]
-    private string $description;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description;
 
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeInterface $publicationDate;
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?DateTimeInterface $publicationDate;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $meap;
+
+    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private UserInterface $user;
 
     /**
      * @var Collection<BookCategory>
@@ -78,38 +83,38 @@ class Book
         return $this->title;
     }
 
-    final public function setTitle(string $title): self
+    final public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    final public function getSlug(): string
+    final public function getSlug(): mixed
     {
         return $this->slug;
     }
 
-    final public function setSlug(string $slug): self
+    final public function setSlug(mixed $slug): self
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    final public function getImage(): string
+    final public function getImage(): ?string
     {
         return $this->image;
     }
 
-    final public function setImage(string $image): self
+    final public function setImage(?string $image): self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    final public function getAuthors(): array
+    final public function getAuthors(): ?array
     {
         return $this->authors;
     }
@@ -117,19 +122,19 @@ class Book
     /**
      * @param string[] $authors
      */
-    final public function setAuthors(array $authors): self
+    final public function setAuthors(?array $authors): self
     {
         $this->authors = $authors;
 
         return $this;
     }
 
-    final public function getPublicationDate(): DateTimeInterface
+    final public function getPublicationDate(): ?DateTimeInterface
     {
         return $this->publicationDate;
     }
 
-    final public function setPublicationDate(DateTimeInterface $publicationDate): self
+    final public function setPublicationDate(?DateTimeInterface $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
 
@@ -166,24 +171,24 @@ class Book
         return $this;
     }
 
-    final public function getIsbn(): string
+    final public function getIsbn(): ?string
     {
         return $this->isbn;
     }
 
-    final public function setIsbn(string $isbn): self
+    final public function setIsbn(?string $isbn): self
     {
         $this->isbn = $isbn;
 
         return $this;
     }
 
-    final public function getDescription(): string
+    final public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    final public function setDescription(string $description): self
+    final public function setDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -210,6 +215,18 @@ class Book
     final public function setReviews(Collection $reviews): self
     {
         $this->reviews = $reviews;
+
+        return $this;
+    }
+
+    final public function getUser(): UserInterface
+    {
+        return $this->user;
+    }
+
+    final public function setUser(UserInterface $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

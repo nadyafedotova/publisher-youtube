@@ -35,6 +35,6 @@ class BookRepositoryTest extends AbstractRepositoryTest
 
         $this->entityManager->flush();
 
-        $this->assertCount(5, $this->bookRepository->findBooksByCategoryId($devicesCategory->getId()));
+        $this->assertCount(5, $this->bookRepository->findPublishedBooksByCategoryId($devicesCategory->getId()));
     }
 }
