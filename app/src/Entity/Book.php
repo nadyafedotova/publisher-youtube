@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Model\Author\PublishBookRequest;
 use App\Repository\BookRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,7 +39,7 @@ class Book
     private ?string $description;
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?DateTimeInterface $publicationDate;
+    private DateTimeInterface|PublishBookRequest|null $publicationDate;
 
     #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $meap;
@@ -129,12 +130,12 @@ class Book
         return $this;
     }
 
-    final public function getPublicationDate(): ?DateTimeInterface
+    final public function getPublicationDate(): DateTimeInterface|PublishBookRequest|null
     {
         return $this->publicationDate;
     }
 
-    final public function setPublicationDate(?DateTimeInterface $publicationDate): self
+    final public function setPublicationDate(DateTimeInterface|PublishBookRequest|null $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
 

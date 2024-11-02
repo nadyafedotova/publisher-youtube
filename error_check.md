@@ -1,0 +1,11 @@
+ curl -XPOST http://172.28.1.1/api/v1/author/book/7/uploadCover -F 'cover=@/Users/user/landscape.jpg' -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MzA1MjkyNzAsImV4cCI6MTczMDUzMjg3MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidGVzdDJAdGVzdC5jb20iLCJpZCI6MTB9.RkqT6-yhDW_S_5Rzs0jFZUGnKKhHHutWIYZKKFHGTSIZfEp2RCXE59UvvgFouZnHT8l9DPbNBNzv9l0hrHBppB-Zuaajl6q68khSFa7jIcjO2d4I1zEmQ7az_iinTbzZT6rkQoW1AuOTgDPAfvMO9unN8UTB72y7uu7FhHd_A9Mv3XviS7FXoOo6-LEL2G1JSEZgx4bcKWJWm9P75RGVTCMZhqcTkheO5N9Qv0Zulj8cI-8VE00rHcjJfOGQtalbhM09TzkxpdYa2eS2wOoeFaIpe-Erit6ukZNIkiM6cTs3ldER7YOkyoex_6IYVSwKyEiyubrx0tgC411NxrF9V'
+ curl: (26) Failed to open/read local data from file/application
+ ~/Downloads/publisher-youtube-master git:[main]
+ curl -XPOST http://172.28.1.1/api/v1/author/book/7/uploadCover -F 'cover=@/Users/user/landscape.jpg' -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE3MzA1MjkyNzAsImV4cCI6MTczMDUzMjg3MCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sInVzZXJuYW1lIjoidGVzdDJAdGVzdC5jb20iLCJpZCI6MTB9.RkqT6-yhDW_S_5Rzs0jFZUGnKKhHHutWIYZKKFHGTSIZfEp2RCXE59UvvgFouZnHT8l9DPbNBNzv9l0hrHBppB-Zuaajl6q68khSFa7jIcjO2d4I1zEmQ7az_iinTbzZT6rkQoW1AuOTgDPAfvMO9unN8UTB72y7uu7FhHd_A9Mv3XviS7FXoOo6-LEL2G1JSEZgx4bcKWJWm9P75RGVTCMZhqcTkheO5N9Qv0Zulj8cI-8VE00rHcjJfOGQtalbhM09TzkxpdYa2eS2wOoeFaIpe-Erit6ukZNIkiM6cTs3ldER7YOkyoex_6IYVSwKyEiyubrx0tgC411NxrF9V'
+{"code":401,"message":"Invalid JWT Token"}%     
+
+RecommendationControllerTest
+\BookCategoryRepositoryTest::testFindAllSortedByTitle
+Перепроверить исправить
+
+
