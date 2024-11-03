@@ -10,20 +10,26 @@ use App\Model\Author\PublishBookRequest;
 use App\Model\Author\UploadCoverResponse;
 use App\Model\ErrorResponse;
 use App\Model\IdResponse;
-use App\Service\AuthorService;
+use App\Security\Voter\AuthorBookVoter;
+use App\Service\AuthorBookService;
+use App\Service\BookPublishService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 class AuthorController extends AbstractController
 {
     public function __construct(
-        readonly private AuthorService $authorService,
+        readonly private AuthorBookService  $authorService,
+        readonly private BookPublishService $bookPublishService,
     ) {
     }
 
@@ -39,6 +45,7 @@ class AuthorController extends AbstractController
         attachables: [new Model(type: ErrorResponse::class)]
     )]
     #[Route(path: '/api/v1/author/book/{id}/uploadCover', methods: ['POST'])]
+    #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'id')]
     final public function uploadCover(
         int $id,
         #[RequestFile(field: 'cover', constraints: [
@@ -61,9 +68,10 @@ class AuthorController extends AbstractController
     )]
     #[OA\RequestBody(attachables: [new Model(type: PublishBookRequest::class)])]
     #[Route(path: '/api/v1/author/book/{id}/publish', methods: ['POST'])]
+    #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'id')]
     final public function publish(int $id, #[RequestBody] PublishBookRequest $publishBookRequest): Response
     {
-        $this->authorService->publish($id, $publishBookRequest);
+        $this->bookPublishService->publish($id, $publishBookRequest);
 
         return $this->json(null);
     }
@@ -74,9 +82,10 @@ class AuthorController extends AbstractController
         description: 'Unpublish a book'
     )]
     #[Route(path: '/api/v1/author/book/{id}/unpublish', methods: ['POST'])]
+    #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'id')]
     final public function unpublish(int $id): Response
     {
-        $this->authorService->unpublish($id);
+        $this->bookPublishService->unpublish($id);
 
         return $this->json(null);
     }
@@ -88,9 +97,9 @@ class AuthorController extends AbstractController
         content: new Model(type: BookListResponse::class)
     )]
     #[Route(path: '/api/v1/author/books', methods: ['GET'])]
-    final public function books(): Response
+    final public function books(#[CurrentUser] UserInterface $user): Response
     {
-        return $this->json($this->authorService->getBooks());
+        return $this->json($this->authorService->getBooks($user));
     }
 
     #[OA\Tag(name: "Author API")]
@@ -106,9 +115,9 @@ class AuthorController extends AbstractController
     )]
     #[OA\RequestBody(attachables: [new Model(type: CreateBookRequest::class)])]
     #[Route(path: '/api/v1/author/book', methods: ['POST'])]
-    final public function createBook(#[RequestBody] CreateBookRequest $bookRequest): Response
+    final public function createBook(#[RequestBody] CreateBookRequest $bookRequest, #[CurrentUser] UserInterface $user): Response
     {
-        return $this->json($this->authorService->createBook($bookRequest));
+        return $this->json($this->authorService->createBook($bookRequest, $user));
     }
 
     #[OA\Tag(name: "Author API")]
@@ -122,6 +131,7 @@ class AuthorController extends AbstractController
         content: new Model(type: ErrorResponse::class)
     )]
     #[Route(path: '/api/v1/author/book/{id}', methods: ['DELETE'])]
+    #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'id')]
     final public function deleteBook(int $id): Response
     {
         $this->authorService->deleteBook($id);

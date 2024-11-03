@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\BookCategory;
+use App\Exception\BookCategoryNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\String\AbstractUnicodeString;
 
 /**
  * @extends ServiceEntityRepository<BookCategory>
@@ -29,5 +31,27 @@ class BookCategoryRepository extends ServiceEntityRepository
     public function existsById(int $id): bool
     {
         return null !== $this->find($id);
+    }
+
+    public function getById(int $id): BookCategory
+    {
+        $category = $this->find($id);
+        if (null === $category) {
+            throw new BookCategoryNotFoundException();
+        }
+
+        return $category;
+    }
+
+    public function countBooksInCategory(int $categoryId): int
+    {
+        return $this->getEntityManager()->createQuery('SELECT COUNT(b.id) FROM App\Entity\Book b WHERE :categoryId MEMBER OF b.categories')
+            ->setParameter('categoryId', $categoryId)
+            ->getSingleScalarResult();
+    }
+
+    public function existsBySlug(AbstractUnicodeString $slug): bool
+    {
+        return null !== $this->findOneBy(['slug' => $slug]);
     }
 }

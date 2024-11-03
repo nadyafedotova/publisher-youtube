@@ -10,7 +10,7 @@ class BookCategory
     private string $title;
     private string $slug;
 
-    public function __construct(int $id, string $title, string $slug)
+    public function __construct(int $id, string $title, \Symfony\Component\String\AbstractUnicodeString $slug)
     {
         $this->id = $id;
         $this->title = $title;
