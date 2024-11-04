@@ -12,13 +12,11 @@ use App\Model\BookCategoryListResponse;
 use App\Model\BookCategoryUpdateRequest;
 use App\Model\IdResponse;
 use App\Repository\BookCategoryRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 readonly class BooksCategoryService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
         private BookCategoryRepository $bookCategoryRepository,
         private SluggerInterface $slugger,
     ) {
@@ -33,8 +31,7 @@ readonly class BooksCategoryService
             throw new BookCategoryNotEmptyException($booksCount);
         }
 
-        $this->entityManager->remove($category);
-        $this->entityManager->flush();
+        $this->bookCategoryRepository->removeAndCommit($category);
     }
 
     public function createCategory(BookCategoryUpdateRequest $updateRequest): IdResponse
@@ -74,8 +71,6 @@ readonly class BooksCategoryService
         }
 
         $bookCategory->setTitle($updateRequest->getTitle())->setSlug((string) $slug);
-
-        $this->entityManager->persist($bookCategory);
-        $this->entityManager->flush();
+        $this->bookCategoryRepository->saveAndCommit($bookCategory);
     }
 }

@@ -4,9 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Exception\UserNotFoundException;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @method User|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,7 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @method User[] findAll()
  * @method User[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends ServiceEntityRepository
+class UserRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {

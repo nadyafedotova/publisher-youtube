@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Model;
+namespace App\Model\Author;
 
 use App\Entity\BookCategory;
 use App\Entity\BookFormat;
@@ -15,20 +15,18 @@ class BookDetails
 
     private string $slug;
 
-    private string $image;
+    private ?string $image;
 
     /**
-     * @var string[]
+     * @var string[]|null
      */
-    private array $authors;
+    private ?array $authors;
 
-    private bool $meap;
+    private ?string $isbn;
 
-    private int $publicationDate;
+    private ?string $description;
 
-    private float $rating;
-
-    private int $reviews;
+    private ?int $publicationDate;
 
     /**
      * @var BookCategory[]|null
@@ -76,74 +74,62 @@ class BookDetails
         return $this;
     }
 
-    final public function getImage(): string
+    final public function getImage(): ?string
     {
         return $this->image;
     }
 
-    final public function setImage(string $image): self
+    final public function setImage(?string $image): self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    final public function getAuthors(): array
+    final public function getAuthors(): ?array
     {
         return $this->authors;
     }
 
-    final public function setAuthors(array $authors): self
+    final public function setAuthors(?array $authors): self
     {
         $this->authors = $authors;
 
         return $this;
     }
 
-    final public function isMeap(): bool
+    final public function getIsbn(): ?string
     {
-        return $this->meap;
+        return $this->isbn;
     }
 
-    final public function setMeap(bool $meap): self
+    final public function setIsbn(?string $isbn): self
     {
-        $this->meap = $meap;
+        $this->isbn = $isbn;
 
         return $this;
     }
 
-    final public function getPublicationDate(): int
+    final public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    final public function setDescription(?string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    final public function getPublicationDate(): ?int
     {
         return $this->publicationDate;
     }
 
-    final public function setPublicationDate(int $publicationDate): self
+    final public function setPublicationDate(?int $publicationDate): self
     {
         $this->publicationDate = $publicationDate;
-
-        return $this;
-    }
-
-    final public function getRating(): float
-    {
-        return $this->rating;
-    }
-
-    final public function setRating(float $rating): self
-    {
-        $this->rating = $rating;
-
-        return $this;
-    }
-
-    final public function getReviews(): int
-    {
-        return $this->reviews;
-    }
-
-    final public function setReviews(int $reviews): self
-    {
-        $this->reviews = $reviews;
 
         return $this;
     }

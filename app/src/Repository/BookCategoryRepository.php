@@ -6,20 +6,20 @@ namespace App\Repository;
 
 use App\Entity\BookCategory;
 use App\Exception\BookCategoryNotFoundException;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\String\AbstractUnicodeString;
 
-/**
- * @extends ServiceEntityRepository<BookCategory>
- */
-class BookCategoryRepository extends ServiceEntityRepository
+class BookCategoryRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, BookCategory::class);
     }
 
+    final public function findBookCategoriesByIds(array $ids): BookCategory|array
+    {
+        return $this->findBy(['id' => $ids]);
+    }
     /**
      * @return BookCategory[]
      */

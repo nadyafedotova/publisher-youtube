@@ -7,12 +7,10 @@ namespace App\Service;
 use App\Model\Author\PublishBookRequest;
 use App\Repository\BookRepository;
 use DateTimeInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
-class BookPublishService
+readonly class BookPublishService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
         private BookRepository $bookRepository,
     ) {
     }
@@ -31,7 +29,6 @@ class BookPublishService
     {
         $book = $this->bookRepository->getBookById($id);
         $book->setPublicationDate($dateTime);
-
-        $this->entityManager->flush();
+        $this->bookRepository->commit();
     }
 }

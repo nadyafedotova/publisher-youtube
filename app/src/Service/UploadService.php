@@ -9,18 +9,19 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Uid\Uuid;
 
-class UploadService
+readonly class UploadService
 {
     private const string LINK_BOOK_PATTERN = '/upload/book/%d/%s';
+
     public function __construct(
         private Filesystem $filesystem,
-        private string $uploadDir,
+        private string     $uploadDir,
     ) {
     }
 
     public function deleteBookFile(int $id, string $fileName): void
     {
-        $this->filesystem->remove($this->getUploadPathForBook($id).DIRECTORY_SEPARATOR.$fileName);
+        $this->filesystem->remove($this->getUploadPathForBook($id) . DIRECTORY_SEPARATOR . $fileName);
     }
 
     public function uploadBookFile(int $bookId, UploadedFile $file): string
@@ -31,7 +32,7 @@ class UploadService
             throw new UploadFileInvalidTypeException();
         }
 
-        $uniqueName = Uuid::v4()->toRfc4122().'.'.$extension;
+        $uniqueName = Uuid::v4()->toRfc4122() . '.' . $extension;
         $file->move($this->getUploadPathForBook($bookId), $uniqueName);
 
         return sprintf(self::LINK_BOOK_PATTERN, $bookId, $uniqueName);
@@ -39,6 +40,6 @@ class UploadService
 
     private function getUploadPathForBook(int $id)
     {
-        return $this->uploadDir.DIRECTORY_SEPARATOR.'book'.DIRECTORY_SEPARATOR.$id;
+        return $this->uploadDir . DIRECTORY_SEPARATOR . 'book' . DIRECTORY_SEPARATOR . $id;
     }
 }

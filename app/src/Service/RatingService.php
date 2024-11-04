@@ -10,7 +10,7 @@ use App\Repository\ReviewRepository;
 class RatingService
 {
     public function __construct(
-        private ReviewRepository $reviewRepository
+        private readonly ReviewRepository $reviewRepository
     ) {
     }
 

@@ -5,21 +5,57 @@ declare(strict_types=1);
 namespace App\Mapper;
 
 use App\Entity\Book;
+use App\Entity\BookCategory;
+use App\Entity\BookToBookFormat;
 use App\Model\Author\BookListItem;
+use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
+use App\Model\Author\BookDetails as AuthorBookDetails;
+use App\Model\BookFormat;
 
 class BookMapper
 {
-    public static function map(Book $book, BookDetails|BookListItem $model): BookDetails|BookListItem
+    /**
+     * @todo interface?
+     */
+    public static function map(Book $book, BookDetails|BookListItem|AuthorBookDetails $model): BookDetails|BookListItem|AuthorBookDetails
     {
-        $model->setId($book->getId());
-        $model->setTitle($book->getTitle());
-        $model->setSlug($book->getSlug());
-        $model->setImage($book->getImage());
-        $model->setAuthors($book->getAuthors());
-        $model->setMeap($book->isMeap());
-        $model->setPublicationDate($book->getPublicationDate()->getTimestamp());
+        $publicationDate = $book->getPublicationDate();
+        if (null !== $publicationDate) {
+            $publicationDate = $publicationDate->getTimestamp();
+        }
 
-        return $model;
+        return $model->setId($book->getId())
+            ->setTitle($book->getTitle())
+            ->setSlug($book->getSlug())
+            ->setImage($book->getImage())
+            ->setAuthors($book->getAuthors())
+            ->setMeap($book->isMeap())
+            ->setPublicationDate($publicationDate);
+    }
+
+    public static function mapCategories(Book $book): array
+    {
+        return $book->getCategories()
+            ->map(
+                fn (BookCategory $bookCategory) => new BookCategoryModel(
+                    $bookCategory->getId(),
+                    $bookCategory->getTitle(),
+                    $bookCategory->getSlug(),
+                ),
+            )->toArray();
+    }
+
+    public static function mapFormats(Book $book): array
+    {
+        return $book->getFormats()->map(
+            fn (BookToBookFormat $formatJoin) => (new BookFormat())
+                ->setId($formatJoin->getFormat()->getId())
+                ->setTitle($formatJoin->getFormat()->getTitle())
+                ->setDescription($formatJoin->getFormat()->getDescription())
+                ->setComment($formatJoin->getFormat()->getComment())
+                ->setPrice($formatJoin->getPrice())
+                ->setDiscountPercent($formatJoin->getDiscountPercent()),
+        )->toArray();
     }
 }

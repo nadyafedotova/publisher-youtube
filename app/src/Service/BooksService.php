@@ -5,18 +5,13 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Book;
-use App\Entity\BookCategory;
-use App\Entity\BookToBookFormat;
 use App\Exception\BookCategoryNotFoundException;
 use App\Mapper\BookMapper;
 use App\Model\Author\BookListItem;
 use App\Model\Author\BookListResponse;
-use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
-use App\Model\BookFormat;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
-use Doctrine\Common\Collections\Collection;
 
 readonly class BooksService
 {
@@ -42,48 +37,14 @@ readonly class BooksService
     public function getBookById(int $id): BookDetails
     {
         $book = $this->bookRepository->getPublishedById($id);
-
-        $categories = $book->getCategories()
-            ->map(
-                fn (BookCategory $bookCategory) => new BookCategoryModel(
-                    $bookCategory->getId(),
-                    $bookCategory->getTitle(),
-                    $bookCategory->getSlug(),
-                )
-            );
-
         $rating = $this->ratingService->calcReviewRatingForBook($id);
 
         $bookMapper = BookMapper::map($book, new BookDetails());
         $bookMapper->setRating($rating->getRating());
         $bookMapper->setReviews($rating->getTotal());
-        $bookMapper->setFormats($this->mapFormats($book->getFormats()));
-        $bookMapper->setCategories($categories->toArray());
+        $bookMapper->setFormats(BookMapper::mapFormats($book));
+        $bookMapper->setCategories(BookMapper::mapCategories($book));
 
         return $bookMapper;
-    }
-
-    /**
-     * @param Collection<BookToBookFormat> $formats
-     * @return array
-     */
-    private function mapFormats(Collection $formats): array
-    {
-        return $formats->map(
-            fn (BookToBookFormat $formatJoin) => $this->createBookFormat($formatJoin),
-        )->toArray();
-    }
-
-    private function createBookFormat(BookToBookFormat $format): BookFormat
-    {
-        $bookFormat = new BookFormat();
-        $bookFormat->setId($format->getFormat()->getId());
-        $bookFormat->setTitle($format->getFormat()->getTitle());
-        $bookFormat->setDescription($format->getFormat()->getDescription());
-        $bookFormat->setComment($format->getFormat()->getComment());
-        $bookFormat->setPrice($format->getPrice());
-        $bookFormat->setDiscountPercent($format->getDiscountPercent());
-
-        return $bookFormat;
     }
 }

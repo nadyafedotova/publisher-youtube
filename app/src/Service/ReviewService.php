@@ -12,7 +12,6 @@ use Exception;
 
 class ReviewService
 {
-
     private const int PAGE_LIMIT = 5;
 
     public function __construct(

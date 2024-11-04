@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 readonly class RoleService
 {
     public function __construct(
         private UserRepository         $userRepository,
-        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -29,8 +27,6 @@ readonly class RoleService
     {
         $user = $this->userRepository->getUser($userId);
         $user->setRoles([$role]);
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->userRepository->saveAndCommit($user);
     }
 }

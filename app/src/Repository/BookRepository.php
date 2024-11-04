@@ -5,17 +5,12 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Book;
-use App\Entity\BookCategory;
 use App\Exception\BookNotFoundException;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\AbstractUnicodeString;
 
-/**
- * @extends ServiceEntityRepository<BookCategory>
- */
-class BookRepository extends ServiceEntityRepository
+class BookRepository extends BaseRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -77,17 +72,6 @@ class BookRepository extends ServiceEntityRepository
     public function existsBySlug(AbstractUnicodeString $slug): bool
     {
         return null !== $this->findOneBy(['slug' => $slug]);
-    }
-
-    final public function save(Book $book): void
-    {
-        $this->getEntityManager()->persist($book);
-    }
-
-    final public function saveAndFlush(Book $book): void
-    {
-        $this->save($book);
-        $this->getEntityManager()->flush();
     }
 
     public function existsUserBookById(int $id, UserInterface $user)
