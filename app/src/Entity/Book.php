@@ -23,7 +23,7 @@ class Book
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private mixed $slug;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]

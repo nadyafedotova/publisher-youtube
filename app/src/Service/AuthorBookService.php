@@ -96,7 +96,7 @@ readonly class AuthorBookService
         $book = $this->bookRepository->getBookById($id);
         $title = $updateBookRequest->getTitle();
         if (!empty($title)) {
-            $book->setTitle($title)->setSlug($this->slugifyOfThrow($title));
+            $book->setTitle($title)->setSlug($this->slugifyOfThrow($title, $id));
         }
 
         $formats = array_map(function (BookFormatOptions $bookFormatOptions) use ($book): BookToBookFormat {
@@ -110,7 +110,10 @@ readonly class AuthorBookService
 
             return $format;
         }, $updateBookRequest->getFormats());
-        //TODO: remove old formats
+
+        foreach ($book->getFormats() as $format) {
+            $this->bookToBookFormatRepository->remove($format);
+        }
 
         $book->setAuthors($updateBookRequest->getAuthors())
             ->setIsbn($updateBookRequest->getIsbn())
@@ -129,10 +132,10 @@ readonly class AuthorBookService
         $this->bookRepository->removeAndCommit($book);
     }
 
-    private function slugifyOfThrow(string $title): AbstractUnicodeString
+    private function slugifyOfThrow(string $title, ?int $id = null): AbstractUnicodeString
     {
         $slug = $this->slugger->slug($title);
-        if ($this->bookRepository->existsBySlug($slug)) {
+        if ($this->bookRepository->existsBySlug($slug, $id)) {
             throw new BookAlreadyExistsException();
         }
 

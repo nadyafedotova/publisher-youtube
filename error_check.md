@@ -10,6 +10,3 @@ RecommendationControllerTest
 
 refreshtoken table clear
 
-BooKFormatRepository^ BookToBookFormatRepository empty
-
-при обновлении $book->setTitle($title)->setSlug($this->slugifyOfThrow($title)); відает дубликат но не должен пересмотреть

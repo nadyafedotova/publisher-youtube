@@ -53,7 +53,7 @@ class AuthorController extends AbstractController
         #[RequestFile(field: 'cover', constraints: [
          new NotNull(),
          new Image(maxSize: '1M', mimeTypes: ['image/jpeg', 'image/png', 'image/jpg']),
-         ])] UploadedFile $file,
+         ])] UploadedFile $file
     ): Response {
         return $this->json($this->authorService->uploadCover($id, $file));
     }

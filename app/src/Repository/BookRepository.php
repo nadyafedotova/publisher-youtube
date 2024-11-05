@@ -69,9 +69,18 @@ class BookRepository extends BaseRepository
         return $book;
     }
 
-    public function existsBySlug(AbstractUnicodeString $slug): bool
+    public function existsBySlug(AbstractUnicodeString $slug, ?int $currentId = null): bool
     {
-        return null !== $this->findOneBy(['slug' => $slug]);
+        $queryBuilder = $this->createQueryBuilder('b')
+            ->where('b.slug = :slug')
+            ->setParameter('slug', $slug);
+
+        if ($currentId !== null) {
+            $queryBuilder->andWhere('b.id != :id')
+                ->setParameter('id', $currentId);
+        }
+
+        return (bool) $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
     public function existsUserBookById(int $id, UserInterface $user)
