@@ -23,9 +23,11 @@ class BookFormatOptions
         return $this->id;
     }
 
-    final public function setId(int $id): void
+    final public function setId(int $id): self
     {
         $this->id = $id;
+
+        return $this;
     }
 
     final public function getPrice(): float
@@ -33,9 +35,11 @@ class BookFormatOptions
         return $this->price;
     }
 
-    final public function setPrice(float $price): void
+    final public function setPrice(float $price): self
     {
         $this->price = $price;
+
+        return $this;
     }
 
     final public function getDiscountPercent(): ?int
@@ -43,8 +47,10 @@ class BookFormatOptions
         return $this->discountPercent;
     }
 
-    final public function setDiscountPercent(?int $discountPercent): void
+    final public function setDiscountPercent(?int $discountPercent): self
     {
         $this->discountPercent = $discountPercent;
+
+        return $this;
     }
 }

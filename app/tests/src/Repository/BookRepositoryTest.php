@@ -5,7 +5,7 @@ namespace App\Tests\src\Repository;
 use App\Entity\Book;
 use App\Repository\BookRepository;
 use App\Tests\AbstractRepositoryTest;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 use ReflectionException;
 
 class BookRepositoryTest extends AbstractRepositoryTest
@@ -24,16 +24,18 @@ class BookRepositoryTest extends AbstractRepositoryTest
      */
     final public function testFindBooksByCategoryId(): void
     {
-        $entityTest = new EntityTest();
-        $devicesCategory = $entityTest->createBookCategory();
-        $this->entityManager->persist($devicesCategory);
+        $user = MockUtils::createUser();
+        $this->bookRepository->save($user);
+
+        $devicesCategory = MockUtils::createBookCategory();
+        $this->bookRepository->save($devicesCategory);
 
         for ($i = 0; $i < 5; ++$i) {
-            $book = $entityTest->createBook('device-' . $i, $devicesCategory);
-            $this->entityManager->persist($book);
+            $book = MockUtils::createBook('device-' . $i, $devicesCategory);
+            $this->bookRepository->save($book);
         }
 
-        $this->entityManager->flush();
+        $this->bookRepository->commit();
 
         $this->assertCount(5, $this->bookRepository->findPublishedBooksByCategoryId($devicesCategory->getId()));
     }

@@ -8,14 +8,12 @@ use App\Model\SubscriberRequest;
 use App\Repository\SubscriberRepository;
 use App\Service\SubscriberService;
 use App\Tests\AbstractTestCase;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\Exception;
 
 class SubscriberServiceTest extends AbstractTestCase
 {
     private SubscriberRepository $subscriberRepository;
 
-    private EntityManagerInterface $manager;
 
     private const string EMAIL = 'test@test.com';
 
@@ -26,7 +24,6 @@ class SubscriberServiceTest extends AbstractTestCase
     {
         parent::setUp();
         $this->subscriberRepository = $this->createMock(SubscriberRepository::class);
-        $this->manager = $this->createMock(EntityManagerInterface::class);
     }
 
     final public function testSubscribeAlreadyExists(): void
@@ -41,7 +38,11 @@ class SubscriberServiceTest extends AbstractTestCase
         $request = new SubscriberRequest();
         $request->setEmail(self::EMAIL);
 
-        (new SubscriberService($this->subscriberRepository, $this->manager))->subscribe($request);
+        $this->subscriberRepository->expects($this->once())
+            ->method('saveAndCommit')
+            ->with($request);
+
+        (new SubscriberService($this->subscriberRepository))->subscribe($request);
     }
 
     final public function testSubscribe(): void
@@ -53,16 +54,14 @@ class SubscriberServiceTest extends AbstractTestCase
 
         $expectedSubscriber = new Subscriber();
         $expectedSubscriber->setEmail(self::EMAIL);
-        $this->manager->expects($this->once())
-            ->method('persist')
-            ->with($expectedSubscriber);
-
-        $this->manager->expects($this->once())
-            ->method('flush');
 
         $request = new SubscriberRequest();
         $request->setEmail(self::EMAIL);
+        $this->subscriberRepository->expects($this->once())
+            ->method('saveAndCommit')
+            ->with($request);
 
-        (new SubscriberService($this->subscriberRepository, $this->manager))->subscribe($request);
+
+        (new SubscriberService($this->subscriberRepository))->subscribe($request);
     }
 }

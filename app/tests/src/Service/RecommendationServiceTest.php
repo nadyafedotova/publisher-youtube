@@ -11,7 +11,7 @@ use App\Service\Recommendation\Model\RecommendationResponse;
 use App\Service\Recommendation\RecommendationApiService;
 use App\Service\RecommendationService;
 use App\Tests\AbstractTestCase;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
 use ReflectionException;
@@ -20,7 +20,7 @@ class RecommendationServiceTest extends AbstractTestCase
 {
     private BookRepository $bookRepository;
     private RecommendationApiService $recommendationApiService;
-    private EntityTest $entityTest;
+    private MockUtils $entityTest;
 
     /**
      * @throws Exception
@@ -31,7 +31,7 @@ class RecommendationServiceTest extends AbstractTestCase
 
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->recommendationApiService = $this->createMock(RecommendationApiService::class);
-        $this->entityTest = new EntityTest();
+        $this->entityTest = new MockUtils();
     }
 
     public static function dataProvider(): array

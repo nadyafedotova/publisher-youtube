@@ -3,13 +3,16 @@
 namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 
 class BookCategoryControllerTest extends AbstractControllerTest
 {
+    /**
+     * @throws \ReflectionException
+     */
     final public function testCategories(): void
     {
-        $this->em->persist((new EntityTest())->createBookCategory());
+        $this->em->persist(MockUtils::createBookCategory());
         $this->em->flush();
 
         $this->client->request('GET', '/api/v1/book/categories');

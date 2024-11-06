@@ -18,16 +18,15 @@ class BookFixtures extends Fixture implements DependentFixtureInterface
         $androidCategory = $this->getReference(BookCategoryFixtures::ANDROID_CATEGORY);
         $devicesCategory = $this->getReference(BookCategoryFixtures::DEVICES_CATEGORY);
 
-        $book = new Book();
-        $book->setTitle('RxJava for Android Developers');
-        $book->setPublicationDate(new DateTimeImmutable('2019-04-01'));
-        $book->setMeap(false);
-        $book->setIsbn('123321');
-        $book->setDescription('RxJava for Android Developers');
-        $book->setAuthors(['Timo Tuominen']);
-        $book->setSlug('rxjava-for-android-developers');
-        $book->setCategories(new ArrayCollection([$androidCategory, $devicesCategory]));
-        $book->setImage('https://images.manning.com/360/480/resize/book/b/bc57fb7-b239-4bf5-bbf2-886be8936951/Tuominen-RxJava-HI.png');
+        $book = (new Book())
+            ->setTitle('RxJava for Android Developers')
+            ->setPublicationDate(new DateTimeImmutable('2019-04-01'))
+            ->setIsbn('123321')
+            ->setDescription('RxJava for Android Developers')
+            ->setAuthors(['Timo Tuominen'])
+            ->setSlug('rxjava-for-android-developers')
+            ->setCategories(new ArrayCollection([$androidCategory, $devicesCategory]))
+            ->setImage('https://images.manning.com/360/480/resize/book/b/bc57fb7-b239-4bf5-bbf2-886be8936951/Tuominen-RxJava-HI.png');
 
         $manager->persist($book);
         $manager->flush();

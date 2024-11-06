@@ -3,7 +3,7 @@
 namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 use GuzzleHttp\Exception\GuzzleException;
 use Hoverfly\Client as HoverflyClient;
 use Hoverfly\Model\RequestFieldMatcher;
@@ -13,7 +13,6 @@ use ReflectionException;
 
 class RecommendationControllerTest extends AbstractControllerTest
 {
-    private EntityTest $entityTest;
     private HoverflyClient $hoverflyClient;
 
     /**
@@ -23,8 +22,6 @@ class RecommendationControllerTest extends AbstractControllerTest
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->entityTest = new EntityTest();
         $this->setUpHoverfly();
     }
 
@@ -33,8 +30,13 @@ class RecommendationControllerTest extends AbstractControllerTest
      */
     final public function testRecommendationByBookId(): void
     {
-        $book = $this->entityTest->createBook();
+
+        $user = MockUtils::createUser();
+        $this->em->persist($user);
+
+        $book = MockUtils::createBook();
         $this->em->persist($book);
+
         $this->em->flush();
 
         $requestedId = 123;

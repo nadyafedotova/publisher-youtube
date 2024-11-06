@@ -8,7 +8,6 @@ use App\Model\SingUpRequest;
 use App\Repository\UserRepository;
 use App\Service\SingUpService;
 use App\Tests\AbstractTestCase;
-use Doctrine\ORM\EntityManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +17,6 @@ class SingUpServiceTest extends AbstractTestCase
 {
     private UserPasswordHasher $userPasswordHasher;
     private UserRepository $userRepository;
-    private EntityManagerInterface $entityManager;
     private AuthenticationSuccessHandler $authenticationSuccessHandler;
 
     /**
@@ -30,13 +28,12 @@ class SingUpServiceTest extends AbstractTestCase
 
         $this->userPasswordHasher = $this->createMock(UserPasswordHasher::class);
         $this->userRepository = $this->createMock(UserRepository::class);
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->authenticationSuccessHandler = $this->createMock(AuthenticationSuccessHandler::class);
     }
 
     private function createService(): SingUpService
     {
-        return new SingUpService($this->userPasswordHasher, $this->userRepository, $this->entityManager, $this->authenticationSuccessHandler);
+        return new SingUpService($this->userPasswordHasher, $this->userRepository, $this->authenticationSuccessHandler);
     }
 
     public function testSingUpUserAlreadyExists(): void
@@ -72,8 +69,9 @@ class SingUpServiceTest extends AbstractTestCase
             ->with($expectedHasherUser, 'testtest')
             ->willReturn('hashed_password');
 
-        $this->entityManager->expects($this->once())->method('persist')->with($expectedUser);
-        $this->entityManager->expects($this->once())->method('flush');
+        $this->userRepository->expects($this->once())
+            ->method('saveAndCommit')
+            ->with($expectedUser);
 
         $this->authenticationSuccessHandler->expects($this->once())
             ->method('handleAuthenticationSuccess')

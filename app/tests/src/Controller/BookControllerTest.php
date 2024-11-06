@@ -2,28 +2,36 @@
 
 namespace App\Tests\src\Controller;
 
-use App\Entity\Book;
-use App\Entity\BookCategory;
 use App\Tests\AbstractControllerTest;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionException;
 
 class BookControllerTest extends AbstractControllerTest
 {
-    private EntityTest $entityTest;
-
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->entityTest = new EntityTest();
     }
 
+    /**
+     * @throws ReflectionException
+     */
     final public function testBooksByCategory(): void
     {
-        $categoryId = $this->createCategory()->getId();
+        $user = MockUtils::createUser();
+        $this->em->persist($user);
 
-        $this->client->request('GET', '/api/v1/category/' . $categoryId . '/books');
+        $bookCategory = MockUtils::createBookCategory();
+        $this->em->persist($bookCategory);
+
+        $book = MockUtils::createBook()
+            ->setCategories(new ArrayCollection([$bookCategory]))
+            ->setUser($user);
+        $this->em->persist($book);
+        $this->em->flush();
+
+        $this->client->request('GET', '/api/v1/category/' . $bookCategory->getId() . '/books');
         $responseContent = $this->client->getResponse()->getContent();
 
         $this->assertResponseIsSuccessful();
@@ -37,7 +45,7 @@ class BookControllerTest extends AbstractControllerTest
                         'type' => 'array',
                         'items' => [
                             'type' => 'string',
-                            'required' => ['id', 'title', 'slug', 'image', 'authors', 'meap', 'publicationDate'],
+                            'required' => ['id', 'title', 'slug', 'image', 'authors', 'publicationDate'],
                             'properties' => [
                                 'id' => ['type' => 'integer'],
                                 'title' => ['type' => 'string'],
@@ -48,7 +56,6 @@ class BookControllerTest extends AbstractControllerTest
                                     'items' => ['type' => 'string'],
                                 ],
                                 'publicationDate' => ['type' => 'integer'],
-                                'meap' => ['type' => 'boolean'],
                             ],
                         ],
                     ],
@@ -62,9 +69,23 @@ class BookControllerTest extends AbstractControllerTest
      */
     final public function testBookById(): void
     {
-        $bookId = $this->createBookCategory()->getId();
+        $user = MockUtils::createUser();
+        $this->em->persist($user);
 
-        $this->client->request('GET', '/api/v1/book/' . $bookId);
+        $bookCategory = MockUtils::createBookCategory();
+        $this->em->persist($bookCategory);
+
+        $format = MockUtils::createBookFormat();
+        $this->em->persist($format);
+
+        $book = MockUtils::createBook()
+            ->setCategories(new ArrayCollection([$bookCategory]))
+            ->setUser($user);
+        $this->em->persist($book);
+        $this->em->persist(MockUtils::createBookFormatLink($book, $format));
+        $this->em->flush();
+
+        $this->client->request('GET', '/api/v1/book/' . $book->getId());
         $responseContent = json_decode($this->client->getResponse()->getContent(), true);
 
         $this->assertResponseIsSuccessful();
@@ -80,7 +101,6 @@ class BookControllerTest extends AbstractControllerTest
                 'id' => ['type' => 'integer'],
                 'publicationDate' => ['type' => 'integer'],
                 'image' => ['type' => 'string'],
-                'meap' => ['type' => 'boolean'],
 
                 'authors' => [
                     'type' => 'array',
@@ -103,33 +123,5 @@ class BookControllerTest extends AbstractControllerTest
                 'formats' => ['type' => 'array'],
             ],
         ]);
-    }
-
-
-    private function createCategory(): BookCategory
-    {
-        $bookCategory = $this->entityTest->createBookCategory();
-        $this->em->persist($bookCategory);
-        $this->em->flush();
-
-        return $bookCategory;
-    }
-
-    /**
-     * @throws ReflectionException
-     */
-    private function createBookCategory(): Book
-    {
-        $bookCategory = $this->createCategory();
-        $book = $this->entityTest->createBook('', $bookCategory);
-        $format = $this->entityTest->createBookFormat();
-        $this->em->persist($book);
-        $this->em->persist($format);
-
-        $bookToBookFormat = $this->entityTest->createBookToBookFormat($format, $book);
-        $this->em->persist($bookToBookFormat);
-        $this->em->flush();
-
-        return $book;
     }
 }

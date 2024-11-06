@@ -22,8 +22,6 @@ class BookDetails
      */
     private array $authors;
 
-    private bool $meap;
-
     private int $publicationDate;
 
     private float $rating;
@@ -96,18 +94,6 @@ class BookDetails
     final public function setAuthors(array $authors): self
     {
         $this->authors = $authors;
-
-        return $this;
-    }
-
-    final public function isMeap(): bool
-    {
-        return $this->meap;
-    }
-
-    final public function setMeap(bool $meap): self
-    {
-        $this->meap = $meap;
 
         return $this;
     }

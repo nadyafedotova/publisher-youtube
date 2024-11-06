@@ -16,26 +16,20 @@ class BookCategoryFixtures extends Fixture
 
     final public function load(ObjectManager $manager): void
     {
-        $categoriesData = [
-            self::DEVICES_CATEGORY => ['title' => 'Devices', 'slug' => 'devices'],
-            self::ANDROID_CATEGORY => ['title' => 'Android', 'slug' => 'android'],
+        $categories = [
+            self::DEVICES_CATEGORY => ((new BookCategory())->setTitle('Devices')->setSlug('devices')),
+            self::ANDROID_CATEGORY => ((new BookCategory())->setTitle('Android')->setSlug('android'))
         ];
 
-        $categories = [];
-
-        foreach ($categoriesData as $code => $data) {
-            $category = new BookCategory();
-            $category->setTitle($data['title']);
-            $category->setSlug($data['slug']);
-            $categories[$code] = $category;
+        foreach ($categories as $category) {
             $manager->persist($category);
         }
 
+        $manager->persist((new BookCategory())->setTitle('Networking')->setSlug('networking'));
         $manager->flush();
 
         foreach ($categories as $code => $category) {
             $this->addReference($code, $category);
         }
-
     }
 }

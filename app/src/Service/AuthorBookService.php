@@ -69,7 +69,6 @@ readonly class AuthorBookService
         $slug = $this->slugifyOfThrow($createBookRequest->getTitle());
         $book = (new Book())
             ->setTitle($createBookRequest->getTitle())
-            ->setMeap(false)
             ->setSlug($slug)
             ->setUser($user);
 

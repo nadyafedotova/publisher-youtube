@@ -9,6 +9,7 @@ use App\Entity\BookCategory;
 use App\Entity\BookFormat;
 use App\Entity\BookToBookFormat;
 use App\Entity\Review;
+use App\Entity\User;
 use App\Model\Author\BookListItem;
 use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
@@ -21,14 +22,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ReflectionClass;
 use ReflectionException;
 
-class EntityTest
+class MockUtils
 {
     private const int PER_PAGE = 5;
 
     /**
      * @throws ReflectionException
      */
-    final protected function setEntityId(object $entity, int $value, string $idField = 'id'): object
+    final public static function setEntityId(object $entity, int $value, string $idField = 'id'): object
     {
         $class = new ReflectionClass($entity);
         $property = $class->getProperty($idField);
@@ -39,26 +40,35 @@ class EntityTest
         return $entity;
     }
 
+    public static function createUser(): User
+    {
+        return (new User())
+            ->setEmail('test@test.com')
+            ->setFirstName('Test')
+            ->setLastName('Testerov')
+            ->setRoles(['ROLE_AUTHOR'])
+            ->setPassword('password');
+    }
+
     /**
      * @throws ReflectionException
      */
-    final public function createBook(
+    final public static function createBook(
         string $title = 'Test Book',
         ?BookCategory $bookCategory = null,
         ?BookToBookFormat $format = null,
         string $description = 'RxJava for Android Developers',
-        bool $mapper = false
+        bool $mapper = false,
     ): Book {
         $book = (new Book())
             ->setTitle($title)
             ->setImage('') //http://localhost/' . $title . 'png
-            ->setMeap(true)
             ->setIsbn('123321')
             ->setDescription($description)
             ->setPublicationDate((new DateTimeImmutable())->setTimestamp(1602288000))
             ->setAuthors(['Tester'])
             ->setSlug('test-book');
-        $this->setEntityId($book, 1);
+        self::setEntityId($book, 1);
 
         if (!$mapper) {
             $book->setFormats($format ? new ArrayCollection([$format]) : new ArrayCollection());
@@ -71,17 +81,17 @@ class EntityTest
     /**
      * @throws ReflectionException
      */
-    final public function createBookCategory(): BookCategory
+    final public static function createBookCategory(): BookCategory
     {
         $bookCategory = (new BookCategory())
             ->setTitle('Test')
             ->setSlug('test');
-        $this->setEntityId($bookCategory, 1);
+        self::setEntityId($bookCategory, 1);
 
         return $bookCategory;
     }
 
-    final public function createBookDetails(BookFormatModel|array $format, string $title = 'Test Book', bool $mapper = false): BookDetails
+    final public static function createBookDetails(BookFormatModel|array $format, string $title = 'Test Book', bool $mapper = false): BookDetails
     {
         $bookDetails = (new BookDetails())
             ->setId(1)
@@ -89,7 +99,6 @@ class EntityTest
             ->setSlug('test-book')
             ->setImage('')
             ->setAuthors(['Tester'])
-            ->setMeap(true)
             ->setPublicationDate(1602288000);
 
         if (!$mapper) {
@@ -105,13 +114,13 @@ class EntityTest
     /**
      * @throws ReflectionException
      */
-    final public function createBookFormat(): BookFormat
+    final public static function createBookFormat(): BookFormat
     {
         $format = (new BookFormat())
             ->setTitle('format')
             ->setDescription('Description format')
             ->setComment(null);
-        $this->setEntityId($format, 1);
+        self::setEntityId($format, 1);
 
         return $format;
     }
@@ -119,7 +128,7 @@ class EntityTest
     /**
      * @throws ReflectionException
      */
-    final public function createBookFormatModel(): BookFormatModel
+    final public static function createBookFormatModel(): BookFormatModel
     {
         $format = (new BookFormatModel())
             ->setTitle('format')
@@ -127,12 +136,12 @@ class EntityTest
             ->setComment(null)
             ->setPrice(123.55)
             ->setDiscountPercent(5);
-        $this->setEntityId($format, 1);
+        self::setEntityId($format, 1);
 
         return $format;
     }
 
-    final public function createBookToBookFormat(BookFormat $format, Book $book): BookToBookFormat
+    final public static function createBookToBookFormat(BookFormat $format, Book $book): BookToBookFormat
     {
         return (new BookToBookFormat())
             ->setPrice(123.55)
@@ -144,16 +153,13 @@ class EntityTest
     /**
      * @throws ReflectionException
      */
-    final public function createBookItemModel(): BookListItem
+    final public static function createBookItemModel(): BookListItem
     {
         $bookListItem = (new BookListItem())
             ->setTitle('Test Book')
             ->setSlug('test-book')
-            ->setMeap(true)
-            ->setAuthors(['Tester'])
-            ->setImage('')
-            ->setPublicationDate((new DateTimeImmutable('2020-10-10'))->getTimestamp());
-        $this->setEntityId($bookListItem, 1);
+            ->setImage('');
+        self::setEntityId($bookListItem, 1);
 
         return $bookListItem;
     }
@@ -161,19 +167,19 @@ class EntityTest
     /**
      * @throws ReflectionException
      */
-    final public function createReview(Book $book): Review
+    final public static function createReview(Book $book): Review
     {
         $review = (new Review())
             ->setAuthor('tester')
             ->setContent('test content')
             ->setRating(5)
             ->setBook($book);
-        $this->setEntityId($review, 1);
+        self::setEntityId($review, 1);
 
         return $review;
     }
 
-    final public function createReviewModel(): ReviewModel
+    final public static function createReviewModel(): ReviewModel
     {
         return (new ReviewModel())
             ->setId(1)
@@ -182,12 +188,12 @@ class EntityTest
             ->setAuthor('tester');
     }
 
-    final public function createReviewPage(
+    final public static function createReviewPage(
         int $total,
         float $rating,
         int $page,
         int $pages,
-        ReviewModel|array|null $reviewModel
+        ReviewModel|array|null $reviewModel,
     ): ReviewPage {
         return (new ReviewPage())
             ->setTotal($total)
@@ -198,7 +204,7 @@ class EntityTest
             ->setItems($reviewModel);
     }
 
-    final public function createRecommendedBook(string $expectedDescription, string $title = 'Test Recommended Book'): RecommendedBook
+    final public static function createRecommendedBook(string $expectedDescription, string $title = 'Test Recommended Book'): RecommendedBook
     {
         return (new RecommendedBook())
             ->setId(1)
@@ -206,5 +212,14 @@ class EntityTest
             ->setSlug('test-book')
             ->setImage('')
             ->setShortDescription($expectedDescription);
+    }
+
+    final public static function createBookFormatLink(Book $book, BookFormat $bookFormat): BookToBookFormat
+    {
+        return (new BookToBookFormat())
+            ->setPrice(123.55)
+            ->setFormat($bookFormat)
+            ->setDiscountPercent(5)
+            ->setBook($book);
     }
 }

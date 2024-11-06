@@ -3,8 +3,6 @@
 namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
-use JsonException;
-use Symfony\Component\HttpFoundation\Response;
 
 class AuthControllerTest extends AbstractControllerTest
 {

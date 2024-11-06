@@ -3,18 +3,14 @@
 namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 use ReflectionException;
 
 class ReviewControllerTest extends AbstractControllerTest
 {
-    private EntityTest $entityTest;
-
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->entityTest = new EntityTest();
     }
 
     /**
@@ -22,8 +18,13 @@ class ReviewControllerTest extends AbstractControllerTest
      */
     final public function testReviews(): void
     {
-        $book = $this->entityTest->createBook();
-        $this->entityTest->createReview($book);
+        $user = MockUtils::createUser();
+        $this->em->persist($user);
+
+        $book = MockUtils::createBook();
+        $this->em->persist($book);
+
+        $this->em->persist(MockUtils::createReview($book));
         $this->em->flush();
 
         $this->client->request('GET', '/api/v1/book/' .$book->getId().'/review');

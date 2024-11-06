@@ -16,7 +16,7 @@ class BooKFormatRepository extends ServiceEntityRepository
         parent::__construct($registry, BookFormat::class);
     }
 
-    final public function getById(int $id): BookFormat
+    public function getById(int $id): BookFormat
     {
         $format = $this->find($id);
         if (null === $format) {

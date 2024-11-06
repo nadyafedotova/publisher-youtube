@@ -16,7 +16,7 @@ class BookCategoryRepository extends BaseRepository
         parent::__construct($registry, BookCategory::class);
     }
 
-    final public function findBookCategoriesByIds(array $ids): BookCategory|array
+    public function findBookCategoriesByIds(array $ids): BookCategory|array
     {
         return $this->findBy(['id' => $ids]);
     }

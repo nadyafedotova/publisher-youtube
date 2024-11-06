@@ -7,7 +7,7 @@ use App\Repository\ReviewRepository;
 use App\Service\RatingService;
 use App\Service\ReviewService;
 use App\Tests\AbstractTestCase;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 use ArrayIterator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
@@ -16,7 +16,7 @@ class ReviewServiceTest extends AbstractTestCase
 {
     private ReviewRepository $reviewRepository;
     private RatingService $ratingService;
-    private EntityTest $entityTest;
+    private MockUtils $entityTest;
 
     private const int BOOK_ID = 1;
     private const int PER_PAGE = 5;
@@ -28,7 +28,7 @@ class ReviewServiceTest extends AbstractTestCase
     {
         parent::setUp();
 
-        $this->entityTest = new EntityTest();
+        $this->entityTest = new MockUtils();
         $this->reviewRepository = $this->createMock(ReviewRepository::class);
         $this->ratingService = $this->createMock(RatingService::class);
     }

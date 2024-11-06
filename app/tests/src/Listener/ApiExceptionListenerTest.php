@@ -9,6 +9,7 @@ use App\Service\ExceptionHandler\ExceptionMapping;
 use App\Service\ExceptionHandler\ExceptionMappingResolver;
 use App\Tests\AbstractTestCase;
 use InvalidArgumentException;
+use MongoDB\Driver\Exception\AuthenticationException;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -175,7 +176,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
                     return $response->getMessage() == $responseMessage &&
                         $details instanceof ErrorDebugDetails && !empty($details->getTrace());
                 }),
-                JsonEncoder::FORMAT
+                JsonEncoder::FORMAT,
             )
             ->willReturn($responseBody);
 
@@ -191,6 +192,15 @@ class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertEquals($statusCode, $response->getStatusCode());
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertJsonStringEqualsJsonString($responseBody, $response->getContent());
+    }
+
+    public function testIgnoreSecurityExseption(): void
+    {
+        $this->resolver->expects($this->never())
+            ->method('resolve');
+
+        $event = $this->createExceptionEvent(new AuthenticationException());
+        $this->runListener($event, true);
     }
 
     private function runListener(ExceptionEvent $event, bool $isDebug = false): void

@@ -10,7 +10,7 @@ use App\Repository\BookRepository;
 use App\Service\BooksService;
 use App\Service\RatingService;
 use App\Tests\AbstractTestCase;
-use App\Tests\EntityTest;
+use App\Tests\MockUtils;
 use PHPUnit\Framework\MockObject\Exception;
 use ReflectionException;
 
@@ -19,7 +19,6 @@ class BookServiceTest extends AbstractTestCase
     private BookRepository $bookRepository;
     private BookCategoryRepository $bookCategoryRepository;
     private RatingService $ratingService;
-    private EntityTest $entityTest;
 
     /**
      * @throws Exception
@@ -31,7 +30,6 @@ class BookServiceTest extends AbstractTestCase
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->bookCategoryRepository = $this->createMock(BookCategoryRepository::class);
         $this->ratingService = $this->createMock(RatingService::class);
-        $this->entityTest = new EntityTest();
     }
 
     final public function testGetBooksByCategoryNotFound(): void
@@ -52,19 +50,19 @@ class BookServiceTest extends AbstractTestCase
      */
     final public function testGetBooksById(): void
     {
-        $format = $this->entityTest->createBookFormat();
-        $bookToBookFormat = $this->entityTest->createBookToBookFormat($format, $this->entityTest->createBook(''));
+        $format = MockUtils::createBookFormat();
+        $bookToBookFormat = MockUtils::createBookToBookFormat($format, MockUtils::createBook(''));
         $this->bookRepository->expects($this->once())
             ->method('getPublishedById')
             ->with(123)
-            ->willReturn($this->entityTest->createBook('', $this->entityTest->createBookCategory(), $bookToBookFormat));
+            ->willReturn(MockUtils::createBook('', MockUtils::createBookCategory(), $bookToBookFormat));
 
         $this->ratingService->expects($this->once())
             ->method('calcReviewRatingForBook')
             ->with(123)
             ->willReturn(new Rating(10, 5.5));
 
-        $expected = $this->entityTest->createBookDetails($this->entityTest->createBookFormatModel(), '');
+        $expected = MockUtils::createBookDetails(MockUtils::createBookFormatModel(), '');
 
         $this->assertEquals($expected, $this->createBookService()->getBookById(123));
     }
@@ -77,14 +75,14 @@ class BookServiceTest extends AbstractTestCase
         $this->bookRepository->expects($this->once())
             ->method('findPublishedBooksByCategoryId')
             ->with(130)
-            ->willReturn([$this->entityTest->createBook()]);
+            ->willReturn([MockUtils::createBook()]);
 
         $this->bookCategoryRepository->expects($this->once())
             ->method('existsById')
             ->with(130)
             ->willReturn(true);
 
-        $expected = new BookListResponse([$this->entityTest->createBookItemModel()]);
+        $expected = new BookListResponse([MockUtils::createBookItemModel()]);
 
         $this->assertEquals($expected, $this->createBookService()->getBooksByCategory(130));
     }
