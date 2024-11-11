@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\ArgumentResolver;
 
 use App\Attribute\RequestFile;
-use App\Exception\RequestBodyConvertException;
 use App\Exception\ValidationException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Throwable;
 
 readonly class RequestFileArgumentResolver implements ValueResolverInterface
 {
@@ -30,13 +29,14 @@ readonly class RequestFileArgumentResolver implements ValueResolverInterface
         /** @var RequestFile $attribute */
         $attribute = $attributes[0];
 
+        /** @var UploadedFile $uploadedFile */
         $uploadedFile = $request->files->get($attribute->getField());
 
-        $errors = $this->validator->validate($uploadedFile, $uploadedFile->getConstraints());
+        $errors = $this->validator->validate($uploadedFile, $attribute->getConstraints());
         if (count($errors) > 0) {
             throw new ValidationException($errors);
         }
 
-        yield $uploadedFile;
+        return [$uploadedFile];
     }
 }

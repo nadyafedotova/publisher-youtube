@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\src\Service;
 
 use App\Entity\Book;
 use App\Model\Author\PublishBookRequest;
@@ -17,14 +17,14 @@ class BookPublishServiceTest extends AbstractTestCase
     /**
      * @throws Exception
      */
-    protected function setUp(): void
+    final protected function setUp(): void
     {
         parent::setUp();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
     }
 
-    public function testPublish(): void
+    final public function testPublish(): void
     {
         $book = new Book();
         $datetime = new DateTimeImmutable('2020-01-01');
@@ -43,11 +43,9 @@ class BookPublishServiceTest extends AbstractTestCase
         $this->assertEquals($datetime, $book->getPublicationDate());
     }
 
-    public function testUnpublish(): void
+    final public function testUnpublish(): void
     {
         $book = new Book();
-        $datetime = new DateTimeImmutable('2020-01-01');
-        $request = new PublishBookRequest();
 
         $this->bookRepository->expects($this->once())
             ->method('getBookById')
@@ -57,14 +55,8 @@ class BookPublishServiceTest extends AbstractTestCase
         $this->bookRepository->expects($this->once())
             ->method('commit');
 
-        (new BookPublishService($this->bookRepository))->unpublish(1, $request);
+        (new BookPublishService($this->bookRepository))->unpublish(1);
 
         $this->assertNull($book->getPublicationDate());
     }
-
-    public function testSetPublicationDate()
-    {
-
-    }
-
 }
