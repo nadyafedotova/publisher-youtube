@@ -19,6 +19,7 @@ use App\Model\Review as ReviewModel;
 use App\Model\ReviewPage;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use Random\RandomException;
 use ReflectionClass;
 use ReflectionException;
 
@@ -40,10 +41,15 @@ class MockUtils
         return $entity;
     }
 
+    /**
+     * @throws RandomException
+     */
     public static function createUser(): User
     {
+        $randomNumber = random_int(1, 999999999999999);
+
         return (new User())
-            ->setEmail('test@test.com')
+            ->setEmail('test' . $randomNumber . '@test.com')
             ->setFirstName('Test')
             ->setLastName('Testerov')
             ->setRoles(['ROLE_AUTHOR'])
@@ -51,7 +57,7 @@ class MockUtils
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public static function createBook(
         string $title = 'Test Book',
@@ -67,7 +73,8 @@ class MockUtils
             ->setDescription($description)
             ->setPublicationDate((new DateTimeImmutable())->setTimestamp(1602288000))
             ->setAuthors(['Tester'])
-            ->setSlug('test-book');
+            ->setSlug('test-book')
+            ->setUser(self::createUser());
         self::setEntityId($book, 1);
 
         if (!$mapper) {
@@ -173,7 +180,8 @@ class MockUtils
             ->setAuthor('tester')
             ->setContent('test content')
             ->setRating(5)
-            ->setBook($book);
+            ->setBook($book)
+            ->setCreatedAt(new DateTimeImmutable());
         self::setEntityId($review, 1);
 
         return $review;

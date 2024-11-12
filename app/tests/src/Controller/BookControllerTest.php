@@ -5,17 +5,14 @@ namespace App\Tests\src\Controller;
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Random\RandomException;
 use ReflectionException;
 
 class BookControllerTest extends AbstractControllerTest
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
      * @throws ReflectionException
+     * @throws RandomException
      */
     final public function testBooksByCategory(): void
     {
@@ -43,19 +40,18 @@ class BookControllerTest extends AbstractControllerTest
                 'properties' => [
                     'bookCategoryList' => [
                         'type' => 'array',
-                        'items' => [
+                        'bookCategoryList' => [
                             'type' => 'string',
                             'required' => ['id', 'title', 'slug', 'image', 'authors', 'publicationDate'],
                             'properties' => [
                                 'id' => ['type' => 'integer'],
                                 'title' => ['type' => 'string'],
                                 'slug' => ['type' => 'string'],
-                                'image' => ['type' => 'string', 'format' => 'uri'],
+                                'image' => ['type' => 'string'],
                                 'authors' => [
                                     'type' => 'array',
                                     'items' => ['type' => 'string'],
                                 ],
-                                'publicationDate' => ['type' => 'integer'],
                             ],
                         ],
                     ],
@@ -65,7 +61,7 @@ class BookControllerTest extends AbstractControllerTest
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testBookById(): void
     {

@@ -6,7 +6,7 @@ namespace App\Controller;
 
 use App\Model\BookCategoryListResponse;
 use App\Service\BooksCategoryService;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

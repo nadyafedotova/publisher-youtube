@@ -8,7 +8,7 @@ use App\Model\ErrorResponse;
 use App\Model\IdResponse;
 use App\Service\BooksCategoryService;
 use App\Service\RoleService;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
@@ -56,7 +56,7 @@ class AdminController extends AbstractController
         attachables: [new Model(type: ErrorResponse::class)]
     )]
     #[Route(path: '/api/v1/admin/bookCategory/{id}', methods: ['DELETE'])]
-    public function deleteCategory(int $id): Response
+    final public function deleteCategory(int $id): Response
     {
         $this->booksCategoryService->deleteCategory($id);
 
@@ -81,7 +81,7 @@ class AdminController extends AbstractController
     )]
     #[OA\RequestBody(attachables: [new Model(type: BookCategoryUpdateRequest::class)])]
     #[Route(path: '/api/v1/admin/bookCategory', methods: ['POST'])]
-    public function createCategory(#[RequestBody] BookCategoryUpdateRequest $bookCategoryUpdateRequest): Response
+    final public function createCategory(#[RequestBody] BookCategoryUpdateRequest $bookCategoryUpdateRequest): Response
     {
         return $this->json($this->booksCategoryService->createCategory($bookCategoryUpdateRequest));
     }
@@ -104,7 +104,7 @@ class AdminController extends AbstractController
     )]
     #[OA\RequestBody(attachables: [new Model(type: BookCategoryUpdateRequest::class)])]
     #[Route(path: '/api/v1/admin/bookCategory/{id}', methods: ['POST'])]
-    public function updateCategory(int $id, #[RequestBody] BookCategoryUpdateRequest $bookCategoryUpdateRequest): Response
+    final public function updateCategory(int $id, #[RequestBody] BookCategoryUpdateRequest $bookCategoryUpdateRequest): Response
     {
         $this->booksCategoryService->updateCategory($id, $bookCategoryUpdateRequest);
 

@@ -22,7 +22,7 @@ readonly class BooksCategoryService
     ) {
     }
 
-    public function deleteCategory(int $id): void
+    final public function deleteCategory(int $id): void
     {
         $category = $this->bookCategoryRepository->getById($id);
         $booksCount = $this->bookCategoryRepository->countBooksInCategory($category->getId());
@@ -34,7 +34,7 @@ readonly class BooksCategoryService
         $this->bookCategoryRepository->removeAndCommit($category);
     }
 
-    public function createCategory(BookCategoryUpdateRequest $updateRequest): IdResponse
+    final public function createCategory(BookCategoryUpdateRequest $updateRequest): IdResponse
     {
         $category = new BookCategory();
         $this->upsertCategory($category, $updateRequest);
@@ -42,7 +42,7 @@ readonly class BooksCategoryService
         return  new IdResponse($category->getId());
     }
 
-    public function updateCategory(int $id, BookCategoryUpdateRequest $updateRequest): void
+    final public function updateCategory(int $id, BookCategoryUpdateRequest $updateRequest): void
     {
         $this->upsertCategory($this->bookCategoryRepository->getById($id), $updateRequest);
     }

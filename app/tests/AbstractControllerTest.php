@@ -28,7 +28,7 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->em->beginTransaction();
     }
 
-    protected function tearDown(): void
+    final protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -38,7 +38,7 @@ abstract class AbstractControllerTest extends WebTestCase
         restore_exception_handler();
     }
 
-    protected function auth(string $username, string $password): void
+    final protected function auth(string $username, string $password): void
     {
         $this->client->request(
             'POST',
@@ -58,17 +58,17 @@ abstract class AbstractControllerTest extends WebTestCase
         $this->client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
     }
 
-    protected function createUser(string $username, string $password): User
+    final protected function createUser(string $username, string $password): User
     {
         return $this->createUser($username, $password, ['ROLE_USER']);
     }
 
-    protected function createAdmin(string $username, string $password): User
+    final protected function createAdmin(string $username, string $password): User
     {
         return $this->createUserWithRoles($username, $password, ['ROLE_ADMIN']);
     }
 
-    protected function createAuthor(string $username, string $password): User
+    final protected function createAuthor(string $username, string $password): User
     {
         return $this->createUserWithRoles($username, $password, ['ROLE_AUTHOR']);
     }

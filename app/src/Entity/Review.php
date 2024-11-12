@@ -33,6 +33,7 @@ class Review
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'reviews')]
     private Book $book;
 
+    #[ORM\PrePersist]
     final public function setCreatedAtValue(): self
     {
         $this->createdAt = new DateTimeImmutable();

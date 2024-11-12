@@ -8,7 +8,7 @@ use App\Attribute\RequestBody;
 use App\Model\ErrorResponse;
 use App\Model\SingUpRequest;
 use App\Service\SingUpService;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\Response;

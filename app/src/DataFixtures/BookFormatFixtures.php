@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DataFixtures;
 
-use App\Model\BookFormat;
+use App\Entity\BookFormat;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -23,13 +23,7 @@ class BookFormatFixtures extends Fixture
             ->setComment('In Time Series Forecasting Using Foundation Models you will discover');
 
         $manager->persist($format1);
+        $manager->persist($format2);
         $manager->flush();
-    }
-
-    final public function getDependencies(): array
-    {
-        return [
-            BookCategoryFixtures::class,
-        ];
     }
 }

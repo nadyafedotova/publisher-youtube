@@ -15,7 +15,7 @@ use App\Model\IdResponse;
 use App\Security\Voter\AuthorBookVoter;
 use App\Service\AuthorBookService;
 use App\Service\BookPublishService;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;

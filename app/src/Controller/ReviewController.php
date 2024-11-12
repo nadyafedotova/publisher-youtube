@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Model\ReviewPage;
 use App\Service\ReviewService;
 use Exception;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

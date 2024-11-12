@@ -9,7 +9,7 @@ use App\Model\RecommendedBookListResponse;
 use App\Service\Recommendation\Exception\AccessDeniedException;
 use App\Service\Recommendation\Exception\RequestException;
 use App\Service\RecommendationService;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

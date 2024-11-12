@@ -42,7 +42,7 @@ class Book
     private DateTimeInterface|PublishBookRequest|null $publicationDate;
 
     #[ORM\JoinColumn(nullable: false)]
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'books')]
     private UserInterface $user;
 
     /**
