@@ -7,13 +7,13 @@ namespace App\Service\Recommendation\Model;
 class RecommendationResponse
 {
     public function __construct(
-        public string $id,
+        public int $id,
         public int $ts,
         public array $recommendations,
     ) {
     }
 
-    final public function getId(): string
+    final public function getId(): int
     {
         return $this->id;
     }

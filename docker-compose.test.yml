@@ -20,14 +20,12 @@ services:
     container_name: hoverfly-test
     image: spectolabs/hoverfly:${HOVERFLY_VERSION}
     command:
-      - -webserver
+      - "-webserver"
     volumes:
-      - ./app/hoverfly:/hoverfly_app:ro
+      - "$PWD/hoverfly:/hoverfly_app:ro"
     ports:
-      - "8501:8501"
-    networks:
-      app:
-        ipv4_address: ${HOVERFLY_TEST_IP}
+      - "8501:8500"
+      - "8889:8888"
 
 networks:
   app:

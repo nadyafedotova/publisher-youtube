@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Model\BookCategoryListResponse;
 use App\Model\RecommendedBookListResponse;
 use App\Service\Recommendation\Exception\AccessDeniedException;
 use App\Service\Recommendation\Exception\RequestException;
@@ -18,7 +17,7 @@ use OpenApi\Attributes as OA;
 class RecommendationController extends AbstractController
 {
     public function __construct(
-        private RecommendationService  $recommendationService
+        private readonly RecommendationService $recommendationService
     ) {
     }
 
@@ -32,7 +31,7 @@ class RecommendationController extends AbstractController
         content: new Model(type: RecommendedBookListResponse::class)
     )]
     #[Route(path: '/api/v1/book/{id}/recommendations', methods: ['GET'])]
-    public function recommendationsByBookId(int $id): Response
+    final public function recommendationsByBookId(int $id): Response
     {
         return $this->json($this->recommendationService->getRecommendationsByBookId($id));
     }

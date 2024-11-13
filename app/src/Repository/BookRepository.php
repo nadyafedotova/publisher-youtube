@@ -49,8 +49,8 @@ class BookRepository extends BaseRepository
     public function findBooksByIds(array $ids): array
     {
         return $this->getEntityManager()
-           ->createQuery('SELECT b FROM App\Entity\Book b WHERE b.id = :ids MEMBER OF b.categories AND b.publicationDate IS NOT NULL')
-           ->setParameter('id', $ids)
+           ->createQuery('SELECT b FROM App\Entity\Book b WHERE b.id IN (:ids) AND b.publicationDate IS NOT NULL')
+           ->setParameter('ids', $ids)
            ->getResult();
     }
 
@@ -83,7 +83,7 @@ class BookRepository extends BaseRepository
         return (bool) $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    public function existsUserBookById(int $id, UserInterface $user)
+    final public function existsUserBookById(int $id, UserInterface $user)
     {
         return null !== $this->findOneBy(['id' => $id, 'user' => $user]);
     }

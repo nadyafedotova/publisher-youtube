@@ -45,7 +45,7 @@ class BookCategoryRepository extends BaseRepository
 
     public function countBooksInCategory(int $categoryId): int
     {
-        return $this->getEntityManager()->createQuery('SELECT COUNT(b.id) FROM App\Entity\Book b WHERE :categoryId MEMBER OF b.categories')
+        return $this->getEntityManager()->createQuery('SELECT COUNT(b.id) FROM App\Entity\Book b JOIN b.categories c WHERE c.id = :categoryId')
             ->setParameter('categoryId', $categoryId)
             ->getSingleScalarResult();
     }

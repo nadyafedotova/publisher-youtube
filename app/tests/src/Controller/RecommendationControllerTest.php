@@ -16,6 +16,9 @@ class RecommendationControllerTest extends AbstractControllerTest
 {
     private HoverflyClient $hoverflyClient;
 
+    /**
+     * @throws JsonMapper_Exception|GuzzleException
+     */
     final protected function setUp(): void
     {
         parent::setUp();
@@ -55,7 +58,6 @@ class RecommendationControllerTest extends AbstractControllerTest
                     )),
             );
         } catch (GuzzleException|JsonMapper_Exception $e) {
-//            dd($e);
         }
 
         $this->client->request('GET', '/api/v1/book/' . $requestedId . '/recommendations');
@@ -87,8 +89,13 @@ class RecommendationControllerTest extends AbstractControllerTest
         );
     }
 
+    /**
+     * @throws JsonMapper_Exception|GuzzleException
+     */
     private function setUpHoverfly(): void
     {
         $this->hoverflyClient = new HoverflyClient(['base_uri' => $_ENV['HOVERFLY_API']]);
+        $this->hoverflyClient->deleteJournal();
+        $this->hoverflyClient->deleteSimulation();
     }
 }

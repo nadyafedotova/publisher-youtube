@@ -13,11 +13,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
 
-class RecommendationApiService
+readonly class RecommendationApiService
 {
     public function __construct(
-        private readonly HttpClientInterface $recommendationClient,
-        private readonly SerializerInterface $serializer,
+        private HttpClientInterface $recommendationClient,
+        private SerializerInterface $serializer,
     ) {
     }
 
@@ -36,7 +36,6 @@ class RecommendationApiService
                 'json'
             );
         } catch (Throwable $ex) {
-            //error
             if ($ex instanceof ClientException && Response::HTTP_FORBIDDEN === $ex->getCode()) {
                 throw new AccessDeniedException($ex);
             }

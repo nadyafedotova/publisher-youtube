@@ -16,14 +16,14 @@ class BookMapper
     /**
      * @todo interface?
      */
-    public static function map(Book $book, BookDetails $model): void
+    public static function map(Book $book, BookDetails $model): BookDetails
     {
         $publicationDate = $book->getPublicationDate();
         if (null !== $publicationDate) {
             $publicationDate = $publicationDate->getTimestamp();
         }
 
-        $model
+        return $model
             ->setId($book->getId())
             ->setTitle($book->getTitle())
             ->setSlug($book->getSlug())
