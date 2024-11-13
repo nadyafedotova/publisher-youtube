@@ -9,6 +9,7 @@ use App\Model\ErrorValidationDetails;
 use App\Tests\AbstractTestCase;
 use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -63,14 +64,13 @@ class ValidationExceptionListenerTest extends AbstractTestCase
                     }
 
                     $violations = $details->getViolations();
-
                     if (1 !== count($violations) || 'Validation failed' !== $response->getMessage()) {
                         return false;
                     }
 
                     return 'name' === $violations[0]->getField() && 'error' === $violations[0]->getMessage();
                 }),
-                'json'
+                JsonEncoder::FORMAT
             )
             ->willReturn($serialized);
 

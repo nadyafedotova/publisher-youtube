@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 abstract class AbstractTestCase extends TestCase
 {
-    protected function assertResponse(int $statusCode, string $responseBody, Response $response): void
+    final protected function assertResponse(int $statusCode, string $responseBody, Response $response): void
     {
         $this->assertEquals($statusCode, $response->getStatusCode());
         $this->assertInstanceOf(JsonResponse::class, $response);

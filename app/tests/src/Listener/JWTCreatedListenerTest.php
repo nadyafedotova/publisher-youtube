@@ -6,11 +6,13 @@ use App\Listener\JWTCreatedListener;
 use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
+use Random\RandomException;
+use ReflectionException;
 
 class JWTCreatedListenerTest extends AbstractTestCase
 {
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testInvoke(): void
     {
@@ -22,6 +24,6 @@ class JWTCreatedListenerTest extends AbstractTestCase
 
         $listener($event);
 
-        self::assertEquals(['flag' => true, 'id' => 123], $event->getData());
+        $this->assertEquals(['flag' => true, 'id' => 123], $event->getData());
     }
 }

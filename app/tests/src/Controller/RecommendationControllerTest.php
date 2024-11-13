@@ -9,28 +9,24 @@ use Hoverfly\Client as HoverflyClient;
 use Hoverfly\Model\RequestFieldMatcher;
 use Hoverfly\Model\Response;
 use JsonMapper_Exception;
+use Random\RandomException;
 use ReflectionException;
 
 class RecommendationControllerTest extends AbstractControllerTest
 {
     private HoverflyClient $hoverflyClient;
 
-    /**
-     * @throws JsonMapper_Exception
-     * @throws GuzzleException
-     */
-    protected function setUp(): void
+    final protected function setUp(): void
     {
         parent::setUp();
         $this->setUpHoverfly();
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testRecommendationByBookId(): void
     {
-
         $user = MockUtils::createUser();
         $this->em->persist($user);
 
@@ -59,6 +55,7 @@ class RecommendationControllerTest extends AbstractControllerTest
                     )),
             );
         } catch (GuzzleException|JsonMapper_Exception $e) {
+//            dd($e);
         }
 
         $this->client->request('GET', '/api/v1/book/' . $requestedId . '/recommendations');
@@ -90,15 +87,8 @@ class RecommendationControllerTest extends AbstractControllerTest
         );
     }
 
-    /**
-     * @throws JsonMapper_Exception
-     * @throws GuzzleException
-     */
     private function setUpHoverfly(): void
     {
         $this->hoverflyClient = new HoverflyClient(['base_uri' => $_ENV['HOVERFLY_API']]);
-        $this->hoverflyClient->deleteJournal();
-
-        $this->hoverflyClient->deleteSimulation();
     }
 }

@@ -9,14 +9,12 @@ use App\Service\ExceptionHandler\ExceptionMapping;
 use App\Service\ExceptionHandler\ExceptionMappingResolver;
 use App\Tests\AbstractTestCase;
 use InvalidArgumentException;
-use MongoDB\Driver\Exception\AuthenticationException;
+use JsonException;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -38,11 +36,14 @@ class ApiExceptionListenerTest extends AbstractTestCase
         $this->serializer = $this->createMock(SerializerInterface::class);
     }
 
+    /**
+     * @throws JsonException
+     */
     final public function testNon500MappingWithHiddenMessage(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_NOT_FOUND);
         $responseMessage = Response::$statusTexts[$mapping->getCode()];
-        $responseBody = json_encode(['errors' => $responseMessage]);
+        $responseBody = json_encode(['errors' => $responseMessage], JSON_THROW_ON_ERROR);
 
         $this->resolver->expects($this->once())
             ->method('resolve')
@@ -54,7 +55,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
             ->with(new ErrorResponse($responseMessage), JsonEncoder::FORMAT)
             ->willReturn($responseBody);
 
-        $event = $this->createEvent(new InvalidArgumentException('test'));
+        $event = $this->createExceptionEvent(new InvalidArgumentException('test'));
         $this->runListener($event);
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
@@ -62,7 +63,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
 
     final public function testNon500MappingWithPublicMessage(): void
     {
-        $mapping = new ExceptionMapping(Response::HTTP_NOT_FOUND, false, true);
+        $mapping = new ExceptionMapping(Response::HTTP_NOT_FOUND, false, false);
         $responseMessage = 'test';
         $responseBody = json_encode(['errors' => $responseMessage]);
 
@@ -76,11 +77,8 @@ class ApiExceptionListenerTest extends AbstractTestCase
             ->with(new ErrorResponse($responseMessage), JsonEncoder::FORMAT)
             ->willReturn($responseBody);
 
-        $this->logger->expects($this->once())
-            ->method('error');
 
-
-        $event = $this->createEvent(new InvalidArgumentException('test'));
+        $event = $this->createExceptionEvent(new InvalidArgumentException('test'));
         $this->runListener($event);
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
@@ -102,17 +100,23 @@ class ApiExceptionListenerTest extends AbstractTestCase
             ->with(new ErrorResponse($responseMessage), JsonEncoder::FORMAT)
             ->willReturn($responseBody);
 
-        $event = $this->createEvent(new InvalidArgumentException('test'));
+        $this->logger->expects($this->once())
+            ->method('error');
+
+        $event = $this->createExceptionEvent(new InvalidArgumentException('test'));
         $this->runListener($event);
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
     }
 
+    /**
+     * @throws JsonException
+     */
     final public function test500IsLoggable(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_GATEWAY_TIMEOUT);
         $responseMessage = Response::$statusTexts[$mapping->getCode()];
-        $responseBody = json_encode(['errors' => $responseMessage]);
+        $responseBody = json_encode(['errors' => $responseMessage], JSON_THROW_ON_ERROR);
 
         $this->resolver->expects($this->once())
             ->method('resolve')
@@ -128,16 +132,19 @@ class ApiExceptionListenerTest extends AbstractTestCase
             ->method('error')
             ->with('error message', $this->anything());
 
-        $event = $this->createEvent(new InvalidArgumentException('error message'));
+        $event = $this->createExceptionEvent(new InvalidArgumentException('error message'));
         $this->runListener($event);
 
         $this->assertResponse(Response::HTTP_GATEWAY_TIMEOUT, $responseBody, $event->getResponse());
     }
 
+    /**
+     * @throws JsonException
+     */
     final public function test500IsDefaultWhenMappingNotFound(): void
     {
-        $responseMessage = 'Internal Server Error';
-        $responseBody = json_encode(['errors' => $responseMessage]);
+        $responseMessage = Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR];
+        $responseBody = json_encode(['errors' => $responseMessage], JSON_THROW_ON_ERROR);
 
         $this->resolver->expects($this->once())
             ->method('resolve')
@@ -149,7 +156,11 @@ class ApiExceptionListenerTest extends AbstractTestCase
             ->with(new ErrorResponse($responseMessage), JsonEncoder::FORMAT)
             ->willReturn($responseBody);
 
-        $event = $this->createEvent(new InvalidArgumentException('test'));
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with('error message', $this->anything());
+
+        $event = $this->createExceptionEvent(new InvalidArgumentException('error message'));
         $this->runListener($event);
 
         $this->assertResponse(Response::HTTP_INTERNAL_SERVER_ERROR, $responseBody, $event->getResponse());
@@ -180,21 +191,14 @@ class ApiExceptionListenerTest extends AbstractTestCase
             )
             ->willReturn($responseBody);
 
-        $event = $this->createEvent(new InvalidArgumentException($responseMessage));
+        $event = $this->createExceptionEvent(new InvalidArgumentException($responseMessage));
         $this->runListener($event, true);
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
 
     }
 
-    protected function assertResponse(int $statusCode, string $responseBody, Response $response): void
-    {
-        $this->assertEquals($statusCode, $response->getStatusCode());
-        $this->assertInstanceOf(JsonResponse::class, $response);
-        $this->assertJsonStringEqualsJsonString($responseBody, $response->getContent());
-    }
-
-    public function testIgnoreSecurityExseption(): void
+    final public function testIgnoreSecurityException(): void
     {
         $this->resolver->expects($this->never())
             ->method('resolve');
@@ -206,25 +210,5 @@ class ApiExceptionListenerTest extends AbstractTestCase
     private function runListener(ExceptionEvent $event, bool $isDebug = false): void
     {
         (new ApiExceptionListener($this->resolver, $this->logger, $this->serializer, $isDebug)) ($event);
-    }
-
-    private function createEvent(InvalidArgumentException $e): ExceptionEvent
-    {
-        return new ExceptionEvent(
-            $this->createTestKernel(),
-            new Request(),
-            HttpKernelInterface::MAIN_REQUEST,
-            $e,
-        );
-    }
-
-    private function createTestKernel(): HttpKernelInterface
-    {
-        return new class() implements HttpKernelInterface {
-            public function handle(Request $request, int $type = self::MAIN_REQUEST, bool $catch = true): Response
-            {
-                return new Response('test');
-            }
-        };
     }
 }
