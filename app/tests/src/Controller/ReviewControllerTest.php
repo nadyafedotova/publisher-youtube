@@ -4,17 +4,13 @@ namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
+use Random\RandomException;
 use ReflectionException;
 
 class ReviewControllerTest extends AbstractControllerTest
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testReviews(): void
     {
@@ -24,7 +20,9 @@ class ReviewControllerTest extends AbstractControllerTest
         $book = MockUtils::createBook();
         $this->em->persist($book);
 
-        $this->em->persist(MockUtils::createReview($book));
+        $review = MockUtils::createReview($book);
+
+        $this->em->persist($review);
         $this->em->flush();
 
         $this->client->request('GET', '/api/v1/book/' .$book->getId().'/review');
@@ -46,13 +44,12 @@ class ReviewControllerTest extends AbstractControllerTest
                         'type' => 'array',
                         'items' => [
                             'type' => 'object',
-                            'required' => ['id', 'content', 'author', 'rating', 'createdAt'],
+                            'required' => ['id', 'content', 'author', 'rating'],
                             'properties' => [
                                 'id' => ['type' => 'integer'],
                                 'content' => ['type' => 'string'],
                                 'author' => ['type' => 'string'],
                                 'rating' => ['type' => 'integer'],
-                                'createdAt' => ['type' => 'integer'],
                             ],
                         ],
                     ],

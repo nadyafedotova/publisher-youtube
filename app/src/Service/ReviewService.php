@@ -36,25 +36,21 @@ class ReviewService
 
         $rating = $this->ratingService->calcReviewRatingForBook($id);
 
-        $reviewPage = new ReviewPage();
-        $reviewPage->setRating($rating->getRating());
-        $reviewPage->setTotal($rating->getTotal());
-        $reviewPage->setPage($page);
-        $reviewPage->setPerPage(self::PAGE_LIMIT);
-        $reviewPage->setPages((int)ceil($total / self::PAGE_LIMIT));
-        $reviewPage->setItems($items);
-
-        return $reviewPage;
+        return (new ReviewPage())
+            ->setRating($rating->getRating())
+            ->setTotal($rating->getTotal())
+            ->setPage($page)
+            ->setPerPage(self::PAGE_LIMIT)
+            ->setPages((int)ceil($total / self::PAGE_LIMIT))
+            ->setItems($items);
     }
 
     public function map(Review $review): ReviewModel
     {
-        $reviewModel = new ReviewModel();
-        $reviewModel->setId($review->getId());
-        $reviewModel->setRating($review->getRating());
-        $reviewModel->setAuthor($review->getAuthor());
-        $reviewModel->setContent($review->getContent());
-
-        return $reviewModel;
+        return (new ReviewModel())
+            ->setId($review->getId())
+            ->setRating($review->getRating())
+            ->setAuthor($review->getAuthor())
+            ->setContent($review->getContent());
     }
 }
