@@ -6,13 +6,14 @@ use App\Entity\Book;
 use App\Repository\BookRepository;
 use App\Tests\AbstractRepositoryTest;
 use App\Tests\MockUtils;
+use Random\RandomException;
 use ReflectionException;
 
 class BookRepositoryTest extends AbstractRepositoryTest
 {
     private BookRepository $bookRepository;
 
-    protected function setUp(): void
+    final protected function setUp(): void
     {
         parent::setUp();
 
@@ -20,7 +21,7 @@ class BookRepositoryTest extends AbstractRepositoryTest
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testFindBooksByCategoryId(): void
     {

@@ -66,6 +66,8 @@ class MockUtils
         string $description = 'RxJava for Android Developers',
         bool $mapper = false,
     ): Book {
+        $randomNumber = random_int(1, 999999999999999);
+
         $book = (new Book())
             ->setTitle($title)
             ->setImage('') //http://localhost/' . $title . 'png
@@ -73,7 +75,7 @@ class MockUtils
             ->setDescription($description)
             ->setPublicationDate((new DateTimeImmutable())->setTimestamp(1602288000))
             ->setAuthors(['Tester'])
-            ->setSlug('test-book')
+            ->setSlug('test' . $randomNumber . 'book')
             ->setUser(self::createUser());
         self::setEntityId($book, 1);
 
