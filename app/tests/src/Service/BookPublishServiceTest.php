@@ -29,6 +29,7 @@ class BookPublishServiceTest extends AbstractTestCase
         $book = new Book();
         $datetime = new DateTimeImmutable('2020-01-01');
         $request = new PublishBookRequest();
+        $request->setDateTime($datetime);
 
         $this->bookRepository->expects($this->once())
             ->method('getBookById')

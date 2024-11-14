@@ -19,7 +19,7 @@ class UploadServiceTest extends AbstractTestCase
     /**
      * @throws Exception
      */
-    protected function setUp(): void
+    final protected function setUp(): void
     {
         parent::setUp();
 
@@ -53,18 +53,20 @@ class UploadServiceTest extends AbstractTestCase
 
         $file->expects($this->once())
             ->method('move')
-            ->with($this->equalTo('/tmp/book/1'), $this->callback(function (string $arg): bool {
-                if (!str_ends_with($arg, '.jpg')) {
-                    return false;
-                }
-
-                return Uuid::isValid(basename($arg, ',jpg'));
-            }));
+            ->with(
+                $this->equalTo('/tmp/book/1'),
+                $this->callback(function (string $filename): bool {
+                    $extension = pathinfo($filename, PATHINFO_EXTENSION);
+                    $basename = pathinfo($filename, PATHINFO_FILENAME);
+                    return $extension === 'jpg' && Uuid::isValid($basename);
+                })
+            );
 
         $actualPath = pathinfo($this->createService()->uploadBookFile(1, $file));
+
         $this->assertEquals('/upload/book/1', $actualPath['dirname']);
         $this->assertEquals('jpg', $actualPath['extension']);
-        $this->assertTrue(Uuid::isValid($actualPath['extension']));
+        $this->assertTrue(Uuid::isValid($actualPath['filename']));
     }
 
     final public function testDeleteBookFile(): void

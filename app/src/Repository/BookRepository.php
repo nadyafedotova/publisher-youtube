@@ -21,7 +21,7 @@ class BookRepository extends BaseRepository
      * @param int $id
      * @return Book[]
      */
-    final public function findPublishedBooksByCategoryId(int $id): array
+    public function findPublishedBooksByCategoryId(int $id): array
     {
         return $this->getEntityManager()
             ->createQuery('SELECT b FROM App\Entity\Book b JOIN b.categories c WHERE c.id = :categoryId AND b.publicationDate IS NOT NULL')
@@ -29,7 +29,7 @@ class BookRepository extends BaseRepository
             ->getResult();
     }
 
-    final public function getPublishedById(int $id): Book
+    public function getPublishedById(int $id): Book
     {
         $book = $this->getEntityManager()
             ->createQuery('SELECT b FROM App\Entity\Book b WHERE b.id = :id AND b.publicationDate IS NOT NULL')

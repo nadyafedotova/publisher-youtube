@@ -15,6 +15,7 @@ use App\Model\Author\BookListResponse;
 use App\Model\Author\CreateBookRequest;
 use App\Model\Author\UpdateBookRequest;
 use App\Model\Author\UploadCoverResponse;
+use App\Model\BaseBookDetails;
 use App\Model\IdResponse;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BooKFormatRepository;
@@ -77,7 +78,7 @@ readonly class AuthorBookService
         return new IdResponse($book->getId());
     }
 
-    final public function getBook(int $id): BookDetails
+    final public function getBook(int $id): BaseBookDetails
     {
         $book = $this->bookRepository->getBookById($id);
 

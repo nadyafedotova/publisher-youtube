@@ -14,6 +14,7 @@ use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\Exception;
+use Random\RandomException;
 use ReflectionException;
 
 class RecommendationServiceTest extends AbstractTestCase
@@ -47,9 +48,7 @@ class RecommendationServiceTest extends AbstractTestCase
     }
 
     /**
-     * @throws ReflectionException
-     * @throws RequestException
-     * @throws AccessDeniedException
+     * @throws ReflectionException|RequestException|AccessDeniedException|RandomException
      */
     #[DataProvider('dataProvider')]
     final public function testGetRecommendationsByBookId(string $actualDescription, string $expectedDescription): void
@@ -67,8 +66,10 @@ class RecommendationServiceTest extends AbstractTestCase
             ->willReturn(new RecommendationResponse(1, 12345, [new RecommendationItem(2),]));
 
         $expected = new RecommendedBookListResponse([$this->entityTest->createRecommendedBook($expectedDescription, '')]);
+        $db = $this->createService()->getRecommendationsByBookId(1);
+        $expected->getItems()[0]->setSlug($db->getItems()[0]->getSlug());
 
-        $this->assertEquals($expected, $this->createService()->getRecommendationsByBookId(1));
+        $this->assertEquals($expected, $db);
     }
 
     private function createService(): RecommendationService

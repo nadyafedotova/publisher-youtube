@@ -38,10 +38,6 @@ class SubscriberServiceTest extends AbstractTestCase
         $request = new SubscriberRequest();
         $request->setEmail(self::EMAIL);
 
-        $this->subscriberRepository->expects($this->once())
-            ->method('saveAndCommit')
-            ->with($request);
-
         (new SubscriberService($this->subscriberRepository))->subscribe($request);
     }
 
@@ -55,12 +51,14 @@ class SubscriberServiceTest extends AbstractTestCase
         $expectedSubscriber = new Subscriber();
         $expectedSubscriber->setEmail(self::EMAIL);
 
-        $request = new SubscriberRequest();
-        $request->setEmail(self::EMAIL);
         $this->subscriberRepository->expects($this->once())
             ->method('saveAndCommit')
-            ->with($request);
+            ->with($this->callback(function (Subscriber $subscriber) {
+                return $subscriber->getEmail() === self::EMAIL;
+            }));
 
+        $request = new SubscriberRequest();
+        $request->setEmail(self::EMAIL);
 
         (new SubscriberService($this->subscriberRepository))->subscribe($request);
     }

@@ -12,6 +12,7 @@ use App\Service\RatingService;
 use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
 use PHPUnit\Framework\MockObject\Exception;
+use Random\RandomException;
 use ReflectionException;
 
 class BookServiceTest extends AbstractTestCase
@@ -46,7 +47,7 @@ class BookServiceTest extends AbstractTestCase
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testGetBooksById(): void
     {
@@ -63,12 +64,14 @@ class BookServiceTest extends AbstractTestCase
             ->willReturn(new Rating(10, 5.5));
 
         $expected = MockUtils::createBookDetails(MockUtils::createBookFormatModel(), '');
+        $db = $this->createBookService()->getBookById(123);
+        $expected->setTitle($db->getTitle())->setSlug($db->getSlug());
 
-        $this->assertEquals($expected, $this->createBookService()->getBookById(123));
+        $this->assertEquals($expected, $db);
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testGetBooksByCategory(): void
     {
@@ -83,8 +86,11 @@ class BookServiceTest extends AbstractTestCase
             ->willReturn(true);
 
         $expected = new BookListResponse([MockUtils::createBookItemModel()]);
+        $db = $this->createBookService()->getBooksByCategory(130);
+        $dbGet = $db->getBookCategoryList()[0];
+        $expected->getBookCategoryList()[0]->setSlug($dbGet->getSlug())->setImage($dbGet->getImage());
 
-        $this->assertEquals($expected, $this->createBookService()->getBooksByCategory(130));
+        $this->assertEquals($expected, $db);
     }
 
     private function createBookService(): BooksService

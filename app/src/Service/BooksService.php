@@ -9,6 +9,7 @@ use App\Exception\BookCategoryNotFoundException;
 use App\Mapper\BookMapper;
 use App\Model\Author\BookListResponse;
 use App\Model\BookDetails;
+use App\Model\BookListItem;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
 
@@ -28,7 +29,7 @@ readonly class BooksService
         }
 
         return new BookListResponse(array_map(
-            fn (Book $book) => BookMapper::map($book, new BookDetails()),
+            fn (Book $book) => BookMapper::map($book, new BookListItem()),
             $this->bookRepository->findPublishedBooksByCategoryId($categoryId),
         ));
     }

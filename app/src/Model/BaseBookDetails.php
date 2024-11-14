@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Model\Author;
+namespace App\Model;
 
-
-class BookListItem
+class BaseBookDetails
 {
     private int $id;
 
@@ -14,6 +13,13 @@ class BookListItem
     private string $slug;
 
     private ?string $image = null;
+
+    /**
+     * @var string[]
+     */
+    private ?array $authors;
+
+    private ?int $publicationDate = null;
 
     final public function getId(): int
     {
@@ -59,6 +65,30 @@ class BookListItem
     final public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    final public function getAuthors(): ?array
+    {
+        return $this->authors;
+    }
+
+    final public function setAuthors(?array $authors): self
+    {
+        $this->authors = $authors;
+
+        return $this;
+    }
+
+    final public function getPublicationDate(): ?int
+    {
+        return $this->publicationDate;
+    }
+
+    final public function setPublicationDate(?int $publicationDate): self
+    {
+        $this->publicationDate = $publicationDate;
 
         return $this;
     }

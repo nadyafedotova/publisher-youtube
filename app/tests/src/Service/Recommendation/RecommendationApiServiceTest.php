@@ -37,8 +37,7 @@ class RecommendationApiServiceTest extends AbstractTestCase
 
 
     /**
-     * @throws RequestException
-     * @throws AccessDeniedException
+     * @throws RequestException|AccessDeniedException
      */
     #[DataProvider('dataProvider')]
     final public function testGetRecommendationsByBookId(int $responseCode, string $exceptionClass): void

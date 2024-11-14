@@ -39,11 +39,13 @@ class RoleServiceTest extends AbstractTestCase
     {
         $this->createService()->grantAuthor(1);
         $this->assertEquals(['ROLE_AUTHOR'], $this->user->getRoles());
+        $this->userRepository->commit();
     }
 
     final public function testGrantAdmin(): void
     {
         $this->createService()->grantAdmin(1);
         $this->assertEquals(['ROLE_ADMIN'], $this->user->getRoles());
+        $this->userRepository->commit();
     }
 }

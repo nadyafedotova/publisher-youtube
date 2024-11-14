@@ -7,8 +7,8 @@ namespace App\Mapper;
 use App\Entity\Book;
 use App\Entity\BookCategory;
 use App\Entity\BookToBookFormat;
+use App\Model\BaseBookDetails;
 use App\Model\BookCategory as BookCategoryModel;
-use App\Model\BookDetails;
 use App\Model\BookFormat;
 
 class BookMapper
@@ -16,7 +16,7 @@ class BookMapper
     /**
      * @todo interface?
      */
-    public static function map(Book $book, BookDetails $model): BookDetails
+    public static function map(Book $book, BaseBookDetails $model): BaseBookDetails
     {
         $publicationDate = $book->getPublicationDate();
         if (null !== $publicationDate) {

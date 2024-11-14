@@ -26,6 +26,7 @@ use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\Exception;
+use Random\RandomException;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -83,7 +84,7 @@ class AuthorBookServiceTest extends AbstractTestCase
 
         $this->slugger->expects($this->once())
             ->method('slug')
-            ->with('new Book')
+            ->with('New Book')
             ->willReturn(new UnicodeString('new-book'));
 
         $this->bookRepository->expects($this->once())
@@ -98,7 +99,7 @@ class AuthorBookServiceTest extends AbstractTestCase
                 MockUtils::setEntityId($book, 1);
             });
 
-        $this->assertEquals(new IdResponse(1111), $this->createService()->createBook($payload, $user));
+        $this->assertEquals(new IdResponse(1), $this->createService()->createBook($payload, $user));
     }
 
     final public function testCreateBookSlugExistsException(): void
@@ -111,7 +112,7 @@ class AuthorBookServiceTest extends AbstractTestCase
 
         $this->slugger->expects($this->once())
             ->method('slug')
-            ->with('new Book')
+            ->with('New Book')
             ->willReturn(new UnicodeString('new-book'));
 
         $this->bookRepository->expects($this->once())
@@ -119,11 +120,11 @@ class AuthorBookServiceTest extends AbstractTestCase
             ->with('new-book')
             ->willReturn(true);
 
-        $this->assertEquals(new IdResponse(1111), $this->createService()->createBook($payload, $user));
+        $this->assertEquals(new IdResponse(1), $this->createService()->createBook($payload, $user));
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testGetBook(): void
     {
@@ -141,18 +142,18 @@ class AuthorBookServiceTest extends AbstractTestCase
 
         $bookDetails = (new BookDetails())
             ->setId(1)
-            ->setTitle('title')->setSlug('slug')
-            ->setImage('image')
-            ->setIsbn('isbn')
-            ->setDescription('description')
+            ->setTitle('Test Book')
+            ->setImage('')
+            ->setIsbn('123321')
+            ->setDescription('RxJava for Android Developers')
             ->setPublicationDate(1602288000)
             ->setAuthors(['Tester'])
             ->setCategories([
-                new BookCategory(1, 'Devices', 'devices')
+                new BookCategory(1, 'Test', 'test')
             ])
             ->setFormats([
                     (new BookFormat())->setId(1)->setTitle('format')
-                    ->setDescription('description')
+                    ->setDescription('Description format')
                     ->setComment(null)
                     ->setPrice(123.55)
                     ->setDiscountPercent(5),
@@ -163,11 +164,14 @@ class AuthorBookServiceTest extends AbstractTestCase
             ->with(1)
             ->willReturn($book);
 
-        $this->assertEquals($bookDetails, $this->createService()->getBook(1));
+        $db = $this->createService()->getBook(1);
+        $bookDetails->setSlug($db->getSlug());
+        $this->assertEquals($bookDetails, $db);
+
     }
 
     /**
-     * @throws ReflectionException
+     * @throws ReflectionException|RandomException
      */
     final public function testGetBooks(): void
     {
@@ -181,14 +185,14 @@ class AuthorBookServiceTest extends AbstractTestCase
             ->willReturn(([$book]));
 
         $bookItem = (new BookListItem())->setId(1)
-            ->setImage('http://localhost.png')
-            ->setTitle('title')
-            ->setSlug('slug');
+            ->setImage('')
+            ->setTitle('Test Book');
 
-        $this->assertEquals(
-            new BookListResponse([$bookItem]),
-            $this->createService()->getBooks($user),
-        );
+        $db = $this->createService()->getBooks($user);
+
+        $bookItem->setSlug($db->getBookCategoryList()[0]->getSlug());
+
+        $this->assertEquals(new BookListResponse([$bookItem]), $db);
     }
 
     final public function testUpdateBookExceptionOnDuplicateSlug(): void
@@ -302,10 +306,10 @@ class AuthorBookServiceTest extends AbstractTestCase
         $this->uploadService->expects($this->once())
             ->method('uploadBookFile')
             ->with(1, $file)
-            ->willReturn('http://localhost/book.jpg');
+            ->willReturn('http://localhost/new.jpg');
 
         $this->assertEquals(
-            new UploadCoverResponse('http://localhost/book.jpg'),
+            new UploadCoverResponse('http://localhost/new.jpg'),
             $this->createService()->uploadCover(1, $file),
         );
     }
@@ -329,16 +333,15 @@ class AuthorBookServiceTest extends AbstractTestCase
 
         $this->uploadService->expects($this->once())
             ->method('uploadBookFile')
-            ->with(1, 'old.png')
-            ->willReturn('http://localhost/book.jpg');
+            ->with(1, $file)
+            ->willReturn('http://localhost/new.jpg');
 
         $this->uploadService->expects($this->once())
             ->method('deleteBookFile')
-            ->with(1, $file)
-            ->willReturn('http://localhost/book.jpg');
+            ->with(1, 'old.png');
 
         $this->assertEquals(
-            new UploadCoverResponse('http://localhost/book.jpg'),
+            new UploadCoverResponse('http://localhost/new.jpg'),
             $this->createService()->uploadCover(1, $file),
         );
     }

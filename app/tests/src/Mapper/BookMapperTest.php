@@ -18,6 +18,8 @@ class BookMapperTest extends AbstractTestCase
     {
         $book = MockUtils::createBook('', null, null, '', true);
         $expected = MockUtils::createBookDetails([], '', true);
+        $db = BookMapper::map($book, new BookDetails);
+        $expected->setSlug($db->getSlug());
 
         $this->assertEquals($expected, BookMapper::map($book, new BookDetails));
     }

@@ -10,7 +10,7 @@ use App\Entity\BookFormat;
 use App\Entity\BookToBookFormat;
 use App\Entity\Review;
 use App\Entity\User;
-use App\Model\Author\BookListItem;
+use App\Model\BookListItem;
 use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
 use App\Model\BookFormat as BookFormatModel;
@@ -159,18 +159,15 @@ class MockUtils
             ->setFormat($format);
     }
 
-    /**
-     * @throws ReflectionException
-     */
     final public static function createBookItemModel(): BookListItem
     {
-        $bookListItem = (new BookListItem())
+        return (new BookListItem())
+            ->setId(1)
             ->setTitle('Test Book')
             ->setSlug('test-book')
-            ->setImage('');
-        self::setEntityId($bookListItem, 1);
-
-        return $bookListItem;
+            ->setAuthors(['Tester'])
+            ->setImage('http://localhost.png')
+            ->setPublicationDate(1602288000);
     }
 
     /**
