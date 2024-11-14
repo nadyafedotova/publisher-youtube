@@ -83,7 +83,7 @@ class BookRepository extends BaseRepository
         return (bool) $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
-    final public function existsUserBookById(int $id, UserInterface $user)
+    public function existsUserBookById(int $id, UserInterface $user)
     {
         return null !== $this->findOneBy(['id' => $id, 'user' => $user]);
     }

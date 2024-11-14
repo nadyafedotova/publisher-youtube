@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Tests\src\Service;
+namespace App\Tests\src\Security;
 
 use App\Entity\User;
-use App\Exception\UserNotFoundException;
 use App\Repository\UserRepository;
 use App\Security\JwtUserProvider;
 use App\Tests\AbstractTestCase;
 use PHPUnit\Framework\MockObject\Exception;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 class JwtUserProviderTest extends AbstractTestCase
 {
@@ -16,7 +16,7 @@ class JwtUserProviderTest extends AbstractTestCase
     /**
      * @throws Exception
      */
-    protected function setUp(): void
+    final protected function setUp(): void
     {
         parent::setUp();
 
@@ -25,15 +25,15 @@ class JwtUserProviderTest extends AbstractTestCase
 
     final public function testSupportsClass(): void
     {
-        $user = (new User())->setEmail('john.doe@example.com');
+        $user = (new User())->setEmail('testr@test.com');
         $provider = new JwtUserProvider($this->userRepository);
 
         $this->userRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['email' => 'john.doe@example.com'])
+            ->with(['email' => 'testr@test.com'])
             ->willReturn($user);
 
-        $this->assertEquals($user, $provider->loadUserByIdentifier('john.doe@example.com'));
+        $this->assertEquals($user, $provider->loadUserByIdentifier('testr@test.com'));
     }
 
     final public function testLoadUserByIdentifierNotFoundException(): void
@@ -42,15 +42,15 @@ class JwtUserProviderTest extends AbstractTestCase
 
         $this->userRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['email' => 'john.doe@example.com'])
+            ->with(['email' => 'testr@test.com'])
             ->willReturn(null);
 
-        (new JwtUserProvider($this->userRepository))->loadUserByIdentifier('john.doe@example.com');
+        (new JwtUserProvider($this->userRepository))->loadUserByIdentifier('testr@test.com');
     }
 
     final public function testLoadUserByIdentifierAndPayload(): void
     {
-        $user = (new User())->setEmail('john.doe@example.com');
+        $user = (new User())->setEmail('testr@test.com');
         $provider = new JwtUserProvider($this->userRepository);
 
         $this->userRepository->expects($this->once())
@@ -58,7 +58,7 @@ class JwtUserProviderTest extends AbstractTestCase
             ->with(['id' => 1])
             ->willReturn($user);
 
-        $this->assertEquals($user, $provider->loadUserByIdentifierAndPayload('john.doe@example.com', ['id' => 1]));
+        $this->assertEquals($user, $provider->loadUserByIdentifierAndPayload('testr@test.com', ['id' => 1]));
 
     }
 
@@ -68,9 +68,9 @@ class JwtUserProviderTest extends AbstractTestCase
 
         $this->userRepository->expects($this->once())
             ->method('findOneBy')
-            ->with(['id' => 1])
+            ->with(['id' =>' 1'])
             ->willReturn(null);
 
-        (new JwtUserProvider($this->userRepository))->loadUserByIdentifierAndPayload('john.doe@example.com', ['id' => 1]);
+        (new JwtUserProvider($this->userRepository))->loadUserByIdentifierAndPayload('testr@test.com', ['id' => 1]);
     }
 }
