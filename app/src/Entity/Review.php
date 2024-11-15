@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\ReviewRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use OpenApi\Attributes as OA;
 
 #[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
