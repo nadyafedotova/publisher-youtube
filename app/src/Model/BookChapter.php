@@ -67,4 +67,9 @@ class BookChapter
 
         return $this;
     }
+
+    final public function addItem(BookChapter $chapter): void
+    {
+        $this->items[] = $chapter;
+    }
 }

@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Validation;
 
+use AllowDynamicProperties;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
-#[\Attribute] class AtLeastOneRequired extends Constraint
+#[AllowDynamicProperties]
+#[\Attribute]
+class AtLeastOneRequired extends Constraint
 {
     /** @var string[] */
-    public array $requiredField;
+    public array $requiredFields;
 
     public string $message = 'At least one of {{ field }} is required.';
 
@@ -28,13 +31,13 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
         $payload = null
     ) {
         if (!empty($options) && array_is_list($options)) {
-            $requiredFields = $requiredField ?? $options;
+            $requiredFields = $requiredFields ?? $options;
             $options = [];
         }
 
-        if (empty($requiredField)) {
+        if (empty($requiredFields)) {
             throw new ConstraintDefinitionException(
-                'The "requiredField" of AtLeastOneRequired constraint cannot be empty.'
+                'The "requiredFields" of AtLeastOneRequired constraint cannot be empty.'
             );
         }
 
@@ -42,18 +45,18 @@ use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
         parent::__construct($options, $group, $payload);
 
-        $this->requiredField = $requiredFields;
+        $this->requiredFields = $requiredFields;
         $this->message = $message ?? $this->message;
     }
 
     final public function getRequiredOptions(): array
     {
-        return ['requiredField'];
+        return ['requiredFields'];
     }
 
     final public function getDefaultOption(): string
     {
-        return 'requiredField';
+        return 'requiredFields';
     }
 
     final public function getTargets(): string|array

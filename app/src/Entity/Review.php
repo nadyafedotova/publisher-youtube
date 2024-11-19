@@ -9,7 +9,7 @@ use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use OpenApi\Attributes as OA;
 
-#[ORM\HasLifecycleCallbacks]
+//#[ORM\HasLifecycleCallbacks]
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 class Review
 {
@@ -34,13 +34,13 @@ class Review
     #[ORM\ManyToOne(targetEntity: Book::class, inversedBy: 'reviews')]
     private Book $book;
 
-    #[ORM\PrePersist]
-    final public function setCreatedAtValue(): self
-    {
-        $this->createdAt = new DateTimeImmutable();
-
-        return $this;
-    }
+//    #[ORM\PrePersist]
+//    final public function setCreatedAtValue(): self
+//    {
+//        $this->createdAt = new DateTimeImmutable();
+//
+//        return $this;
+//    }
 
     final public function getId(): ?int
     {

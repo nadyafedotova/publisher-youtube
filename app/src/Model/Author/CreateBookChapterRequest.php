@@ -13,7 +13,7 @@ class CreateBookChapterRequest
     private string $title;
 
     #[Positive]
-    private ?int $parentId;
+    private ?int $parentId = null;
 
     final public function getTitle(): string
     {

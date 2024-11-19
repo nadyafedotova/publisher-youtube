@@ -27,7 +27,7 @@ class AtLeastOneRequiredValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, AtLeastOneRequired::class);
         }
 
-        $passed = array_filter($constraint->requiredField, function (string $required) use ($object) {
+        $passed = array_filter($constraint->requiredFields, function (string $required) use ($object) {
             return null !== $this->propertyAccessor->isReadable($object, $required);
         });
 
@@ -35,9 +35,9 @@ class AtLeastOneRequiredValidator extends ConstraintValidator
             return;
         }
 
-        $fieldList = implode(', ', $constraint->requiredField);
+        $fieldList = implode(', ', $constraint->requiredFields);
 
-        foreach ($constraint->requiredField as $required) {
+        foreach ($constraint->requiredFields as $required) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ field }}', $fieldList)
                 ->setCode(AtLeastOneRequired::ONE_REQUIRED_ERROR)

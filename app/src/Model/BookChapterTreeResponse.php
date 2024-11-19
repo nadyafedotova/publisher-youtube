@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Entity\BookChapter;
-
 class BookChapterTreeResponse
 {
     public function __construct(
@@ -21,10 +19,8 @@ class BookChapterTreeResponse
         return $this->items;
     }
 
-    final public function addItem(BookChapter $items): self
+    final public function addItem(BookChapter $chapter): void
     {
-        $this->items[] = $items;
-
-        return $this;
+        $this->items[] = $chapter;
     }
 }

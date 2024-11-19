@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-class SortContext
+readonly class SortContext
 {
     public function __construct(
         private SortPosition $position,
@@ -20,7 +20,7 @@ class SortContext
             default => SortPosition::Between,
         };
 
-        return new self($position, SortPosition::AsLast ? $previousId : $nextId);
+        return new self($position, SortPosition::AsLast === $position ? $previousId : $nextId);
     }
 
     final public function getPosition(): SortPosition

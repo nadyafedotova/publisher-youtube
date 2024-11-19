@@ -197,7 +197,7 @@ class AuthorController extends AbstractController
         attachables: [new Model(type: ErrorResponse::class)]
     )]
     #[OA\RequestBody(attachables: [new Model(type: CreateBookChapterRequest::class)])]
-    #[Route(path: '/api/v1/author/book/{bookId}', methods: ['POST'])]
+    #[Route(path: '/api/v1/author/book/{bookId}/chapter', methods: ['POST'])]
     #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'bookId')]
     final public function createBookChapter(#[RequestBody] CreateBookChapterRequest $request, int $bookId): Response
     {

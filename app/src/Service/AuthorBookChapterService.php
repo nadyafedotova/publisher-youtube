@@ -31,15 +31,16 @@ readonly class AuthorBookChapterService
 
     final public function createChapter(CreateBookChapterRequest $request, int $bookId): IdResponse
     {
-        $book = $this->bookRepository->find($bookId);
+        $book = $this->bookRepository->getBookById($bookId);
         $title = $request->getTitle();
         $parentId = $request->getParentId();
         $parent = null;
         $level = self::MIN_LEVEL;
 
         if (null !== $parentId) {
-            $parent = $this->bookChapterRepository->getBookById($parentId);
+            $parent = $this->bookChapterRepository->getById($parentId);
             $parentLevel = $parent->getLevel();
+
             if (self::MAX_LEVEL === $parentLevel) {
                 throw new BookChapterInvalidSortException('max level is reached');
             }
@@ -66,7 +67,7 @@ readonly class AuthorBookChapterService
         $title = $request->getTitle();
         $chapter->setTitle($title)->setSlug($this->slugger->slug($title));
 
-        $this->bookChapterRepository->saveAndCommit($chapter);
+        $this->bookChapterRepository->commit();
     }
 
     final public function deleteChapter(IdResponse $idResponse): void
@@ -89,13 +90,12 @@ readonly class AuthorBookChapterService
             $index[$chapter->getId()] = $model;
 
             if (!$chapter->hasParent()) {
-
-                /** @var BookChapter $model*/
                 $response->addItem($model);
                 continue;
             }
 
             $parent = $chapter->getParent();
+
             $index[$parent->getId()]->addItem($model);
         }
 
@@ -109,16 +109,16 @@ readonly class AuthorBookChapterService
         $nearChapter = $this->bookChapterRepository->getById($sortContext->getNearId());
         $level = $nearChapter->getLevel();
 
-        if ($sortContext->getPosition()) {
+        if (SortPosition::AsLast === $sortContext->getPosition()) {
             $sort = $this->getNextMaxSort($chapter->getBook(), $level);
         } else {
             $sort = $nearChapter->getSort();
             $this->bookChapterRepository->increasesSortFrom($sort, $chapter->getBook(), $level, self::SORT_STEP);
         }
 
-        $chapter->setLevel($level)->setSort($sort);
+        $chapter->setLevel($level)->setSort($sort)->setParent($nearChapter->getParent());
 
-        $this->bookChapterRepository->saveAndCommit($chapter);
+        $this->bookChapterRepository->commit();
     }
 
     private function getNextMaxSort(Book $book, int $level): int

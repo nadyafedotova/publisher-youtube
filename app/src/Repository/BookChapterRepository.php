@@ -18,12 +18,12 @@ class BookChapterRepository extends BaseRepository
 
     final public function getById(int $id): BookChapter
     {
-        $book = $this->find($id);
-        if (null === $book) {
+        $chapter = $this->find($id);
+        if (null === $chapter) {
             throw new BookChapterNotFoundException();
         }
 
-        return $book;
+        return $chapter;
     }
 
     final public function getMaxSort(Book $book, int $level): int
