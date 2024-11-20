@@ -19,22 +19,9 @@ class ReviewController extends AbstractController
     ) {
     }
 
-    /**
-     * @throws Exception
-     */
-    #[OA\Parameter(
-        name: "page",
-        description: 'Page number',
-        in: 'query',
-        schema: new OA\Schema(
-            type: 'integer'
-        )
-    )]
-    #[OA\Response(
-        response: 200,
-        description: 'Returns page of reviews for the given book',
-        content: new Model(type: ReviewPage::class)
-    )]
+    /** @throws Exception */
+    #[OA\Parameter(name: "page", description: 'Page number', in: 'query', schema: new OA\Schema(type: 'integer'))]
+    #[OA\Response(response: 200, description: 'Returns page of reviews for the given book', content: new Model(type: ReviewPage::class))]
     #[Route(path: '/api/v1/book/{id}/review', methods: ['GET'])]
     final public function reviews(int $id, Request $request): Response
     {

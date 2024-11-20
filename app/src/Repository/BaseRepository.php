@@ -31,7 +31,7 @@ abstract class BaseRepository extends ServiceEntityRepository
 
     public function removeAndCommit(object $entity): void
     {
-        $this->save($entity);
+        $this->remove($entity);
         $this->commit();
     }
 

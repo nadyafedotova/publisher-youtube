@@ -25,7 +25,7 @@ class ReviewService
      */
     final public function getReviewPageByBookId(int $id, int $page): ReviewPage
     {
-        $offset = max($page - 1, 0) * self::PAGE_LIMIT;
+        $offset = PaginationUtils::calcOOffset($page, self::PAGE_LIMIT);
         $paginator = $this->reviewRepository->getPageByBookId($id, $offset, self::PAGE_LIMIT);
         $total = count($paginator);
         $items = [];
@@ -41,7 +41,7 @@ class ReviewService
             ->setTotal($rating->getTotal())
             ->setPage($page)
             ->setPerPage(self::PAGE_LIMIT)
-            ->setPages((int)ceil($total / self::PAGE_LIMIT))
+            ->setPages(PaginationUtils::calcPages($total, self::PAGE_LIMIT))
             ->setItems($items);
     }
 

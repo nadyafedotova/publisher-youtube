@@ -21,15 +21,8 @@ class RecommendationController extends AbstractController
     ) {
     }
 
-    /**
-     * @throws RequestException
-     * @throws AccessDeniedException
-     */
-    #[OA\Response(
-        response: 200,
-        description: 'Returns recommendations for the book',
-        content: new Model(type: RecommendedBookListResponse::class)
-    )]
+    /** @throws RequestException|AccessDeniedException */
+    #[OA\Response(response: 200, description: 'Returns recommendations for the book', content: new Model(type: RecommendedBookListResponse::class))]
     #[Route(path: '/api/v1/book/{id}/recommendations', methods: ['GET'])]
     final public function recommendationsByBookId(int $id): Response
     {

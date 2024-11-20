@@ -19,7 +19,6 @@ final class Version20241031064910 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE book ADD user_id INT NOT NULL');
         $this->addSql('ALTER TABLE book ALTER image DROP NOT NULL');
         $this->addSql('ALTER TABLE book ALTER authors TYPE TEXT');
@@ -34,7 +33,6 @@ final class Version20241031064910 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE book DROP CONSTRAINT FK_CBE5A331A76ED395');
         $this->addSql('DROP INDEX IDX_CBE5A331A76ED395');

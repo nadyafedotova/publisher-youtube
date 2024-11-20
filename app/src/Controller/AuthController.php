@@ -21,30 +21,9 @@ class AuthController extends AbstractController
     ) {
     }
 
-    #[OA\Response(
-        response: 200,
-        description: 'Sing up a user',
-        content: new OA\JsonContent(properties: [
-            new OA\Property(
-                property: 'token',
-                type: "string",
-            ),
-            new OA\Property(
-                property: 'refresh_token',
-                type: "string",
-            ),
-        ])
-    )]
-    #[OA\Response(
-        response: 409,
-        description: 'User already exist',
-        attachables: [new Model(type: ErrorResponse::class)]
-    )]
-    #[OA\Response(
-        response: 400,
-        description: 'Validation failed',
-        attachables: [new Model(type: ErrorResponse::class)]
-    )]
+    #[OA\Response(response: 200, description: 'Sing up a user', content: new OA\JsonContent(properties: [ new OA\Property(property: 'token', type: "string"), new OA\Property(property: 'refresh_token', type: "string"),]))]
+    #[OA\Response(response: 409, description: 'User already exist', attachables: [new Model(type: ErrorResponse::class)])]
+    #[OA\Response(response: 400, description: 'Validation failed', attachables: [new Model(type: ErrorResponse::class)])]
     #[OA\RequestBody(attachables: [new Model(type: SingUpRequest::class)])]
     #[Route(path: '/api/v1/auth/singUp', methods: ['POST'])]
     final public function singUp(#[RequestBody] SingUpRequest $singUpRequest): Response

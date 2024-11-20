@@ -19,11 +19,7 @@ class BookCategoryController extends AbstractController
     ) {
     }
 
-    #[OA\Response(
-        response: 200,
-        description: 'Return book categories',
-        content: new Model(type: BookCategoryListResponse::class)
-    )]
+    #[OA\Response(response: 200, description: 'Return book categories', content: new Model(type: BookCategoryListResponse::class))]
     #[Route(path: '/api/v1/book/categories', name: 'apiBookCategory', methods: ['GET'])]
     final public function categories(): Response
     {

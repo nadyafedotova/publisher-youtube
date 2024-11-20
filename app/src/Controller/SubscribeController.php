@@ -21,15 +21,8 @@ class SubscribeController extends AbstractController
     ) {
     }
 
-    #[OA\Response(
-        response: 200,
-        description: 'Subscribe email to newsletter mailing list',
-    )]
-    #[OA\Response(
-        response: 400,
-        description: 'Validation failed',
-        attachables: [new Model(type: ErrorResponse::class)]
-    )]
+    #[OA\Response(response: 200, description: 'Subscribe email to newsletter mailing list')]
+    #[OA\Response(response: 400, description: 'Validation failed', attachables: [new Model(type: ErrorResponse::class)])]
     #[OA\RequestBody(attachables: [new Model(type: SubscriberRequest::class)])]
     #[Route(path: '/api/v1/subscribe', methods: ['POST'])]
     final public function subscribe(#[RequestBody] SubscriberRequest $subscriberRequest): Response
