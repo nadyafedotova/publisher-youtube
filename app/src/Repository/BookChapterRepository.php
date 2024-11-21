@@ -16,7 +16,7 @@ class BookChapterRepository extends BaseRepository
         parent::__construct($registry, BookChapter::class);
     }
 
-    final public function getById(int $id): BookChapter
+    public function getById(int $id): BookChapter
     {
         $chapter = $this->find($id);
         if (null === $chapter) {

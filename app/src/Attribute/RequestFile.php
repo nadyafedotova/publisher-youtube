@@ -21,7 +21,8 @@ readonly class RequestFile
         return $this->field;
     }
 
-    final public function getConstraints(): Constraint|array
+    /** @return Constraint[] */
+    final public function getConstraints(): array
     {
         return $this->constraints;
     }

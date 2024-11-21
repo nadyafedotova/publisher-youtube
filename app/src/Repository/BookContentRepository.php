@@ -19,7 +19,7 @@ class BookContentRepository extends BaseRepository
     }
 
     //todo replace
-    final public function getById(int $id): BookContent
+    public function getById(int $id): BookContent
     {
         $content = $this->find($id);
         if (null === $content) {
@@ -29,7 +29,7 @@ class BookContentRepository extends BaseRepository
         return $content;
     }
 
-    final public function getPageByChapterId(int $id, bool $onlyPublished, int $offset, int $limit): Traversable&Countable
+    public function getPageByChapterId(int $id, bool $onlyPublished, int $offset, int $limit): Traversable&Countable
     {
         $query = implode(' ', array_filter([
             'SELECT b FROM App\Entity\BookContent b WHERE b.chapter = :id',
@@ -46,7 +46,7 @@ class BookContentRepository extends BaseRepository
         return new Paginator($query, false);
     }
 
-    final public function countByChapterId(int $id, bool $onlyPublished): int
+    public function countByChapterId(int $id, bool $onlyPublished): int
     {
         $condition = ['chapter' => $id];
         if ($onlyPublished) {

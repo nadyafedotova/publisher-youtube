@@ -6,6 +6,8 @@ namespace App\Tests;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
+use App\Entity\BookChapter;
+use App\Entity\BookContent;
 use App\Entity\BookFormat;
 use App\Entity\BookToBookFormat;
 use App\Entity\Review;
@@ -228,5 +230,24 @@ class MockUtils
             ->setFormat($bookFormat)
             ->setDiscountPercent(5)
             ->setBook($book);
+    }
+
+    public static function createBookChapter(Book $book): BookChapter
+    {
+        return (new BookChapter())
+            ->setTitle('Chapter')
+            ->setBook($book)
+            ->setSlug('test-chapter')
+            ->setLevel(1)
+            ->setSort(1)
+            ->setParent(null);
+    }
+
+    public static function createBookContent(BookChapter $chapter): BookContent
+    {
+        return (new BookContent())
+            ->setContent('testing content')
+            ->setIsPublished(true)
+            ->setChapter($chapter);
     }
 }
