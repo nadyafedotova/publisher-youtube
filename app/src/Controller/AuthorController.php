@@ -151,11 +151,11 @@ class AuthorController extends AbstractController
     #[OA\Response(response: 404, description: 'Book chapter not found', content: new Model(type: ErrorResponse::class))]
     #[OA\Response(response: 400, description: 'Validation failed', attachables: [new Model(type: ErrorResponse::class)])]
     #[OA\RequestBody(attachables: [new Model(type: UpdateBookChapterSortRequest::class)])]
-    #[Route(path: '/api/v1/author/book/{bookId}/chapterSort', methods: ['POST'])]
+    #[Route(path: '/api/v1/author/book/{bookId}/chapter/{id}/sort', methods: ['POST'])]
     #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'bookId')]
-    final public function updateBookChapterSort(#[RequestBody] UpdateBookChapterSortRequest $request, int $bookId): Response
+    final public function updateBookChapterSort(#[RequestBody] UpdateBookChapterSortRequest $request, int $bookId, int $id): Response
     {
-        $this->bookChapterService->updateChapterSort($request);
+        $this->bookChapterService->updateChapterSort($request, $id);
 
         return $this->json(null);
     }
@@ -165,11 +165,11 @@ class AuthorController extends AbstractController
     #[OA\Response(response: 404, description: 'Book chapter not found', content: new Model(type: ErrorResponse::class))]
     #[OA\Response(response: 400, description: 'Validation failed', attachables: [new Model(type: ErrorResponse::class)])]
     #[OA\RequestBody(attachables: [new Model(type: UpdateBookChapterRequest::class)])]
-    #[Route(path: '/api/v1/author/book/{bookId}/updateChapter', methods: ['POST'])]
+    #[Route(path: '/api/v1/author/book/{bookId}/chapter/{id}', methods: ['POST'])]
     #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'bookId')]
-    final public function updateBookChapter(#[RequestBody] UpdateBookChapterRequest $request): Response
+    final public function updateBookChapter(#[RequestBody] UpdateBookChapterRequest $request, int $bookId, int $id): Response
     {
-        $this->bookChapterService->updateChapter($request);
+        $this->bookChapterService->updateChapter($request, $id);
 
         return $this->json(null);
     }
@@ -237,7 +237,7 @@ class AuthorController extends AbstractController
     #[OA\Parameter(name: 'page', description: 'Page number', in: 'query', schema: new OA\Schema(type: 'integer'))]
     #[Route(path: '/api/v1/author/book/{bookId}/chapter/{chapterId}/content', methods: ['GET'])]
     #[IsGranted(AuthorBookVoter::IS_AUTHOR, subject: 'bookId')]
-    final public function chapterContent(Request $request, int $bookId, int $chapterId): Response
+    final public function chapterContent(Request $request, int $chapterId, int $bookId): Response
     {
         return $this->json($this->bookContentService->getAllContent($chapterId, (int) $request->query->get('page', 1)));
     }
