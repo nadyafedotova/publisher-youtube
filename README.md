@@ -5,3 +5,5 @@ docker-compose -f docker-compose.dev.yml up --build -d
 test
 `php bin/console doctrine:migrations:migrate --env=test`
 `php bin/console --env=test doctrine:fixtures:load`
+
+https://jwt.io/

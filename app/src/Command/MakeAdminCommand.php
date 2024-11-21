@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MakeAdminCommand extends Command
 {
     public function __construct(
-        private RoleService $roleService,
+        readonly private RoleService $roleService,
     ) {
         parent::__construct();
     }
