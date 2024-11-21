@@ -45,22 +45,16 @@ class Book
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'books')]
     private UserInterface $user;
 
-    /**
-     * @var Collection<BookCategory>
-     */
+    /** @var Collection<BookCategory> */
     #[ORM\ManyToMany(targetEntity: BookCategory::class)]
     #[ORM\JoinTable(name: 'book_to_book_category')]
     private Collection $categories;
 
-    /**
-     * @var Collection<BookToBookFormat>
-     */
+    /** @var Collection<BookToBookFormat> */
     #[ORM\OneToMany(targetEntity: BookToBookFormat::class, mappedBy: 'book')]
     private Collection $formats;
 
-    /**
-     * @var Collection<Review>
-     */
+    /** @var Collection<Review> */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'book')]
     private Collection $reviews;
 
@@ -117,9 +111,6 @@ class Book
         return $this->authors;
     }
 
-    /**
-     * @param string[] $authors
-     */
     final public function setAuthors(?array $authors): self
     {
         $this->authors = $authors;
@@ -139,17 +130,13 @@ class Book
         return $this;
     }
 
-    /**
-     * @return Collection<BookCategory>
-     */
+    /** @return Collection<BookCategory> */
     final public function getCategories(): Collection
     {
         return $this->categories;
     }
 
-    /**
-     * @param Collection<BookCategory> $categories
-     */
+    /** @param Collection<BookCategory> $categories */
     final public function setCategories(Collection $categories): self
     {
         $this->categories = $categories;

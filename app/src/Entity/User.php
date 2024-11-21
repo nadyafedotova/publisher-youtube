@@ -85,9 +85,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     final public function getRoles(): array
     {
         return $this->roles;
@@ -105,16 +103,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     final public function eraseCredentials(): void
     {
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     final public function getUserIdentifier(): string
     {
         return $this->email;
