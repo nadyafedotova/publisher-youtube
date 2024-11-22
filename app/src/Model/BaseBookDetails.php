@@ -14,9 +14,7 @@ class BaseBookDetails
 
     private ?string $image = null;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[]|null */
     private ?array $authors;
 
     private ?int $publicationDate = null;
@@ -69,11 +67,13 @@ class BaseBookDetails
         return $this;
     }
 
+    /** @return string[]|null */
     final public function getAuthors(): ?array
     {
         return $this->authors;
     }
 
+    /** @param string[]|null $authors */
     final public function setAuthors(?array $authors): self
     {
         $this->authors = $authors;

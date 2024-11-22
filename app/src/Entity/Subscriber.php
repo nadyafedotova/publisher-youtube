@@ -40,9 +40,11 @@ class Subscriber
         return $this->email;
     }
 
-    final public function setEmail(string $email): void
+    final public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
     }
 
     final public function getCreatedAt(): DateTimeInterface

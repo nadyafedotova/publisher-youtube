@@ -9,6 +9,7 @@ use App\Service\Recommendation\Exception\RequestException;
 use App\Service\Recommendation\Model\RecommendationResponse;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
@@ -21,10 +22,7 @@ readonly class RecommendationApiService
     ) {
     }
 
-    /**
-     * @throws RequestException
-     * @throws AccessDeniedException
-     */
+    /** @throws RequestException|AccessDeniedException */
     public function getRecommendationsByBookId(int $bookId): RecommendationResponse
     {
         try {
@@ -33,7 +31,7 @@ readonly class RecommendationApiService
             return $this->serializer->deserialize(
                 $response->getContent(),
                 RecommendationResponse::class,
-                'json'
+                JsonEncoder::FORMAT
             );
         } catch (Throwable $ex) {
             if ($ex instanceof ClientException && Response::HTTP_FORBIDDEN === $ex->getCode()) {

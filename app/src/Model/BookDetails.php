@@ -13,15 +13,13 @@ class BookDetails extends BaseBookDetails
 
     private int $reviews;
 
-    /**
-     * @var BookCategory[]|null
-     */
+    /** @var BookCategory[]|null */
     private array $categories;
 
-    /**
-     * @var BookFormat[]|null
-     */
+    /** @var BookFormat[]|null */
     private array $formats;
+
+    private array $chapters;
 
     final public function getRating(): float
     {
@@ -67,6 +65,19 @@ class BookDetails extends BaseBookDetails
     final public function setFormats(array $formats): self
     {
         $this->formats = $formats;
+
+        return $this;
+    }
+
+    final public function getChapters(): array
+    {
+        return $this->chapters;
+    }
+
+    /** @param BookChapter[] $chapters*/
+    final public function setChapters(array $chapters): BookDetails
+    {
+        $this->chapters = $chapters;
 
         return $this;
     }

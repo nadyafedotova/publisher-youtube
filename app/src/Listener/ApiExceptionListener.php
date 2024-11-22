@@ -8,7 +8,6 @@ use App\Model\ErrorDebugDetails;
 use App\Model\ErrorResponse;
 use App\Service\ExceptionHandler\ExceptionMapping;
 use App\Service\ExceptionHandler\ExceptionMappingResolver;
-use App\Service\Recommendation\Exception\AccessDeniedException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +23,7 @@ readonly class ApiExceptionListener
         private ExceptionMappingResolver $resolver,
         private LoggerInterface $logger,
         private SerializerInterface $serializer,
-        private bool $isDebug,
+        private bool $isDebug
     ) {
     }
 
@@ -34,8 +33,8 @@ readonly class ApiExceptionListener
         if ($this->isSecurityException($throwable)) {
             return;
         }
-        $mapping = $this->resolver->resolve(get_class($throwable));
 
+        $mapping = $this->resolver->resolve(get_class($throwable));
         if (null === $mapping) {
             $mapping = ExceptionMapping::fromCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }

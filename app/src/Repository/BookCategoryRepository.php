@@ -16,13 +16,12 @@ class BookCategoryRepository extends BaseRepository
         parent::__construct($registry, BookCategory::class);
     }
 
-    public function findBookCategoriesByIds(array $ids): BookCategory|array
+    /** @return BookCategory[] */
+    public function findBookCategoriesByIds(array $ids): array
     {
         return $this->findBy(['id' => $ids]);
     }
-    /**
-     * @return BookCategory[]
-     */
+    /**  @return BookCategory[] */
     public function findAllSortedByTitle(): array
     {
         return $this->findBy([], ['title' => 'ASC']);

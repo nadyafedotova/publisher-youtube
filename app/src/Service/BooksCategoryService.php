@@ -18,7 +18,7 @@ readonly class BooksCategoryService
 {
     public function __construct(
         private BookCategoryRepository $bookCategoryRepository,
-        private SluggerInterface $slugger,
+        private SluggerInterface       $slugger,
     ) {
     }
 
@@ -26,7 +26,6 @@ readonly class BooksCategoryService
     {
         $category = $this->bookCategoryRepository->getById($id);
         $booksCount = $this->bookCategoryRepository->countBooksInCategory($category->getId());
-
         if ($booksCount > 0) {
             throw new BookCategoryNotEmptyException($booksCount);
         }
@@ -39,7 +38,7 @@ readonly class BooksCategoryService
         $category = new BookCategory();
         $this->upsertCategory($category, $updateRequest);
 
-        return  new IdResponse($category->getId());
+        return new IdResponse($category->getId());
     }
 
     final public function updateCategory(int $id, BookCategoryUpdateRequest $updateRequest): void
@@ -50,14 +49,7 @@ readonly class BooksCategoryService
     final public function getCategories(): BookCategoryListResponse
     {
         $categories = $this->bookCategoryRepository->findAllSortedByTitle();
-        $items = array_map(
-            fn (BookCategory $category) => new BookCategoryModel(
-                $category->getId(),
-                $category->getTitle(),
-                $category->getSlug()
-            ),
-            $categories
-        );
+        $items = array_map(fn (BookCategory $category) => new BookCategoryModel($category->getId(), $category->getTitle(), $category->getSlug()), $categories);
 
         return new BookCategoryListResponse($items);
     }
@@ -65,12 +57,11 @@ readonly class BooksCategoryService
     private function upsertCategory(BookCategory $bookCategory, BookCategoryUpdateRequest $updateRequest): void
     {
         $slug = $this->slugger->slug($updateRequest->getTitle());
-
         if ($this->bookCategoryRepository->existsBySlug($slug)) {
             throw new BookCategoryAlreadyExistsException();
         }
 
-        $bookCategory->setTitle($updateRequest->getTitle())->setSlug((string) $slug);
+        $bookCategory->setTitle($updateRequest->getTitle())->setSlug((string)$slug);
         $this->bookCategoryRepository->saveAndCommit($bookCategory);
     }
 }

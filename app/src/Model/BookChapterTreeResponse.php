@@ -6,14 +6,13 @@ namespace App\Model;
 
 class BookChapterTreeResponse
 {
+    /** @param BookChapter[] $items */
     public function __construct(
-        private array|BookChapter $items = []
+        private array $items = []
     ) {
     }
 
-    /**
-     * @return BookChapter[]
-     */
+    /** @return BookChapter[] */
     final public function getItems(): array
     {
         return $this->items;

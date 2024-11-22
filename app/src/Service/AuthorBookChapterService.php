@@ -22,10 +22,12 @@ readonly class AuthorBookChapterService
     private const int MAX_LEVEL = 3;
     private const int MIN_LEVEL = 1;
     private const int SORT_STEP = 1;
+
     public function __construct(
-        private BookRepository $bookRepository,
+        private BookRepository        $bookRepository,
         private BookChapterRepository $bookChapterRepository,
-        private SluggerInterface $slugger,
+        private BookChapterService    $bookChapterService,
+        private SluggerInterface      $slugger,
     ) {
     }
 
@@ -79,32 +81,12 @@ readonly class AuthorBookChapterService
 
     final public function getChaptersTree(int $bookId): BookChapterTreeResponse
     {
-        $book = $this->bookRepository->getBookById($bookId);
-        $chapters = $this->bookChapterRepository->findSortedChaptersByBook($book);
-        $response = new BookChapterTreeResponse();
-        /** @var array<int, BookChapterModel $index */
-        $index = [];
-
-        foreach ($chapters as $chapter) {
-            $model = new BookChapterModel($chapter->getId(), $chapter->getTitle(), $chapter->getSlug());
-            $index[$chapter->getId()] = $model;
-
-            if (!$chapter->hasParent()) {
-                $response->addItem($model);
-                continue;
-            }
-
-            $parent = $chapter->getParent();
-
-            $index[$parent->getId()]->addItem($model);
-        }
-
-        return $response;
+        return $this->bookChapterService->getChaptersTree($this->bookRepository->getBookById($bookId));
     }
 
-    final public function updateChapterSort(UpdateBookChapterSortRequest $request): void
+    final public function updateChapterSort(UpdateBookChapterSortRequest $request, int $id): void
     {
-        $chapter = $this->bookChapterRepository->getById($request->getId());
+        $chapter = $this->bookChapterRepository->getById($id);
         $sortContext = SortContext::fromNeighbours($request->getNextId(), $request->getPreviousId());
         $nearChapter = $this->bookChapterRepository->getById($sortContext->getNearId());
         $level = $nearChapter->getLevel();

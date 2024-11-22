@@ -11,12 +11,12 @@ class CreateBookRequest
     #[NotBlank]
     private string $title;
 
-    public function getTitle(): string
+    final public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    final public function setTitle(string $title): self
     {
         $this->title = $title;
 

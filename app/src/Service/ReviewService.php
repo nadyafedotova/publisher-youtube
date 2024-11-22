@@ -16,25 +16,26 @@ class ReviewService
 
     public function __construct(
         private readonly ReviewRepository $reviewRepository,
-        private readonly RatingService $ratingService
+        private readonly RatingService    $ratingService,
     ) {
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final public function getReviewPageByBookId(int $id, int $page): ReviewPage
     {
-        $offset = PaginationUtils::calcOOffset($page, self::PAGE_LIMIT);
-        $paginator = $this->reviewRepository->getPageByBookId($id, $offset, self::PAGE_LIMIT);
-        $total = count($paginator);
         $items = [];
+        $paginator = $this->reviewRepository->getPageByBookId(
+            $id,
+            PaginationUtils::calcOOffset($page, self::PAGE_LIMIT),
+            self::PAGE_LIMIT
+        );
 
         foreach ($paginator as $item) {
             $items[] = $this->map($item);
         }
 
         $rating = $this->ratingService->calcReviewRatingForBook($id);
+        $total =$rating->getTotal();
 
         return (new ReviewPage())
             ->setRating($rating->getRating())

@@ -8,34 +8,32 @@ class UpdateBookRequest
 {
     private ?string $title = null;
 
+    /** @var string[]|null  */
     private ?array $authors = [];
 
     private ?string $isbn = null;
 
     private ?string $description = null;
 
-    /**
-     * @var BookFormatOptions[]|null
-     */
+    /** @var BookFormatOptions[]|null */
     private ?array $formats = [];
 
-    /**
-     * @var int[]|null
-     */
+    /** @var int[]|null */
     private ?array $categories = [];
 
-    final public function getTitle(): string
+    final public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    final public function setTitle(string $title): self
+    final public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
+    /** @return string[]|null */
     final public function getAuthors(): ?array
     {
         return $this->authors;
@@ -72,11 +70,13 @@ class UpdateBookRequest
         return $this;
     }
 
+    /** @return BookFormatOptions[]|null */
     final public function getFormats(): ?array
     {
         return $this->formats;
     }
 
+    /** @param  BookFormatOptions[]|null $formats*/
     final public function setFormats(?array $formats): self
     {
         $this->formats = $formats;
@@ -84,11 +84,13 @@ class UpdateBookRequest
         return $this;
     }
 
+    /** @return int[]|null */
     final public function getCategories(): ?array
     {
         return $this->categories;
     }
 
+    /** @param int[]|null $categories */
     final public function setCategories(?array $categories): self
     {
         $this->categories = $categories;

@@ -8,7 +8,7 @@ readonly class SortContext
 {
     public function __construct(
         private SortPosition $position,
-        private int $nearId
+        private int          $nearId,
     ) {
     }
 

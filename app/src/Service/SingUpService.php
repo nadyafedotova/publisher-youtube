@@ -13,8 +13,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 readonly class SingUpService
 {
     public function __construct(
-        private UserPasswordHasherInterface $passwordHasher,
-        private UserRepository              $userRepository,
+        private UserPasswordHasherInterface  $passwordHasher,
+        private UserRepository               $userRepository,
         private AuthenticationSuccessHandler $authenticationSuccessHandler,
     ) {
     }
@@ -25,11 +25,11 @@ readonly class SingUpService
             throw new UserAlreadyExistsException();
         }
 
-        $user = new User();
-        $user->setRoles(['ROLE_USER']);
-        $user->setFirstName($singUpRequest->getFirstName());
-        $user->setLastName($singUpRequest->getLastName());
-        $user->setEmail($singUpRequest->getEmail());
+        $user = (new User())
+            ->setRoles(['ROLE_USER'])
+            ->setFirstName($singUpRequest->getFirstName())
+            ->setLastName($singUpRequest->getLastName())
+            ->setEmail($singUpRequest->getEmail());
         $user->setPassword($this->passwordHasher->hashPassword($user, $singUpRequest->getPassword()));
         $this->userRepository->saveAndCommit($user);
 

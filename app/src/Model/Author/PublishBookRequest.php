@@ -10,8 +10,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class PublishBookRequest
 {
     #[NotBlank]
-    private \DateTimeInterface $dateTime;
-    final public function getDateTime(): \DateTimeInterface
+    private DateTimeInterface $dateTime;
+    final public function getDateTime(): DateTimeInterface
     {
         return $this->dateTime;
     }

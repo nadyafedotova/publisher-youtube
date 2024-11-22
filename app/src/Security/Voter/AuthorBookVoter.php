@@ -13,7 +13,7 @@ class AuthorBookVoter extends Voter
     public const string IS_AUTHOR = 'IS_AUTHOR';
 
     public function __construct(
-        private BookRepository $bookRepository,
+        private readonly BookRepository $bookRepository,
     ) {
     }
 

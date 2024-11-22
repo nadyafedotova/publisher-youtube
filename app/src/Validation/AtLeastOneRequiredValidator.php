@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\Validation;
 
-use Attribute;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-#[Attribute]
 class AtLeastOneRequiredValidator extends ConstraintValidator
 {
     private PropertyAccessorInterface $propertyAccessor;
@@ -27,9 +25,7 @@ class AtLeastOneRequiredValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, AtLeastOneRequired::class);
         }
 
-        $passed = array_filter($constraint->requiredFields, function (string $required) use ($object) {
-            return null !== $this->propertyAccessor->isReadable($object, $required);
-        });
+        $passed = array_filter($constraint->requiredFields, fn (string $required) => null !== $this->propertyAccessor->isReadable($object, $required));
 
         if (!empty($passed)) {
             return;

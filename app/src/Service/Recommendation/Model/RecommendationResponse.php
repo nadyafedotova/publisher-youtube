@@ -23,9 +23,7 @@ class RecommendationResponse
         return $this->ts;
     }
 
-    /**
-     * @return RecommendationItem[]
-     */
+    /** @return RecommendationItem[] */
     final public function getRecommendations(): array
     {
         return $this->recommendations;

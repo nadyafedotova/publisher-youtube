@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Validation;
 
-use AllowDynamicProperties;
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
-#[AllowDynamicProperties]
-#[\Attribute]
+#[Attribute(Attribute::TARGET_CLASS)]
 class AtLeastOneRequired extends Constraint
 {
     /** @var string[] */

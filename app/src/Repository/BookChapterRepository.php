@@ -26,7 +26,7 @@ class BookChapterRepository extends BaseRepository
         return $chapter;
     }
 
-    final public function getMaxSort(Book $book, int $level): int
+    public function getMaxSort(Book $book, int $level): int
     {
         return (int) $this->getEntityManager()->createQuery('SElECT MAX(c.sort) FROM App\Entity\BookChapter c WHERE c.book = :book AND c.level = :level')
             ->setParameter('book', $book)
@@ -34,7 +34,7 @@ class BookChapterRepository extends BaseRepository
             ->getSingleScalarResult();
     }
 
-    final public function increasesSortFrom(int $sortStart, Book $book, int $level, int $sortStep = 1): void
+    public function increasesSortFrom(int $sortStart, Book $book, int $level, int $sortStep = 1): void
     {
         $this->getEntityManager()->createQuery('UPDATE App\Entity\BookChapter c SET c.sort = c.sort + :sortStep WHERE c.sort >= :sortStart AND c.book = :book AND c.level = :level')
             ->setParameter('sortStart', $sortStart)
@@ -44,9 +44,7 @@ class BookChapterRepository extends BaseRepository
             ->execute();
     }
 
-    /**
-     * @return BookChapter[]
-     */
+    /** @return BookChapter[] */
     final public function findSortedChaptersByBook(Book $book): array
     {
         return $this->findBy(['book' => $book], ['level' => 'ASC', 'sort' => 'ASC']);

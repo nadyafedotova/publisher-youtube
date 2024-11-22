@@ -14,16 +14,10 @@ class BookDetails extends BaseBookDetails
 
     private ?string $description = null;
 
-    private ?int $publicationDate;
-
-    /**
-     * @var BookCategory[]|null
-     */
+    /** @var BookCategory[]|null */
     private array $categories = [];
 
-    /**
-     * @var BookFormat[]|null
-     */
+    /** @var BookFormat[]|null */
     private array $formats = [];
 
     final public function getIsbn(): ?string
@@ -50,11 +44,13 @@ class BookDetails extends BaseBookDetails
         return $this;
     }
 
+    /** @return BookCategory[] */
     final public function getCategories(): array
     {
         return $this->categories;
     }
 
+    /** @param BookCategory[] $categories */
     final public function setCategories(array $categories): self
     {
         $this->categories = $categories;
@@ -62,11 +58,13 @@ class BookDetails extends BaseBookDetails
         return $this;
     }
 
+    /** @return BookFormat[] */
     final public function getFormats(): array
     {
         return $this->formats;
     }
 
+    /** @param BookFormat[] $formats */
     final public function setFormats(array $formats): self
     {
         $this->formats = $formats;

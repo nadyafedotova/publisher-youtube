@@ -27,6 +27,7 @@ readonly class RoleService
     {
         $user = $this->userRepository->getUser($userId);
         $user->setRoles([$role]);
+
         $this->userRepository->saveAndCommit($user);
     }
 }

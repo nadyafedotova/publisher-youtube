@@ -27,7 +27,6 @@ readonly class UploadService
     public function uploadBookFile(int $bookId, UploadedFile $file): string
     {
         $extension = $file->guessExtension();
-
         if (null === $extension) {
             throw new UploadFileInvalidTypeException();
         }

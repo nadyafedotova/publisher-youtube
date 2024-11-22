@@ -6,9 +6,7 @@ namespace App\Model;
 
 class ErrorValidationDetails
 {
-    /**
-     * @var ErrorValidationDetailsItem[]
-     */
+    /** @var ErrorValidationDetailsItem[] */
     private array $violations = [];
 
     final public function addViolations(string $field, string $message): void
@@ -16,9 +14,7 @@ class ErrorValidationDetails
         $this->violations[] = new ErrorValidationDetailsItem($field, $message);
     }
 
-    /**
-     * @return ErrorValidationDetailsItem[]
-     */
+    /** @return ErrorValidationDetailsItem[] */
     final public function getViolations(): array
     {
         return $this->violations;

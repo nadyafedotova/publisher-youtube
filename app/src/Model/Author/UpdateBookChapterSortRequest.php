@@ -12,42 +12,28 @@ use Symfony\Component\Validator\Constraints\Positive;
 class UpdateBookChapterSortRequest
 {
     #[Positive]
-    private int $id;
+    private ?int $nextId = null;
     #[Positive]
-    private int $nextId;
-    #[Positive]
-    private int $previousId;
+    private ?int $previousId = null;
 
-    final public function getId(): int
-    {
-        return $this->id;
-    }
-
-    final public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    final public function getNextId(): int
+    final public function getNextId(): ?int
     {
         return $this->nextId;
     }
 
-    final public function setNextId(int $nextId): self
+    final public function setNextId(?int $nextId): self
     {
         $this->nextId = $nextId;
 
         return $this;
     }
 
-    final public function getPreviousId(): int
+    final public function getPreviousId(): ?int
     {
         return $this->previousId;
     }
 
-    final public function setPreviousId(int $previousId): self
+    final public function setPreviousId(?int $previousId): self
     {
         $this->previousId = $previousId;
 

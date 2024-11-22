@@ -16,9 +16,10 @@ use App\Repository\BookRepository;
 readonly class BooksService
 {
     public function __construct(
-        private BookRepository           $bookRepository,
-        private BookCategoryRepository   $bookCategoryRepository,
-        private RatingService            $ratingService,
+        private BookRepository         $bookRepository,
+        private BookCategoryRepository $bookCategoryRepository,
+        private BookChapterService     $bookChapterService,
+        private RatingService          $ratingService,
     ) {
     }
 
@@ -45,6 +46,7 @@ readonly class BooksService
             $details->setRating($rating->getRating())
                 ->setReviews($rating->getTotal())
                 ->setFormats(BookMapper::mapFormats($book))
-                ->setCategories(BookMapper::mapCategories($book));
+                ->setCategories(BookMapper::mapCategories($book))
+                ->setChapters($this->bookChapterService->getChaptersTree($book)->getItems());
     }
 }

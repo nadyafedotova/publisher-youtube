@@ -57,12 +57,7 @@ readonly class AuthorBookService
 
     public function getBooks(UserInterface $user): BookListResponse
     {
-        return new BookListResponse(
-            array_map(
-                [$this, 'map'],
-                $this->bookRepository->findUserBooks($user),
-            ),
-        );
+        return new BookListResponse(array_map($this->map(...), $this->bookRepository->findUserBooks($user)));
     }
 
     final public function createBook(CreateBookRequest $createBookRequest, UserInterface $user): IdResponse
@@ -78,7 +73,7 @@ readonly class AuthorBookService
         return new IdResponse($book->getId());
     }
 
-    final public function getBook(int $id): BaseBookDetails
+    final public function getBook(int $id): BookDetails
     {
         $book = $this->bookRepository->getBookById($id);
 
@@ -88,7 +83,9 @@ readonly class AuthorBookService
             ->setFormats(BookMapper::mapFormats($book))
             ->setCategories(BookMapper::mapCategories($book));
 
-        return BookMapper::map($book, $bookDetails);
+        BookMapper::map($book, $bookDetails);
+
+        return $bookDetails;
     }
 
     final public function updateBook(int $id, UpdateBookRequest $updateBookRequest): void

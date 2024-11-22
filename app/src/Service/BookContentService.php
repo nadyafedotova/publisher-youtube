@@ -14,11 +14,11 @@ use App\Repository\BookContentRepository;
 
 readonly class BookContentService
 {
-    private const int PAGE_LIMIT = 5;
+    private const int PAGE_LIMIT = 30;
 
     public function __construct(
         private BookContentRepository $bookContentRepository,
-        private BookChapterRepository $bookChapterRepository,
+        private BookChapterRepository $bookChapterRepository
     ) {
     }
 
@@ -65,8 +65,12 @@ readonly class BookContentService
     private function getContent(int $chapterId, int $page, bool $onlyPublished): BookChapterContentPage
     {
         $items = [];
-        $offset = PaginationUtils::calcOOffset($page, self::PAGE_LIMIT);
-        $paginator = $this->bookContentRepository->getPageByChapterId($chapterId, $onlyPublished, $offset, self::PAGE_LIMIT);
+        $paginator = $this->bookContentRepository->getPageByChapterId(
+            $chapterId,
+            $onlyPublished,
+            PaginationUtils::calcOOffset($page, self::PAGE_LIMIT),
+            self::PAGE_LIMIT
+        );
 
         foreach ($paginator as $item) {
             $items[] = (new BookChapterContent())

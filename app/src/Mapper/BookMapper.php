@@ -35,25 +35,26 @@ class BookMapper
     public static function mapCategories(Book $book): array
     {
         return $book->getCategories()
-            ->map(
-                fn (BookCategory $bookCategory) => new BookCategoryModel(
-                    $bookCategory->getId(),
-                    $bookCategory->getTitle(),
-                    $bookCategory->getSlug(),
-                ),
-            )->toArray();
+            ->map(fn (BookCategory $bookCategory) => new BookCategoryModel(
+                $bookCategory->getId(),
+                $bookCategory->getTitle(),
+                $bookCategory->getSlug(),
+            ))
+            ->toArray();
     }
 
     public static function mapFormats(Book $book): array
     {
-        return $book->getFormats()->map(
-            fn (BookToBookFormat $formatJoin) => (new BookFormat())
+        return $book->getFormats()
+            ->map(fn (BookToBookFormat $formatJoin) => (new BookFormat())
                 ->setId($formatJoin->getFormat()->getId())
                 ->setTitle($formatJoin->getFormat()->getTitle())
                 ->setDescription($formatJoin->getFormat()->getDescription())
                 ->setComment($formatJoin->getFormat()->getComment())
                 ->setPrice($formatJoin->getPrice())
-                ->setDiscountPercent($formatJoin->getDiscountPercent()),
-        )->toArray();
+                ->setDiscountPercent(
+                    $formatJoin->getDiscountPercent()
+                ))
+            ->toArray();
     }
 }

@@ -21,13 +21,7 @@ readonly class ErrorResponse
         return $this->message;
     }
 
-    #[OA\Property(
-        type: "object",
-        oneOf: [
-            new Schema(ref: new Model(type: ErrorDebugDetails::class)),
-            new Schema(ref: new Model(type: ErrorValidationDetails::class))
-        ]
-    )]
+    #[OA\Property(type: "object", nullable: true, oneOf: [new Schema(ref: new Model(type: ErrorDebugDetails::class)), new Schema(ref: new Model(type: ErrorValidationDetails::class))])]
     final public function getDetails(): mixed
     {
         return $this->details;

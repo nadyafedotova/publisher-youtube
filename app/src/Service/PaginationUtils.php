@@ -13,6 +13,6 @@ class PaginationUtils
 
     final public static function calcPages(int $totalElements, int $pageLimit): int
     {
-        return (int) ceil($totalElements/$pageLimit);
+        return (int) ceil($totalElements / $pageLimit);
     }
 }

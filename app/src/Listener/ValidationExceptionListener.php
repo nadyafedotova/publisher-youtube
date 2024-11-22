@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-class ValidationExceptionListener
+readonly class ValidationExceptionListener
 {
     public function __construct(
         private SerializerInterface $serializer,

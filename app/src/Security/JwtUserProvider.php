@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use JsonException;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\PayloadAwareUserProviderInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -18,17 +19,13 @@ readonly class JwtUserProvider implements PayloadAwareUserProviderInterface
     ) {
     }
 
-    /**
-     * @throws JsonException
-     */
+    /**  @throws JsonException */
     final public function loadUserByIdentifier(string $identifier): UserInterface
     {
         return $this->getUser('email', $identifier);
     }
 
-    /**
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     final public function loadUserByIdentifierAndPayload(string $identifier, array $payload): UserInterface
     {
         return $this->getUser('id', $payload['id']);
@@ -36,7 +33,7 @@ readonly class JwtUserProvider implements PayloadAwareUserProviderInterface
 
     final public function refreshUser(UserInterface $user): UserInterface
     {
-        return $user;
+        throw new UnsupportedUserException();
     }
 
     final public function supportsClass(string $class): bool
@@ -44,9 +41,7 @@ readonly class JwtUserProvider implements PayloadAwareUserProviderInterface
         return User::class === $class || is_subclass_of($class, UserInterface::class);
     }
 
-    /**
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     final public function getUser(string $key, mixed $value): User
     {
         $user = $this->userRepository->findOneBy([$key => $value]);

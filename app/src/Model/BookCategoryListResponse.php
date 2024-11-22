@@ -6,17 +6,13 @@ namespace App\Model;
 
 readonly class BookCategoryListResponse
 {
-    /**
-     * @param BookCategory[] $bookCategoryList
-     */
+    /** @param BookCategory[] $bookCategoryList */
     public function __construct(
         private array $bookCategoryList
     ) {
     }
 
-    /**
-     * @return BookCategory[]
-     */
+    /** @return BookCategory[] */
     final public function getBookCategoryList(): array
     {
         return $this->bookCategoryList;

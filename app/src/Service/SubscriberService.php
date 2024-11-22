@@ -22,8 +22,6 @@ readonly class SubscriberService
             throw new SubscriberAlreadyExistsException();
         }
 
-        $subscriber = new Subscriber();
-        $subscriber->setEmail($subscriberRequest->getEmail());
-        $this->subscriberRepository->saveAndCommit($subscriber);
+        $this->subscriberRepository->saveAndCommit((new Subscriber())->setEmail($subscriberRequest->getEmail()));
     }
 }
