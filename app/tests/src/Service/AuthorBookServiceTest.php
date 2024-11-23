@@ -123,9 +123,7 @@ class AuthorBookServiceTest extends AbstractTestCase
         $this->assertEquals(new IdResponse(1), $this->createService()->createBook($payload, $user));
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testGetBook(): void
     {
         $category = MockUtils::createBookCategory();
@@ -149,7 +147,7 @@ class AuthorBookServiceTest extends AbstractTestCase
             ->setPublicationDate(1602288000)
             ->setAuthors(['Tester'])
             ->setCategories([
-                new BookCategory(1, 'Test', 'test')
+                new BookCategory(1, 'Devices', 'devices'),
             ])
             ->setFormats([
                     (new BookFormat())->setId(1)->setTitle('format')
@@ -170,9 +168,7 @@ class AuthorBookServiceTest extends AbstractTestCase
 
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testGetBooks(): void
     {
         $user = new User();
@@ -189,7 +185,6 @@ class AuthorBookServiceTest extends AbstractTestCase
             ->setTitle('Test Book');
 
         $db = $this->createService()->getBooks($user);
-
         $bookItem->setSlug($db->getBookCategoryList()[0]->getSlug());
 
         $this->assertEquals(new BookListResponse([$bookItem]), $db);
@@ -220,9 +215,7 @@ class AuthorBookServiceTest extends AbstractTestCase
         $this->createService()->updateBook(1, $payload);
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     final public function testUpdateBook(): void
     {
         $book = new Book();
@@ -286,9 +279,7 @@ class AuthorBookServiceTest extends AbstractTestCase
         $this->createService()->updateBook(1, $payload);
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     final public function testUploadCover(): void
     {
         $file = new UploadedFile('path', 'field', null, UPLOAD_ERR_NO_FILE, true);
@@ -314,9 +305,7 @@ class AuthorBookServiceTest extends AbstractTestCase
         );
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /**b @throws ReflectionException */
     final public function testUploadCoverRemoveOld(): void
     {
         $file = new UploadedFile('path', 'field', null, UPLOAD_ERR_NO_FILE, true);

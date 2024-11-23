@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Security\JwtUserProvider;
 use App\Tests\AbstractTestCase;
+use JsonException;
 use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
@@ -23,6 +24,7 @@ class JwtUserProviderTest extends AbstractTestCase
         $this->userRepository = $this->createMock(UserRepository::class);
     }
 
+    /** @throws JsonException */
     final public function testSupportsClass(): void
     {
         $user = (new User())->setEmail('testr@test.com');
@@ -36,6 +38,7 @@ class JwtUserProviderTest extends AbstractTestCase
         $this->assertEquals($user, $provider->loadUserByIdentifier('testr@test.com'));
     }
 
+    /** @throws JsonException */
     final public function testLoadUserByIdentifierNotFoundException(): void
     {
         $this->expectException(UserNotFoundException::class);
@@ -48,6 +51,7 @@ class JwtUserProviderTest extends AbstractTestCase
         (new JwtUserProvider($this->userRepository))->loadUserByIdentifier('testr@test.com');
     }
 
+    /** @throws JsonException */
     final public function testLoadUserByIdentifierAndPayload(): void
     {
         $user = (new User())->setEmail('testr@test.com');
@@ -62,6 +66,7 @@ class JwtUserProviderTest extends AbstractTestCase
 
     }
 
+    /** @throws JsonException */
     final public function testLoadUserByIdentifierAndPayloadNotFoundException(): void
     {
         $this->expectException(UserNotFoundException::class);

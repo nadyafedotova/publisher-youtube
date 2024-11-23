@@ -16,18 +16,14 @@ class RecommendationControllerTest extends AbstractControllerTest
 {
     private HoverflyClient $hoverflyClient;
 
-    /**
-     * @throws JsonMapper_Exception|GuzzleException
-     */
+    /** @throws JsonMapper_Exception|GuzzleException */
     final protected function setUp(): void
     {
         parent::setUp();
         $this->setUpHoverfly();
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testRecommendationByBookId(): void
     {
         $user = MockUtils::createUser();
@@ -57,7 +53,7 @@ class RecommendationControllerTest extends AbstractControllerTest
                         ]
                     )),
             );
-        } catch (GuzzleException|JsonMapper_Exception $e) {
+        } catch (GuzzleException|JsonMapper_Exception) {
         }
 
         $this->client->request('GET', '/api/v1/book/' . $requestedId . '/recommendations');

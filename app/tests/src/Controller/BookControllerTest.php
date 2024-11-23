@@ -11,10 +11,7 @@ use ReflectionException;
 
 class BookControllerTest extends AbstractControllerTest
 {
-    /**
-     * @throws ReflectionException
-     * @throws RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testBooksByCategory(): void
     {
         $user = MockUtils::createUser();
@@ -61,9 +58,7 @@ class BookControllerTest extends AbstractControllerTest
         );
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testBookById(): void
     {
         $user = MockUtils::createUser();
@@ -78,6 +73,7 @@ class BookControllerTest extends AbstractControllerTest
         $book = MockUtils::createBook()
             ->setCategories(new ArrayCollection([$bookCategory]))
             ->setUser($user);
+
         $this->em->persist($book);
         $this->em->persist(MockUtils::createBookFormatLink($book, $format));
         $this->em->flush();
@@ -90,7 +86,7 @@ class BookControllerTest extends AbstractControllerTest
             'type' => 'object',
             'required' => [
                 'id', 'title', 'slug', 'image', 'authors', 'publicationDate', 'rating', 'reviews',
-                'categories', 'formats',
+                'categories', 'formats', 'chapters',
             ],
             'properties' => [
                 'title' => ['type' => 'string'],
@@ -98,13 +94,24 @@ class BookControllerTest extends AbstractControllerTest
                 'id' => ['type' => 'integer'],
                 'publicationDate' => ['type' => 'integer'],
                 'image' => ['type' => 'string'],
-
                 'authors' => [
                     'type' => 'array',
                     'items' => ['type' => 'string'],
                 ],
                 'rating' => ['type' => 'number'],
                 'reviews' => ['type' => 'integer'],
+                'chapters' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'required' => ['id', 'title', 'slug', 'items'],
+                        'properties' => [
+                            'title' => ['type' => 'string'],
+                            'slug' => ['type' => 'string'],
+                            'id' => ['type' => 'integer'],
+                        ],
+                    ],
+                ],
                 'categories' => [
                     'type' => 'array',
                     'items' => [
@@ -117,7 +124,6 @@ class BookControllerTest extends AbstractControllerTest
                         ],
                     ],
                 ],
-                'formats' => ['type' => 'array'],
             ],
         ]);
     }
@@ -143,9 +149,10 @@ class BookControllerTest extends AbstractControllerTest
         $this->em->flush();
 
         $url = sprintf('/api/v1/book/%d/chapter/%d/content', $book->getId(), $bookChapter->getId());
-        $this->client->request('GET', $url);
 
+        $this->client->request('GET', $url);
         $responseContent = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
         $this->assertResponseIsSuccessful();
         $this->assertJsonDocumentMatchesSchema($responseContent, ['$.items' => self::countOf(1)]);
         $this->assertJsonDocumentMatchesSchema(

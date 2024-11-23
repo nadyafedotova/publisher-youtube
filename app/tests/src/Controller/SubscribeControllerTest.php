@@ -16,9 +16,7 @@ class SubscribeControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /**
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     final public function testSubscribeNotAgreed(): void
     {
         $content = json_encode(['email' => 'test@test.com']);

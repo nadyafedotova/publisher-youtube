@@ -11,9 +11,7 @@ use ReflectionException;
 
 class JWTCreatedListenerTest extends AbstractTestCase
 {
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testInvoke(): void
     {
         $user = MockUtils::createUser();

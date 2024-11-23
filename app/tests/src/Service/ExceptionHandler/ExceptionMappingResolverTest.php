@@ -9,7 +9,6 @@ use LogicException;
 
 class ExceptionMappingResolverTest extends AbstractTestCase
 {
-
     final public function testThrowsExceptionEmptyCode(): void
     {
         $this->expectException(InvalidArgumentException::class);

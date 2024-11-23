@@ -11,9 +11,7 @@ use ReflectionException;
 
 class BookMapperTest extends AbstractTestCase
 {
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testMap(): void
     {
         $book = MockUtils::createBook('', null, null, '', true);

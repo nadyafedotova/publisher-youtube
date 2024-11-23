@@ -17,9 +17,7 @@ class RecommendationApiServiceTest extends AbstractTestCase
 {
     private SerializerInterface $serializer;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();
@@ -36,9 +34,7 @@ class RecommendationApiServiceTest extends AbstractTestCase
     }
 
 
-    /**
-     * @throws RequestException|AccessDeniedException
-     */
+    /** @throws RequestException|AccessDeniedException */
     #[DataProvider('dataProvider')]
     final public function testGetRecommendationsByBookId(int $responseCode, string $exceptionClass): void
     {

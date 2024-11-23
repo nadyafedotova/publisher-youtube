@@ -24,9 +24,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
     private LoggerInterface $logger;
     private SerializerInterface $serializer;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,9 +34,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
         $this->serializer = $this->createMock(SerializerInterface::class);
     }
 
-    /**
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     final public function testNon500MappingWithHiddenMessage(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_NOT_FOUND);
@@ -109,9 +105,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
     }
 
-    /**
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     final public function test500IsLoggable(): void
     {
         $mapping = ExceptionMapping::fromCode(Response::HTTP_GATEWAY_TIMEOUT);
@@ -138,9 +132,7 @@ class ApiExceptionListenerTest extends AbstractTestCase
         $this->assertResponse(Response::HTTP_GATEWAY_TIMEOUT, $responseBody, $event->getResponse());
     }
 
-    /**
-     * @throws JsonException
-     */
+    /** @throws JsonException */
     final public function test500IsDefaultWhenMappingNotFound(): void
     {
         $responseMessage = Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR];
@@ -195,7 +187,6 @@ class ApiExceptionListenerTest extends AbstractTestCase
         $this->runListener($event, true);
 
         $this->assertResponse(Response::HTTP_NOT_FOUND, $responseBody, $event->getResponse());
-
     }
 
     final public function testIgnoreSecurityException(): void

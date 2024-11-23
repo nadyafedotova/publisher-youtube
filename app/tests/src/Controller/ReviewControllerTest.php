@@ -9,9 +9,7 @@ use ReflectionException;
 
 class ReviewControllerTest extends AbstractControllerTest
 {
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testReviews(): void
     {
         $user = MockUtils::createUser();
@@ -25,7 +23,7 @@ class ReviewControllerTest extends AbstractControllerTest
         $this->em->persist($review);
         $this->em->flush();
 
-        $this->client->request('GET', '/api/v1/book/' .$book->getId().'/review');
+        $this->client->request('GET', '/api/v1/book/' .$book->getId().'/reviews');
         $responseContent = $this->client->getResponse()->getContent();
 
         $this->assertResponseIsSuccessful();

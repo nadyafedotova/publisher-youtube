@@ -14,9 +14,7 @@ class AuthorBookVoterTest extends AbstractTestCase
 {
     private BookRepository $bookRepository;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();
@@ -24,9 +22,7 @@ class AuthorBookVoterTest extends AbstractTestCase
         $this->bookRepository = $this->createMock(BookRepository::class);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final public function testVoteNotSupports(): void
     {
         $voter = new AuthorBookVoter($this->bookRepository);
@@ -36,25 +32,19 @@ class AuthorBookVoterTest extends AbstractTestCase
         $this->assertEquals(VoterInterface::ACCESS_ABSTAIN, $voter->vote($token, 1, ['test']));
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final public function testVote(): void
     {
         $this->vote(true, VoterInterface::ACCESS_GRANTED);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final public function testVoteRestrict(): void
     {
         $this->vote(false, VoterInterface::ACCESS_DENIED);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final public function vote(bool $existsUserBookByIdRequest, int $expectedAccess): void
     {
         $user = new User();

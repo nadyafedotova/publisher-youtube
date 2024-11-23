@@ -14,7 +14,7 @@ class BookDetails extends BaseBookDetails
 
     private ?string $description = null;
 
-    /** @var BookCategory[]|null */
+    /** @var BookCategory[] */
     private array $categories = [];
 
     /** @var BookFormat[]|null */

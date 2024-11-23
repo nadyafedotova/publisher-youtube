@@ -20,9 +20,7 @@ class BookRepositoryTest extends AbstractRepositoryTest
         $this->bookRepository = $this->getRepositoryForEntity(Book::class);
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testFindBooksByCategoryId(): void
     {
         $user = MockUtils::createUser();

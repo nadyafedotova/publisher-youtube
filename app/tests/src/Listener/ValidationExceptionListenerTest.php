@@ -7,7 +7,8 @@ use App\Listener\ValidationExceptionListener;
 use App\Model\ErrorResponse;
 use App\Model\ErrorValidationDetails;
 use App\Tests\AbstractTestCase;
-use PHPUnit\Framework\MockObject\Exception;
+use Exception;
+use PHPUnit\Framework\MockObject\Exception as TestException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -18,9 +19,7 @@ class ValidationExceptionListenerTest extends AbstractTestCase
 {
     private SerializerInterface $serializer;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws TestException */
     final protected function setUp(): void
     {
         parent::setUp();
@@ -33,7 +32,7 @@ class ValidationExceptionListenerTest extends AbstractTestCase
         $this->serializer->expects($this->never())
             ->method('serialize');
 
-        $event = $this->createExceptionEvent(new \Exception());
+        $event = $this->createExceptionEvent(new Exception());
 
         (new ValidationExceptionListener($this->serializer))($event);
     }
