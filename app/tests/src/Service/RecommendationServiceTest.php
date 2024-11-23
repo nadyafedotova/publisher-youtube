@@ -21,18 +21,14 @@ class RecommendationServiceTest extends AbstractTestCase
 {
     private BookRepository $bookRepository;
     private RecommendationApiService $recommendationApiService;
-    private MockUtils $entityTest;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->recommendationApiService = $this->createMock(RecommendationApiService::class);
-        $this->entityTest = new MockUtils();
     }
 
     public static function dataProvider(): array
@@ -53,7 +49,7 @@ class RecommendationServiceTest extends AbstractTestCase
     #[DataProvider('dataProvider')]
     final public function testGetRecommendationsByBookId(string $actualDescription, string $expectedDescription): void
     {
-        $book = $this->entityTest->createBook('', null, null, $actualDescription);
+        $book = MockUtils::createBook()->setDescription($actualDescription);
 
         $this->bookRepository->expects($this->once())
             ->method('findBooksByIds')
@@ -65,7 +61,7 @@ class RecommendationServiceTest extends AbstractTestCase
             ->with(1)
             ->willReturn(new RecommendationResponse(1, 12345, [new RecommendationItem(2),]));
 
-        $expected = new RecommendedBookListResponse([$this->entityTest->createRecommendedBook($expectedDescription, '')]);
+        $expected = new RecommendedBookListResponse([MockUtils::createRecommendedBook()->setShortDescription($expectedDescription)]);
         $db = $this->createService()->getRecommendationsByBookId(1);
         $expected->getItems()[0]->setSlug($db->getItems()[0]->getSlug());
 

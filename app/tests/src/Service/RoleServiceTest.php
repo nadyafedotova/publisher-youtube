@@ -13,9 +13,7 @@ class RoleServiceTest extends AbstractTestCase
     private UserRepository $userRepository;
     private User $user;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();

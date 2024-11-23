@@ -4,12 +4,13 @@ namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
+use Doctrine\ORM\Exception\ORMException;
 use JsonException;
 use ReflectionException;
 
 class BookCategoryControllerTest extends AbstractControllerTest
 {
-    /** @throws ReflectionException|JsonException */
+    /** @throws ReflectionException|JsonException|ORMException */
     final public function testCategories(): void
     {
         $this->em->persist(MockUtils::createBookCategory());

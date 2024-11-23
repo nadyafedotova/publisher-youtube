@@ -4,9 +4,11 @@ namespace App\Tests\src\Service;
 
 use App\Exception\BookCategoryNotFoundException;
 use App\Model\Author\BookListResponse;
+use App\Model\BookChapterTreeResponse;
 use App\Model\Rating;
 use App\Repository\BookCategoryRepository;
 use App\Repository\BookRepository;
+use App\Service\BookChapterService;
 use App\Service\BooksService;
 use App\Service\RatingService;
 use App\Tests\AbstractTestCase;
@@ -20,16 +22,16 @@ class BookServiceTest extends AbstractTestCase
     private BookRepository $bookRepository;
     private BookCategoryRepository $bookCategoryRepository;
     private RatingService $ratingService;
+    private BookChapterService $bookChapterService;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();
 
         $this->bookRepository = $this->createMock(BookRepository::class);
         $this->bookCategoryRepository = $this->createMock(BookCategoryRepository::class);
+        $this->bookChapterService = $this->createMock(BookChapterService::class);
         $this->ratingService = $this->createMock(RatingService::class);
     }
 
@@ -46,11 +48,15 @@ class BookServiceTest extends AbstractTestCase
         $this->createBookService()->getBooksByCategory(130);
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testGetBooksById(): void
     {
+        $book = MockUtils::createBook();
+        $this->bookChapterService->expects($this->once())
+            ->method('getChaptersTree')
+            ->with($book)
+            ->willReturn(new BookChapterTreeResponse());
+
         $format = MockUtils::createBookFormat();
         $bookToBookFormat = MockUtils::createBookToBookFormat($format, MockUtils::createBook(''));
         $this->bookRepository->expects($this->once())
@@ -70,9 +76,7 @@ class BookServiceTest extends AbstractTestCase
         $this->assertEquals($expected, $db);
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
+    /** @throws ReflectionException|RandomException */
     final public function testGetBooksByCategory(): void
     {
         $this->bookRepository->expects($this->once())
@@ -95,6 +99,6 @@ class BookServiceTest extends AbstractTestCase
 
     private function createBookService(): BooksService
     {
-        return new BooksService($this->bookRepository, $this->bookCategoryRepository, $this->ratingService);
+        return new BooksService($this->bookRepository, $this->bookCategoryRepository, $this->bookChapterService, $this->ratingService);
     }
 }

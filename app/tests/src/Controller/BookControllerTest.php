@@ -5,13 +5,15 @@ namespace App\Tests\src\Controller;
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\OptimisticLockException;
 use JsonException;
 use Random\RandomException;
 use ReflectionException;
 
 class BookControllerTest extends AbstractControllerTest
 {
-    /** @throws ReflectionException|RandomException */
+    /** @throws ReflectionException|RandomException|ORMException */
     final public function testBooksByCategory(): void
     {
         $user = MockUtils::createUser();
@@ -58,7 +60,7 @@ class BookControllerTest extends AbstractControllerTest
         );
     }
 
-    /** @throws ReflectionException|RandomException */
+    /** @throws ORMException|RandomException|ReflectionException|OptimisticLockException */
     final public function testBookById(): void
     {
         $user = MockUtils::createUser();
@@ -128,7 +130,7 @@ class BookControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|JsonException */
+    /** @throws RandomException|JsonException|ORMException */
     final public function testChapterContent(): void
     {
         $user = MockUtils::createUser();

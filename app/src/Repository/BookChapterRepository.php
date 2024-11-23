@@ -45,7 +45,7 @@ class BookChapterRepository extends BaseRepository
     }
 
     /** @return BookChapter[] */
-    final public function findSortedChaptersByBook(Book $book): array
+    public function findSortedChaptersByBook(Book $book): array
     {
         return $this->findBy(['book' => $book], ['level' => 'ASC', 'sort' => 'ASC']);
     }

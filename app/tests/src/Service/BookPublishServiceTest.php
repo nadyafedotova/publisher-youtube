@@ -14,9 +14,7 @@ class BookPublishServiceTest extends AbstractTestCase
 {
     private BookRepository $bookRepository;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();
@@ -47,6 +45,7 @@ class BookPublishServiceTest extends AbstractTestCase
     final public function testUnpublish(): void
     {
         $book = new Book();
+        $book->setPublicationDate(new DateTimeImmutable('2020-01-01'));
 
         $this->bookRepository->expects($this->once())
             ->method('getBookById')

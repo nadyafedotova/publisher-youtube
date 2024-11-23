@@ -13,9 +13,7 @@ class RatingServiceTest extends AbstractTestCase
 {
     private ReviewRepository $reviewRepository;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final protected function setUp(): void
     {
         parent::setUp();

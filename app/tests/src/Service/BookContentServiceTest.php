@@ -21,7 +21,7 @@ use ReflectionException;
 
 class BookContentServiceTest extends AbstractTestCase
 {
-    private const int PER_PAGE = 5;
+    private const int PER_PAGE = 30;
 
     private BookChapterRepository $bookChapterRepository;
     private BookContentRepository $bookContentRepository;

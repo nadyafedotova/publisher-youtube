@@ -9,26 +9,24 @@ use App\Service\ReviewService;
 use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
 use ArrayIterator;
+use DateTimeImmutable;
+use Exception;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\Exception as MockException;
 
 class ReviewServiceTest extends AbstractTestCase
 {
     private ReviewRepository $reviewRepository;
     private RatingService $ratingService;
-    private MockUtils $entityTest;
 
     private const int BOOK_ID = 1;
     private const int PER_PAGE = 5;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws MockException */
     final protected function setUp(): void
     {
         parent::setUp();
 
-        $this->entityTest = new MockUtils();
         $this->reviewRepository = $this->createMock(ReviewRepository::class);
         $this->ratingService = $this->createMock(RatingService::class);
     }
@@ -58,14 +56,14 @@ class ReviewServiceTest extends AbstractTestCase
             ->with(self::BOOK_ID, $offset, self::PER_PAGE)
             ->willReturn(new ArrayIterator());
 
+        $entity = MockUtils::createReview()->setAuthor('tester')->setContent('test content')
+            ->setCreatedAt(new DateTimeImmutable('2020-10-10'))->setRating(4);
         $service = new ReviewService($this->reviewRepository, $this->ratingService);
 
-        $this->assertEquals($this->entityTest->createReviewPage(0, 0, $page, 0, []), $service->getReviewPageByBookId(self::BOOK_ID, $page));
+        $this->assertEquals($entity, $service->getReviewPageByBookId(self::BOOK_ID, $page));
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws Exception */
     final public function testGetReviewPageByBookId(): void
     {
         $this->ratingService->expects($this->once())
@@ -73,7 +71,7 @@ class ReviewServiceTest extends AbstractTestCase
             ->with(self::BOOK_ID)
             ->willReturn(new Rating(1, 4.0));
 
-        $review = $this->entityTest->createReview($this->entityTest->createBook());
+        $review = MockUtils::createReview(MockUtils::createBook());
         $review->setAuthor('tester');
         $review->setContent('test');
         $review->setRating(4);
@@ -84,7 +82,8 @@ class ReviewServiceTest extends AbstractTestCase
             ->willReturn(new ArrayIterator([$review]));
 
         $service = new ReviewService($this->reviewRepository, $this->ratingService);
-        $reviewPage = $this->entityTest->createReviewPage(1, 4, 1, 1, array($this->entityTest->createReviewModel()));
+        $reviewPage = MockUtils::createReviewPage()->setTotal(1)->setRating(4)
+        ->setPage(1)->setPages(1)->setItems(array(MockUtils::createReviewModel()));
 
         $this->assertEquals($reviewPage, $service->getReviewPageByBookId(self::BOOK_ID, 1));
     }

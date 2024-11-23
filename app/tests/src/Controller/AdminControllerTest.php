@@ -42,7 +42,7 @@ class AdminControllerTest extends AbstractControllerTest
             'title' => 'test',
         ]));
 
-        $responseContent = json_decode($this->client->getResponse(), null, 512, JSON_THROW_ON_ERROR);
+        $responseContent = json_decode($this->client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonDocumentMatchesSchema($responseContent, [

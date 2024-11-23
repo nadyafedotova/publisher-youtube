@@ -2,7 +2,7 @@
 
 namespace App\Tests\src\Controller;
 
-use _PHPStan_2a200beec\React\Http\Io\UploadedFile;
+use App\Entity\User;
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,9 +12,12 @@ use JsonException;
 use Random\RandomException;
 use ReflectionException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class AuthorControllerTest extends AbstractControllerTest
 {
+    private User $user;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -41,7 +44,7 @@ class AuthorControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws OptimisticLockException|ORMException|JsonException */
     final public function testUploadBookCover(): void
     {
         $book = MockUtils::createBook()->setUser($this->user)->setImage(null);
@@ -49,7 +52,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->em->persist($book);
         $this->em->flush();
 
-        $fixturePath = __DIR__ . '/../Fixtures/logo_ligtht_white.png';
+        $fixturePath = __DIR__ . '/../Fixtures/logo_light_white.png';
         $clonedImagePath = sys_get_temp_dir() . PATH_SEPARATOR . 'test.png';
 
         (new Filesystem())->copy($fixturePath, $clonedImagePath);
@@ -62,7 +65,7 @@ class AuthorControllerTest extends AbstractControllerTest
             true,
         );
 
-        $this->client->request('POST', '/api/v1/author/book/' . $book->getId() . '/upload', [], [
+        $this->client->request('POST', '/api/v1/author/book/' . $book->getId() . '/uploadCover', [], [
             'cover' => $uploadedFile,
         ]);
 
@@ -78,7 +81,7 @@ class AuthorControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
+    /** @throws OptimisticLockException|ORMException */
     final public function testDeleteBook(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -91,7 +94,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
+    /** @throws ReflectionException|OptimisticLockException|ORMException */
     final public function testUpdateBook(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -106,7 +109,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->client->request('POST', '/api/v1/author/book/' . $book->getId(), [], [], [], json_encode([
             'title' => 'Updated book',
             'authors' => ['vasya'],
-            'description' => ['testing updated book'],
+            'description' => 'testing updated book',
             'category' => [$category->getId()],
             'format' => [['id' => $format->getId(), 'price' => 123.5, 'discountPercent' => 5]],
         ]));
@@ -114,7 +117,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
+    /** @throws OptimisticLockException|ORMException */
     final public function testPublishBook(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -123,13 +126,13 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->em->flush();
 
         $this->client->request('POST', '/api/v1/author/book/' . $book->getId() . '/publish', [], [], [], json_encode([
-            'date' => '22.02.2010',
+            'dateTime' => '2010-02-22T00:00:00',
         ]));
 
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
+    /** @throws OptimisticLockException|ORMException */
     final public function testUnpublishBook(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -142,7 +145,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws OptimisticLockException|ORMException|JsonException */
     final public function testBooks(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -150,30 +153,33 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->em->persist($book);
         $this->em->flush();
 
-        $this->client->request('GET', '/api/v1/author/book');
+        $this->client->request('GET', '/api/v1/author/books');
 
         $responseContent = json_decode($this->client->getResponse()->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
         $this->assertResponseIsSuccessful();
         $this->assertJsonDocumentMatchesSchema($responseContent, [
             'type' => 'object',
-            'required' => ['items'],
+            'required' => ['bookCategoryList'],
             'properties' => [
-                'items' => [
-                    'type' => 'object',
-                    'required' => ['id', 'title', 'slug', 'image'],
-                    'properties' => [
-                        'id' => ['type' => 'integer'],
-                        'title' => ['type' => 'string'],
-                        'slug' => ['type' => 'string'],
-                        'image' => ['type' => 'string'],
+                'bookCategoryList' => [
+                    'type' => 'array',
+                    'items' => [
+                        'type' => 'object',
+                        'required' => ['id', 'title', 'slug', 'image'],
+                        'properties' => [
+                            'title' => ['type' => 'string'],
+                            'slug' => ['type' => 'string'],
+                            'id' => ['type' => 'integer'],
+                            'image' => ['type' => 'string'],
+                        ],
                     ],
                 ],
             ],
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws ReflectionException|OptimisticLockException|ORMException|JsonException */
     final public function testBook(): void
     {
         $category = MockUtils::createBookCategory();
@@ -230,7 +236,7 @@ class AuthorControllerTest extends AbstractControllerTest
                             'id' => ['type' => 'integer'],
                             'title' => ['type' => 'string'],
                             'description' => ['type' => 'string'],
-                            'comment' => ['type' => 'string'],
+                            'comment' => ['type' => ['string', 'null']],
                             'price' => ['type' => 'number'],
                             'discountPercent' => ['type' => 'integer'],
                         ],
@@ -240,7 +246,7 @@ class AuthorControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws OptimisticLockException|ORMException|JsonException */
     final public function testCreateBookChapter(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -248,7 +254,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->em->persist($book);
         $this->em->flush();
 
-        $this->client->request('POST', '/api/v1/author/book' . $book->getId() . '/chapter', [], [], [], json_encode([
+        $this->client->request('POST', '/api/v1/author/book/' . $book->getId() . '/chapter', [], [], [], json_encode([
             'title' => 'Test book',
         ]));
 
@@ -264,7 +270,7 @@ class AuthorControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws OptimisticLockException|ORMException|JsonException */
     final public function testUpdateBookChapter(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -280,7 +286,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws RandomException|OptimisticLockException|ORMException|JsonException */
     final public function testUpdateBookChapterSort(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -310,7 +316,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws RandomException|OptimisticLockException|ORMException|JsonException */
     final public function testGetBookChapterTree(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -325,7 +331,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->em->persist($chapterNested);
         $this->em->flush();
 
-        $this->client->request('GET', '/api/v1/author/book/' . $book->getId() . 'chapters');
+        $this->client->request('GET', '/api/v1/author/book/' . $book->getId() . '/chapters');
 
         $responseContent = json_decode($this->client->getResponse()->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
@@ -363,7 +369,7 @@ class AuthorControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
+    /** @throws RandomException|OptimisticLockException|ORMException */
     final public function testDeleteBookChapter(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -378,7 +384,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws RandomException|OptimisticLockException|ORMException|JsonException */
     final public function testCreateBookContent(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -403,7 +409,7 @@ class AuthorControllerTest extends AbstractControllerTest
         ]);
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
+    /** @throws OptimisticLockException|ORMException */
     final public function testUpdateBookContent(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -421,8 +427,8 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException */
-    public function testDeleteBookChapterContent()
+    /** @throws OptimisticLockException|ORMException */
+    final public function testDeleteBookChapterContent(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
         $chapter = MockUtils::createBookChapter($book);
@@ -439,7 +445,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->assertResponseIsSuccessful();
     }
 
-    /** @throws ReflectionException|RandomException|OptimisticLockException|ORMException|JsonException */
+    /** @throws RandomException|OptimisticLockException|ORMException|JsonException */
     final public function testChapterContent(): void
     {
         $book = MockUtils::createBook()->setUser($this->user);
@@ -454,7 +460,7 @@ class AuthorControllerTest extends AbstractControllerTest
         $this->em->flush();
 
         $url = sprintf('/api/v1/author/book/%d/chapter/%d/content', $book->getId(), $chapter->getId());
-        $this->client->request('DELETE', $url);
+        $this->client->request('GET', $url);
 
         $responseContent = json_decode($this->client->getResponse()->getContent(), null, 512, JSON_THROW_ON_ERROR);
 
@@ -476,7 +482,7 @@ class AuthorControllerTest extends AbstractControllerTest
                         'properties' => [
                             'id' => ['type' => 'integer'],
                             'content' => ['type' => 'string'],
-                            'published' => ['type' => 'bool'],
+                            'published' => ['type' => 'boolean'],
                         ],
                     ],
                 ],

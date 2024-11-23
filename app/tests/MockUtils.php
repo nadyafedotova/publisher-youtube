@@ -13,12 +13,12 @@ use App\Entity\BookToBookFormat;
 use App\Entity\Review;
 use App\Entity\User;
 use App\Model\BookListItem;
-use App\Model\BookCategory as BookCategoryModel;
 use App\Model\BookDetails;
 use App\Model\BookFormat as BookFormatModel;
 use App\Model\RecommendedBook;
 use App\Model\Review as ReviewModel;
 use App\Model\ReviewPage;
+use App\Model\SingUpRequest;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Random\RandomException;
@@ -29,9 +29,7 @@ class MockUtils
 {
     private const int PER_PAGE = 5;
 
-    /**
-     * @throws ReflectionException
-     */
+    /**  @throws ReflectionException */
     final public static function setEntityId(object $entity, int $value, string $idField = 'id'): object
     {
         $class = new ReflectionClass($entity);
@@ -43,9 +41,7 @@ class MockUtils
         return $entity;
     }
 
-    /**
-     * @throws RandomException
-     */
+    /** @throws RandomException */
     public static function createUser(): User
     {
         $randomNumber = random_int(1, 999999999999999);
@@ -58,40 +54,22 @@ class MockUtils
             ->setPassword('password');
     }
 
-    /**
-     * @throws ReflectionException|RandomException
-     */
-    final public static function createBook(
-        string $title = 'Test Book',
-        ?BookCategory $bookCategory = null,
-        ?BookToBookFormat $format = null,
-        string $description = 'RxJava for Android Developers',
-        bool $mapper = false,
-    ): Book {
-        $randomNumber = random_int(1, 999999999999999);
-
-        $book = (new Book())
-            ->setTitle($title)
-            ->setImage('') //http://localhost/' . $title . 'png
+    /** @throws RandomException */
+    public static function createBook(): Book
+    {
+        return (new Book())
+            ->setTitle('Test book')
+            ->setImage('http://localhost.png')
             ->setIsbn('123321')
-            ->setDescription($description)
-            ->setPublicationDate((new DateTimeImmutable())->setTimestamp(1602288000))
+            ->setDescription('test')
+            ->setPublicationDate(new \DateTimeImmutable('2020-10-10'))
             ->setAuthors(['Tester'])
-            ->setSlug('test' . $randomNumber . 'book')
-            ->setUser(self::createUser());
-        self::setEntityId($book, 1);
-
-        if (!$mapper) {
-            $book->setFormats($format ? new ArrayCollection([$format]) : new ArrayCollection());
-            $book->setCategories($bookCategory ? new ArrayCollection([$bookCategory]) : new ArrayCollection());
-        }
-
-        return $book;
+            ->setCategories(new ArrayCollection([]))
+            ->setSlug('test-book');
+        //  ->setUser(self::createUser());
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     final public static function createBookCategory(): BookCategory
     {
         $bookCategory = (new BookCategory())
@@ -102,29 +80,18 @@ class MockUtils
         return $bookCategory;
     }
 
-    final public static function createBookDetails(BookFormatModel|array $format, string $title = 'Test Book', bool $mapper = false): BookDetails
+    final public static function createBookDetails(): BookDetails
     {
-        $bookDetails = (new BookDetails())
+        return (new BookDetails())
             ->setId(1)
-            ->setTitle($title)
+            ->setTitle('Test Book')
             ->setSlug('test-book')
             ->setImage('')
             ->setAuthors(['Tester'])
             ->setPublicationDate(1602288000);
-
-        if (!$mapper) {
-            $bookDetails ->setCategories([new BookCategoryModel(1, 'Test', 'test')])
-                ->setFormats([$format])
-                ->setRating(5.5)
-                ->setReviews(10);
-        }
-
-        return $bookDetails;
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     final public static function createBookFormat(): BookFormat
     {
         $format = (new BookFormat())
@@ -136,9 +103,7 @@ class MockUtils
         return $format;
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     final public static function createBookFormatModel(): BookFormatModel
     {
         $format = (new BookFormatModel())
@@ -172,9 +137,7 @@ class MockUtils
             ->setPublicationDate(1602288000);
     }
 
-    /**
-     * @throws ReflectionException
-     */
+    /** @throws ReflectionException */
     final public static function createReview(Book $book): Review
     {
         $review = (new Review())
@@ -197,30 +160,19 @@ class MockUtils
             ->setAuthor('tester');
     }
 
-    final public static function createReviewPage(
-        int $total,
-        float $rating,
-        int $page,
-        int $pages,
-        ReviewModel|array|null $reviewModel,
-    ): ReviewPage {
-        return (new ReviewPage())
-            ->setTotal($total)
-            ->setRating($rating)
-            ->setPage($page)
-            ->setPages($pages)
-            ->setPerPage(self::PER_PAGE)
-            ->setItems($reviewModel);
+    final public static function createReviewPage(): ReviewPage
+    {
+        return (new ReviewPage());
     }
 
-    final public static function createRecommendedBook(string $expectedDescription, string $title = 'Test Recommended Book'): RecommendedBook
+    final public static function createRecommendedBook(): RecommendedBook
     {
         return (new RecommendedBook())
             ->setId(1)
-            ->setTitle($title)
+            ->setTitle('Test Recommended Book')
             ->setSlug('test-book')
             ->setImage('')
-            ->setShortDescription($expectedDescription);
+            ->setShortDescription('');
     }
 
     final public static function createBookFormatLink(Book $book, BookFormat $bookFormat): BookToBookFormat
@@ -232,12 +184,15 @@ class MockUtils
             ->setBook($book);
     }
 
+    /**@throws RandomException */
     public static function createBookChapter(Book $book): BookChapter
     {
+        $randomNumber = random_int(1, 999999999999999);
+
         return (new BookChapter())
             ->setTitle('Chapter')
             ->setBook($book)
-            ->setSlug('test-chapter')
+            ->setSlug('test-'.$randomNumber.'chapter')
             ->setLevel(1)
             ->setSort(1)
             ->setParent(null);
@@ -249,5 +204,14 @@ class MockUtils
             ->setContent('testing content')
             ->setIsPublished(true)
             ->setChapter($chapter);
+    }
+
+    public static function createSingUpRequest(): SingUpRequest
+    {
+        return (new SingUpRequest())
+            ->setFirstName('Tester')
+            ->setLastName('Tester')
+            ->setEmail('tester@test.com')
+            ->setPassword('testtest');
     }
 }

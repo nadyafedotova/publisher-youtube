@@ -4,13 +4,13 @@ namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
+use Doctrine\ORM\Exception\ORMException;
 use GuzzleHttp\Exception\GuzzleException;
 use Hoverfly\Client as HoverflyClient;
 use Hoverfly\Model\RequestFieldMatcher;
 use Hoverfly\Model\Response;
 use JsonMapper_Exception;
 use Random\RandomException;
-use ReflectionException;
 
 class RecommendationControllerTest extends AbstractControllerTest
 {
@@ -23,13 +23,13 @@ class RecommendationControllerTest extends AbstractControllerTest
         $this->setUpHoverfly();
     }
 
-    /** @throws ReflectionException|RandomException */
+    /** @throws RandomException|ORMException */
     final public function testRecommendationByBookId(): void
     {
         $user = MockUtils::createUser();
         $this->em->persist($user);
 
-        $book = MockUtils::createBook();
+        $book = MockUtils::createBook()->setUser($user);
         $this->em->persist($book);
 
         $this->em->flush();
@@ -85,9 +85,7 @@ class RecommendationControllerTest extends AbstractControllerTest
         );
     }
 
-    /**
-     * @throws JsonMapper_Exception|GuzzleException
-     */
+    /** @throws JsonMapper_Exception|GuzzleException */
     private function setUpHoverfly(): void
     {
         $this->hoverflyClient = new HoverflyClient(['base_uri' => $_ENV['HOVERFLY_API']]);

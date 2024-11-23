@@ -4,18 +4,19 @@ namespace App\Tests\src\Controller;
 
 use App\Tests\AbstractControllerTest;
 use App\Tests\MockUtils;
+use Doctrine\ORM\Exception\ORMException;
 use Random\RandomException;
 use ReflectionException;
 
 class ReviewControllerTest extends AbstractControllerTest
 {
-    /** @throws ReflectionException|RandomException */
+    /** @throws ReflectionException|RandomException|ORMException */
     final public function testReviews(): void
     {
         $user = MockUtils::createUser();
         $this->em->persist($user);
 
-        $book = MockUtils::createBook();
+        $book = MockUtils::createBook()->setUser($user);
         $this->em->persist($book);
 
         $review = MockUtils::createReview($book);

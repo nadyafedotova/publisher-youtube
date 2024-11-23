@@ -2,14 +2,14 @@
 
 namespace App\Tests\src\Service;
 
-use App\Entity\User;
 use App\Exception\UserAlreadyExistsException;
-use App\Model\SingUpRequest;
 use App\Repository\UserRepository;
 use App\Service\SingUpService;
 use App\Tests\AbstractTestCase;
+use App\Tests\MockUtils;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use PHPUnit\Framework\MockObject\Exception;
+use Random\RandomException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 
@@ -19,9 +19,7 @@ class SingUpServiceTest extends AbstractTestCase
     private UserRepository $userRepository;
     private AuthenticationSuccessHandler $authenticationSuccessHandler;
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     protected function setUp(): void
     {
         parent::setUp();
@@ -36,7 +34,7 @@ class SingUpServiceTest extends AbstractTestCase
         return new SingUpService($this->userPasswordHasher, $this->userRepository, $this->authenticationSuccessHandler);
     }
 
-    public function testSingUpUserAlreadyExists(): void
+    final public function testSingUpUserAlreadyExists(): void
     {
         $this->expectException(UserAlreadyExistsException::class);
 
@@ -45,16 +43,14 @@ class SingUpServiceTest extends AbstractTestCase
             ->with('tester@test.com')
             ->willReturn(true);
 
-        $this->createService()->singUp((new SingUpRequest())->setEmail('tester@test.com'));
+        $this->createService()->singUp(MockUtils::createSingUpRequest());
     }
-    public function testSingUp(): void
+
+    /** @throws RandomException */
+    final public function testSingUp(): void
     {
         $response = new Response();
-        $expectedHasherUser = (new User())
-            ->setRoles(['ROLE_USER'])
-            ->setFirstName('Tester')
-            ->setLastName('Tester')
-            ->setEmail('tester@test.com');
+        $expectedHasherUser = MockUtils::createUser()->setRoles(['ROLE_USER']);
 
         $expectedUser = clone $expectedHasherUser;
         $expectedUser->setPassword('hashed_password');
@@ -78,11 +74,7 @@ class SingUpServiceTest extends AbstractTestCase
             ->with($expectedUser)
             ->willReturn($response);
 
-        $singUpRequest = (new SingUpRequest())
-            ->setFirstName('Tester')
-            ->setLastName('Tester')
-            ->setEmail('tester@test.com')
-            ->setPassword('testtest');
+        $singUpRequest = MockUtils::createSingUpRequest();
 
         $this->assertEquals($response, $this->createService()->singUp($singUpRequest));
     }

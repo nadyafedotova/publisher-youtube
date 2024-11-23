@@ -26,9 +26,7 @@ class UploadServiceTest extends AbstractTestCase
         $this->filesystem = $this->createMock(Filesystem::class);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     final public function testUploadBookFileInvalidExtension(): void
     {
         $this->expectException(UploadFileInvalidTypeException::class);

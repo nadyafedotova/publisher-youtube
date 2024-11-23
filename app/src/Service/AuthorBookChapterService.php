@@ -63,18 +63,18 @@ readonly class AuthorBookChapterService
         return new IdResponse($chapter->getId());
     }
 
-    final public function updateChapter(UpdateBookChapterRequest $request): void
+    final public function updateChapter(UpdateBookChapterRequest $request, int $id): void
     {
-        $chapter = $this->bookChapterRepository->find($request->getId());
+        $chapter = $this->bookChapterRepository->getById($id);
         $title = $request->getTitle();
-        $chapter->setTitle($title)->setSlug($this->slugger->slug($title));
+        $chapter->setTitle($title)->setSlug($this->slugger->slug($title)->toString());
 
         $this->bookChapterRepository->commit();
     }
 
-    final public function deleteChapter(IdResponse $idResponse): void
+    final public function deleteChapter(int $id): void
     {
-        $chapter = $this->bookChapterRepository->find($idResponse);
+        $chapter = $this->bookChapterRepository->getById($id);
 
         $this->bookChapterRepository->removeAndCommit($chapter);
     }

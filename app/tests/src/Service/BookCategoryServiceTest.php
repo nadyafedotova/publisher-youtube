@@ -14,10 +14,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 
 class BookCategoryServiceTest extends AbstractTestCase
 {
-    /**
-     * @throws Exception
-     * @throws ReflectionException
-     */
+    /** @throws Exception|ReflectionException */
     final public function testGetCategories(): void
     {
         $repository = $this->createMock(BookCategoryRepository::class);
