@@ -44,10 +44,8 @@ class MockUtils
     /** @throws RandomException */
     public static function createUser(): User
     {
-        $randomNumber = random_int(1, 999999999999999);
-
         return (new User())
-            ->setEmail('test' . $randomNumber . '@test.com')
+            ->setEmail('test' . self::random() . '@test.com')
             ->setFirstName('Test')
             ->setLastName('Testerov')
             ->setRoles(['ROLE_AUTHOR'])
@@ -58,14 +56,14 @@ class MockUtils
     public static function createBook(): Book
     {
         return (new Book())
-            ->setTitle('Test book')
-            ->setImage('http://localhost.png')
+            ->setTitle('Test Book')
+            ->setImage('')
             ->setIsbn('123321')
             ->setDescription('test')
             ->setPublicationDate(new \DateTimeImmutable('2020-10-10'))
             ->setAuthors(['Tester'])
             ->setCategories(new ArrayCollection([]))
-            ->setSlug('test-book');
+            ->setSlug('test-'. self::random() .'book');
         //  ->setUser(self::createUser());
     }
 
@@ -187,12 +185,10 @@ class MockUtils
     /**@throws RandomException */
     public static function createBookChapter(Book $book): BookChapter
     {
-        $randomNumber = random_int(1, 999999999999999);
-
         return (new BookChapter())
             ->setTitle('Chapter')
             ->setBook($book)
-            ->setSlug('test-'.$randomNumber.'chapter')
+            ->setSlug('test-'.self::random().'chapter')
             ->setLevel(1)
             ->setSort(1)
             ->setParent(null);
@@ -213,5 +209,11 @@ class MockUtils
             ->setLastName('Tester')
             ->setEmail('tester@test.com')
             ->setPassword('testtest');
+    }
+
+    /** @throws RandomException */
+    private static function random(): int
+    {
+        return random_int(1, 999999999999999);
     }
 }

@@ -6,6 +6,7 @@ use App\Entity\Book;
 use App\Repository\BookRepository;
 use App\Tests\AbstractRepositoryTest;
 use App\Tests\MockUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Random\RandomException;
 use ReflectionException;
 
@@ -30,7 +31,7 @@ class BookRepositoryTest extends AbstractRepositoryTest
         $this->bookRepository->save($devicesCategory);
 
         for ($i = 0; $i < 5; ++$i) {
-            $book = MockUtils::createBook('device-' . $i, $devicesCategory);
+            $book = MockUtils::createBook()->setUser($user)->setTitle('device-' . $i)->setCategories(new ArrayCollection([$devicesCategory]));
             $this->bookRepository->save($book);
         }
 
