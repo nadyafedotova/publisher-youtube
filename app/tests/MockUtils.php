@@ -91,8 +91,7 @@ class MockUtils
             ->setAuthors(['Tester'])
             ->setCategories([new BookCategoryModel(1, 'Test', 'test')])
             ->setFormats(['$format'])
-            ->setRating(5.5)
-            ->setReviews(10);
+            ->setPublicationDate(1602288000);
     }
 
     /** @throws ReflectionException */

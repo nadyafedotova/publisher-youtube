@@ -14,10 +14,10 @@ class BookDetails extends BaseBookDetails
     private int $reviews;
 
     /** @var BookCategory[]|null */
-    private array $categories;
+    private array $categories = [];
 
     /** @var BookFormat[]|null */
-    private array $formats;
+    private array $formats = [];
 
     private array $chapters;
 

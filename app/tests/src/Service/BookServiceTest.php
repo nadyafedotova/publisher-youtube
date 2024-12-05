@@ -78,7 +78,9 @@ class BookServiceTest extends AbstractTestCase
         $expected->setTitle($db->getTitle())
             ->setSlug($db->getSlug())
             ->setPublicationDate($db->getPublicationDate())
-            ->setChapters($db->getChapters());
+            ->setChapters($db->getChapters())
+            ->setRating(5.5)
+            ->setReviews(10);
 
         $this->assertEquals($expected, $db);
     }

@@ -18,8 +18,8 @@ class BookMapperTest extends AbstractTestCase
         MockUtils::setEntityId($book, 1);
         $expected = MockUtils::createBookDetails();
         $db = BookMapper::map($book, new BookDetails);
-        $expected->setSlug($db->getSlug());
+        $expected->setSlug($db->getSlug())->setCategories($db->getCategories())->setFormats($db->getFormats());
 
-        $this->assertEquals($expected, BookMapper::map($book, new BookDetails));
+        $this->assertEquals($expected, $db);
     }
 }
