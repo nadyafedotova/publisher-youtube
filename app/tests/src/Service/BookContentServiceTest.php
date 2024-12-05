@@ -154,11 +154,8 @@ class BookContentServiceTest extends AbstractTestCase
     private function testGetContent(bool $onlyPublished): void
     {
         $chapter = new BookChapter();
-        $content = (new BookContent())
-            ->setContent('testing')
-            ->setIsPublished($onlyPublished)
-            ->setChapter($chapter);
-
+        $content = MockUtils::createBookContent($chapter)
+            ->setIsPublished($onlyPublished);
         MockUtils::setEntityId($content, 1);
 
         $this->bookContentRepository->expects($this->once())
@@ -176,14 +173,7 @@ class BookContentServiceTest extends AbstractTestCase
             ? $service->getPublishedContent(1, 1)
             : $service->getAllContent(1, 1);
 
-        $expected = (new BookChapterContentPage())
-            ->setTotal(1)
-            ->setPages(5)
-            ->setPage(1)
-            ->setPerPage(self::PER_PAGE)
-            ->setItems([
-                (new BookChapterContent())->setContent('testing')->setIsPublished($onlyPublished)->setId(1),
-            ]);
+        $expected = MockUtils::createBookChapterContentPage($onlyPublished);
 
         $this->assertEquals($expected, $result);
     }

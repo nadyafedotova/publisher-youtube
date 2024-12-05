@@ -43,13 +43,12 @@ class RecommendationServiceTest extends AbstractTestCase
         ];
     }
 
-    /**
-     * @throws ReflectionException|RequestException|AccessDeniedException|RandomException
-     */
+    /** @throws ReflectionException|RequestException|AccessDeniedException|RandomException */
     #[DataProvider('dataProvider')]
     final public function testGetRecommendationsByBookId(string $actualDescription, string $expectedDescription): void
     {
         $book = MockUtils::createBook()->setDescription($actualDescription);
+        MockUtils::setEntityId($book, 1);
 
         $this->bookRepository->expects($this->once())
             ->method('findBooksByIds')
@@ -61,10 +60,10 @@ class RecommendationServiceTest extends AbstractTestCase
             ->with(1)
             ->willReturn(new RecommendationResponse(1, 12345, [new RecommendationItem(2),]));
 
-        $expected = new RecommendedBookListResponse([MockUtils::createRecommendedBook()->setShortDescription($expectedDescription)]);
-        $db = $this->createService()->getRecommendationsByBookId(1);
-        $expected->getItems()[0]->setSlug($db->getItems()[0]->getSlug());
+        $expected = (new RecommendedBookListResponse([MockUtils::createRecommendedBook()->setShortDescription($expectedDescription)]))->getItems()[0];
+        $db = $this->createService()->getRecommendationsByBookId(1)->getItems()[0];
 
+        $expected->setSlug($db->getSlug());
         $this->assertEquals($expected, $db);
     }
 

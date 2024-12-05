@@ -6,20 +6,20 @@ namespace App\Tests\src\Validation;
 
 use App\Tests\AbstractTestCase;
 use App\Validation\AtLeastOneRequired;
-use Doctrine\DBAL\Exception\ConstraintViolationException;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
 
 class AtLeastOneRequiredTest extends AbstractTestCase
 {
     final public function testEmptyOptionsException(): void
     {
-        $this->expectException(ConstraintViolationException::class);
+        $this->expectException(ConstraintDefinitionException::class);
 
         new AtLeastOneRequired();
     }
 
     final public function testEmptyRequiredFieldsException(): void
     {
-        $this->expectException(ConstraintViolationException::class);
+        $this->expectException(ConstraintDefinitionException::class);
 
         new AtLeastOneRequired([]);
     }

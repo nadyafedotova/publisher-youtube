@@ -6,12 +6,15 @@ namespace App\Tests;
 
 use App\Entity\Book;
 use App\Entity\BookCategory;
+use App\Model\BookCategory as BookCategoryModel;
 use App\Entity\BookChapter;
 use App\Entity\BookContent;
 use App\Entity\BookFormat;
 use App\Entity\BookToBookFormat;
 use App\Entity\Review;
 use App\Entity\User;
+use App\Model\BookChapterContent;
+use App\Model\BookChapterContentPage;
 use App\Model\BookListItem;
 use App\Model\BookDetails;
 use App\Model\BookFormat as BookFormatModel;
@@ -27,7 +30,7 @@ use ReflectionException;
 
 class MockUtils
 {
-    private const int PER_PAGE = 5;
+    private const int PER_PAGE = 30;
 
     /**  @throws ReflectionException */
     final public static function setEntityId(object $entity, int $value, string $idField = 'id'): object
@@ -86,7 +89,10 @@ class MockUtils
             ->setSlug('test-book')
             ->setImage('')
             ->setAuthors(['Tester'])
-            ->setPublicationDate(1602288000);
+            ->setCategories([new BookCategoryModel(1, 'Test', 'test')])
+            ->setFormats(['$format'])
+            ->setRating(5.5)
+            ->setReviews(10);
     }
 
     /** @throws ReflectionException */
@@ -153,22 +159,28 @@ class MockUtils
     {
         return (new ReviewModel())
             ->setId(1)
-            ->setRating(4)
+            ->setRating(0)
             ->setContent('test')
             ->setAuthor('tester');
     }
 
     final public static function createReviewPage(): ReviewPage
     {
-        return (new ReviewPage());
+        return (new ReviewPage())
+            ->setTotal(0)
+            ->setRating(0.0)
+            ->setPage(1)
+            ->setPages(0)
+            ->setPerPage(self::PER_PAGE)
+            ->setItems([]);
     }
 
     final public static function createRecommendedBook(): RecommendedBook
     {
         return (new RecommendedBook())
             ->setId(1)
-            ->setTitle('Test Recommended Book')
-            ->setSlug('test-book')
+            ->setTitle('Test Book')
+            ->setSlug('')
             ->setImage('')
             ->setShortDescription('');
     }
@@ -197,7 +209,7 @@ class MockUtils
     public static function createBookContent(BookChapter $chapter): BookContent
     {
         return (new BookContent())
-            ->setContent('testing content')
+            ->setContent('testing')
             ->setIsPublished(true)
             ->setChapter($chapter);
     }
@@ -205,10 +217,29 @@ class MockUtils
     public static function createSingUpRequest(): SingUpRequest
     {
         return (new SingUpRequest())
-            ->setFirstName('Tester')
-            ->setLastName('Tester')
+            ->setFirstName('Test')
+            ->setLastName('Testerov')
             ->setEmail('tester@test.com')
-            ->setPassword('testtest');
+            ->setPassword('hashed_password');
+    }
+
+    public static function createBookChapterContentPage(bool $onlyPublished): BookChapterContentPage
+    {
+        return (new BookChapterContentPage())
+            ->setTotal(1)
+            ->setPages(self::PER_PAGE)
+            ->setPage(1)
+            ->setPerPage(self::PER_PAGE)
+            ->setItems([self::createBookChapterContent($onlyPublished)]);
+
+    }
+
+    public static function createBookChapterContent(bool $onlyPublished): BookChapterContent
+    {
+        return (new BookChapterContent())
+            ->setContent('testing')
+            ->setIsPublished($onlyPublished)
+            ->setId(1);
     }
 
     /** @throws RandomException */

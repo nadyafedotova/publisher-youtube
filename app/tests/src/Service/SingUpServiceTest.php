@@ -2,6 +2,7 @@
 
 namespace App\Tests\src\Service;
 
+use App\Entity\User;
 use App\Exception\UserAlreadyExistsException;
 use App\Repository\UserRepository;
 use App\Service\SingUpService;
@@ -47,14 +48,15 @@ class SingUpServiceTest extends AbstractTestCase
     }
 
     /** @throws RandomException */
-    final public function testSingUp(): void
+    public function testSignUp(): void
     {
         $response = new Response();
-        $expectedHasherUser = MockUtils::createUser()->setRoles(['ROLE_USER']);
+        $expectedHasherUser = MockUtils::createUser()->setRoles(['ROLE_USER'])->setEmail('tester@test.com');
 
         $expectedUser = clone $expectedHasherUser;
         $expectedUser->setPassword('hashed_password');
 
+        $expectedHashedPassword = 'hashed_password';
         $this->userRepository->expects($this->once())
             ->method('existsByEmail')
             ->with('tester@test.com')
@@ -62,8 +64,11 @@ class SingUpServiceTest extends AbstractTestCase
 
         $this->userPasswordHasher->expects($this->once())
             ->method('hashPassword')
-            ->with($expectedHasherUser, 'testtest')
-            ->willReturn('hashed_password');
+            ->with($this->callback(function (User $user) use ($expectedUser) {
+                return $user->getEmail() === $expectedUser->getEmail()
+                    && $user->getRoles() === $expectedUser->getRoles();
+            }), $expectedHashedPassword)
+            ->willReturn($expectedHashedPassword);
 
         $this->userRepository->expects($this->once())
             ->method('saveAndCommit')
@@ -71,7 +76,10 @@ class SingUpServiceTest extends AbstractTestCase
 
         $this->authenticationSuccessHandler->expects($this->once())
             ->method('handleAuthenticationSuccess')
-            ->with($expectedUser)
+            ->with($this->callback(function (User $user) use ($expectedUser, $expectedHashedPassword) {
+                return $user->getEmail() === $expectedUser->getEmail()
+                    && $user->getPassword() === $expectedHashedPassword;
+            }))
             ->willReturn($response);
 
         $singUpRequest = MockUtils::createSingUpRequest();

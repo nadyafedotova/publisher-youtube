@@ -20,9 +20,9 @@ class AtLeastOneRequiredValidatorTest extends ConstraintValidatorTestCase
 
     final protected function setUp(): void
     {
-        parent::setUp();
-
         $this->propertyAccessor = PropertyAccess::createPropertyAccessor();
+
+        parent::setUp();
     }
 
     final public function testValidateExceptionOnUnexpectedType(): void
@@ -39,8 +39,8 @@ class AtLeastOneRequiredValidatorTest extends ConstraintValidatorTestCase
 
         $this->validator->validate($object, $constraint);
 
-        $this->buildViolation('At least one of {{ fields }} is required.')
-            ->setParameter('{{ fields }}', 'nextId')
+        $this->buildViolation('At least one of {{ field }} is required.')
+            ->setParameter('{{ field }}', 'nextId')
             ->atPath('property.path.nextId')
             ->setCode(AtLeastOneRequired::ONE_REQUIRED_ERROR)
             ->assertRaised();

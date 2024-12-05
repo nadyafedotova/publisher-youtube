@@ -13,6 +13,7 @@ use App\Service\BooksService;
 use App\Service\RatingService;
 use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\MockObject\Exception;
 use Random\RandomException;
 use ReflectionException;
@@ -52,47 +53,57 @@ class BookServiceTest extends AbstractTestCase
     final public function testGetBooksById(): void
     {
         $book = MockUtils::createBook();
+        MockUtils::setEntityId($book, 1);
+
         $this->bookChapterService->expects($this->once())
             ->method('getChaptersTree')
             ->with($book)
             ->willReturn(new BookChapterTreeResponse());
 
         $format = MockUtils::createBookFormat();
-        $bookToBookFormat = MockUtils::createBookToBookFormat($format, MockUtils::createBook(''));
+        $bookToBookFormat = MockUtils::createBookToBookFormat($format, MockUtils::createBook());
+
         $this->bookRepository->expects($this->once())
             ->method('getPublishedById')
             ->with(123)
-            ->willReturn(MockUtils::createBook('', MockUtils::createBookCategory(), $bookToBookFormat));
+            ->willReturn($book->setCategories(new ArrayCollection([MockUtils::createBookCategory()]))->setFormats(new ArrayCollection([$bookToBookFormat])));
 
         $this->ratingService->expects($this->once())
             ->method('calcReviewRatingForBook')
             ->with(123)
             ->willReturn(new Rating(10, 5.5));
 
-        $expected = MockUtils::createBookDetails(MockUtils::createBookFormatModel(), '');
+        $expected = MockUtils::createBookDetails()->setFormats([MockUtils::createBookFormatModel()]);
         $db = $this->createBookService()->getBookById(123);
-        $expected->setTitle($db->getTitle())->setSlug($db->getSlug());
+        $expected->setTitle($db->getTitle())
+            ->setSlug($db->getSlug())
+            ->setPublicationDate($db->getPublicationDate())
+            ->setChapters($db->getChapters());
 
         $this->assertEquals($expected, $db);
     }
 
-    /** @throws ReflectionException|RandomException */
+
+    /** @throws RandomException|ReflectionException */
     final public function testGetBooksByCategory(): void
     {
+        $book = MockUtils::createBook();
+        MockUtils::setEntityId($book, 1);
+
         $this->bookRepository->expects($this->once())
             ->method('findPublishedBooksByCategoryId')
             ->with(130)
-            ->willReturn([MockUtils::createBook()]);
+            ->willReturn([$book]);
 
         $this->bookCategoryRepository->expects($this->once())
             ->method('existsById')
             ->with(130)
             ->willReturn(true);
 
-        $expected = new BookListResponse([MockUtils::createBookItemModel()]);
-        $db = $this->createBookService()->getBooksByCategory(130);
-        $dbGet = $db->getBookCategoryList()[0];
-        $expected->getBookCategoryList()[0]->setSlug($dbGet->getSlug())->setImage($dbGet->getImage());
+        $expected = (new BookListResponse([MockUtils::createBookItemModel()]))->getBookCategoryList()[0];
+
+        $db = $this->createBookService()->getBooksByCategory(130)->getBookCategoryList()[0];
+        $expected->setSlug($db->getSlug())->setImage($db->getImage());
 
         $this->assertEquals($expected, $db);
     }

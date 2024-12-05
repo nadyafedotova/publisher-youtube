@@ -12,7 +12,7 @@ use Exception;
 
 class ReviewService
 {
-    private const int PAGE_LIMIT = 5;
+    private const int PAGE_LIMIT = 30;
 
     public function __construct(
         private readonly ReviewRepository $reviewRepository,

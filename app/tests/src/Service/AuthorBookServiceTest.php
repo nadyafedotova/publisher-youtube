@@ -143,11 +143,11 @@ class AuthorBookServiceTest extends AbstractTestCase
             ->setTitle('Test Book')
             ->setImage('')
             ->setIsbn('123321')
-            ->setDescription('RxJava for Android Developers')
+            ->setDescription('test')
             ->setPublicationDate(1602288000)
             ->setAuthors(['Tester'])
             ->setCategories([
-                new BookCategory(1, 'Devices', 'devices'),
+                new BookCategory(1, 'Test', 'test'),
             ])
             ->setFormats([
                     (new BookFormat())->setId(1)->setTitle('format')

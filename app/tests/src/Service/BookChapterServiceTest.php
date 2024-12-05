@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Tests\src\Service;
 
 use App\Entity\Book;
-use App\Model\BookChapter;
+use App\Model\BookChapter as BookChapterModel;
 use App\Model\BookChapterTreeResponse;
 use App\Repository\BookChapterRepository;
 use App\Service\BookChapterService;
 use App\Tests\AbstractTestCase;
 use App\Tests\MockUtils;
 use PHPUnit\Framework\MockObject\Exception;
+use Random\RandomException;
 use ReflectionException;
 
 class BookChapterServiceTest extends AbstractTestCase
@@ -26,21 +27,23 @@ class BookChapterServiceTest extends AbstractTestCase
         $this->bookChapterRepository = $this->createMock(BookChapterRepository::class);
     }
 
-    /** @throws ReflectionException|ReflectionException */
-    final public function testChapterTest(): void
+    /** @throws ReflectionException|ReflectionException|RandomException */
+    public function testGetChaptersTree(): void
     {
         $book = new Book();
-        $response = new BookChapterTreeResponse([
-            new BookChapter(1, 'test chapter', 'test-chapter', [
-                new BookChapter(2, 'test chapter', 'test-chapter'),
-            ]),
-        ]);
 
         $parentChapter = MockUtils::createBookChapter($book);
         MockUtils::setEntityId($parentChapter, 1);
 
         $childChapter = MockUtils::createBookChapter($book)->setParent($parentChapter);
-        MockUtils::setEntityId($parentChapter, 2);
+        MockUtils::setEntityId($childChapter, 2);
+
+        $response = new BookChapterTreeResponse([
+            new BookChapterModel(1, $parentChapter->getTitle(), $parentChapter->getSlug(), [
+                new BookChapterModel(2, $childChapter->getTitle(), $childChapter->getSlug()),
+            ]),
+        ]);
+
 
         $this->bookChapterRepository->expects($this->once())
             ->method('findSortedChaptersByBook')

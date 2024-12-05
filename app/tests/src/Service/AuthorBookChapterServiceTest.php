@@ -8,6 +8,7 @@ use App\Entity\Book;
 use App\Entity\BookChapter;
 use App\Exception\BookChapterInvalidSortException;
 use App\Model\Author\CreateBookChapterRequest;
+use App\Model\Author\UpdateBookChapterRequest;
 use App\Model\Author\UpdateBookChapterSortRequest;
 use App\Model\BookChapterTreeResponse;
 use App\Model\IdResponse;
@@ -82,8 +83,8 @@ class AuthorBookChapterServiceTest extends AbstractTestCase
 
         $this->bookChapterRepository->expects($this->once())
             ->method('getMaxSort')
-            ->with(2)
-            ->willReturn($parentBookChapter);
+            ->with($book, 2)
+            ->willReturn(5);
 
         $this->bookChapterRepository->expects($this->once())
             ->method('saveAndCommit')
@@ -135,7 +136,7 @@ class AuthorBookChapterServiceTest extends AbstractTestCase
                 $expectedChapter = (new BookChapter())
                     ->setBook($book)
                     ->setSort(6)
-                    ->setLevel(2)
+                    ->setLevel(1)
                     ->setTitle('test')
                     ->setSlug('test')
                     ->setParent(null);
@@ -173,7 +174,7 @@ class AuthorBookChapterServiceTest extends AbstractTestCase
         $this->bookChapterRepository->expects($this->once())
             ->method('commit');
 
-        $payload = (new CreateBookChapterRequest())->setTitle($newTitle);
+        $payload = (new UpdateBookChapterRequest())->setTitle($newTitle);
         $this->createService()->updateChapter($payload, 1);
 
         $this->assertEquals($newTitle, $bookChapter->getTitle());
@@ -208,7 +209,7 @@ class AuthorBookChapterServiceTest extends AbstractTestCase
 
         $this->bookChapterService->expects($this->once())
             ->method('getChaptersTree')
-            ->with(1)
+            ->with($book)
             ->willReturn($treeResponse);
 
         $this->assertEquals($treeResponse, $this->createService()->getChaptersTree(1));
@@ -221,13 +222,18 @@ class AuthorBookChapterServiceTest extends AbstractTestCase
         $chapter = (new BookChapter())->setBook($book)->setParent(null);
         $nearChapter = (new BookChapter())->setLevel(2)->setBook($book)->setParent($parentChapter);
 
-        $params = [[1], [2]];
+        $params = [[1], [5]];
         $this->bookChapterRepository->expects($this->exactly(2))
             ->method('getById')
             ->willReturnCallback(function (string $param) use (&$params) {
                 $this::assertSame(array_shift($params), $param);
             })
             ->willReturnOnConsecutiveCalls($chapter, $nearChapter);
+
+        $this->bookChapterRepository->expects($this->once())
+            ->method('getMaxSort')
+            ->with($book, 2)
+            ->willReturn(5);
 
         $this->bookChapterRepository->expects($this->once())
             ->method('commit');

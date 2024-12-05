@@ -20,7 +20,7 @@ class ReviewServiceTest extends AbstractTestCase
     private RatingService $ratingService;
 
     private const int BOOK_ID = 1;
-    private const int PER_PAGE = 5;
+    private const int PER_PAGE = 30;
 
     /** @throws MockException */
     final protected function setUp(): void
@@ -40,9 +40,7 @@ class ReviewServiceTest extends AbstractTestCase
         ];
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws Exception */
     #[DataProvider('dataProvider')]
     final public function testGetReviewPageByBookIdInvalidPage(int $page, int $offset): void
     {
@@ -56,8 +54,7 @@ class ReviewServiceTest extends AbstractTestCase
             ->with(self::BOOK_ID, $offset, self::PER_PAGE)
             ->willReturn(new ArrayIterator());
 
-        $entity = MockUtils::createReview()->setAuthor('tester')->setContent('test content')
-            ->setCreatedAt(new DateTimeImmutable('2020-10-10'))->setRating(4);
+        $entity = (MockUtils::createReviewPage())->setPage($page)->setItems([]);
         $service = new ReviewService($this->reviewRepository, $this->ratingService);
 
         $this->assertEquals($entity, $service->getReviewPageByBookId(self::BOOK_ID, $page));
@@ -69,12 +66,12 @@ class ReviewServiceTest extends AbstractTestCase
         $this->ratingService->expects($this->once())
             ->method('calcReviewRatingForBook')
             ->with(self::BOOK_ID)
-            ->willReturn(new Rating(1, 4.0));
+            ->willReturn(new Rating(0, 0.0));
 
         $review = MockUtils::createReview(MockUtils::createBook());
         $review->setAuthor('tester');
         $review->setContent('test');
-        $review->setRating(4);
+        $review->setRating(0.0);
 
         $this->reviewRepository->expects($this->once())
             ->method('getPageByBookId')
@@ -82,8 +79,7 @@ class ReviewServiceTest extends AbstractTestCase
             ->willReturn(new ArrayIterator([$review]));
 
         $service = new ReviewService($this->reviewRepository, $this->ratingService);
-        $reviewPage = MockUtils::createReviewPage()->setTotal(1)->setRating(4)
-        ->setPage(1)->setPages(1)->setItems(array(MockUtils::createReviewModel()));
+        $reviewPage = MockUtils::createReviewPage()->setItems([MockUtils::createReviewModel()]);
 
         $this->assertEquals($reviewPage, $service->getReviewPageByBookId(self::BOOK_ID, 1));
     }
